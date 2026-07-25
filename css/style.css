@@ -24,7 +24,7 @@
 
 @font-face {
     font-family: 'Matroska';
-    src: url('../assets/fonts/Matroska.otf') format('opentype');
+    src: url('../assets/fonts/Matroska.ttf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
