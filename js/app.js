@@ -46,28 +46,28 @@ window.addEventListener("scroll", () => {
 
 const cursor = document.querySelector(".cursor");
 
-document.addEventListener("mousemove", (e) => {
+if (cursor) {
 
-    cursor.style.left = e.clientX + "px";
-    cursor.style.top = e.clientY + "px";
+    document.addEventListener("mousemove", (e) => {
 
-});
-
-document.querySelectorAll("a, button").forEach(item => {
-
-    item.addEventListener("mouseenter", () => {
-
-        cursor.style.transform = "translate(-50%,-50%) scale(2)";
+        cursor.style.left = e.clientX + "px";
+        cursor.style.top = e.clientY + "px";
 
     });
 
-    item.addEventListener("mouseleave", () => {
+    document.querySelectorAll("a, button").forEach(item => {
 
-        cursor.style.transform = "translate(-50%,-50%) scale(1)";
+        item.addEventListener("mouseenter", () => {
+            cursor.style.transform = "translate(-50%,-50%) scale(2)";
+        });
+
+        item.addEventListener("mouseleave", () => {
+            cursor.style.transform = "translate(-50%,-50%) scale(1)";
+        });
 
     });
 
-});
+}
 
 // -------------------------------
 // SCROLL REVEAL
