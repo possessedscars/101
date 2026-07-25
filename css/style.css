@@ -59,23 +59,7 @@ body{
     color:var(--white);
 
     font-family:"Inter",sans-serif;
-
-/* Títulos */
-h1,
-h2,
-h3,
-.hero h1,
-.hero h2,
-.section-header h2,
-.about-left h2,
-.about-left h3,
-.experience-overlay h2,
-.gallery-header h2,
-#contact h2,
-#loader h1 {
-    font-family: 'Matroska', sans-serif;
-}
-
+   
     overflow-x:hidden;
 
 }
