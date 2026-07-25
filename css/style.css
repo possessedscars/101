@@ -58,20 +58,22 @@ body{
 
     color:var(--white);
 
-    font-family:"Matroska",sans-serif;
+    font-family:"Inter",sans-serif;
 
-    .logo,
+/* Títulos */
+h1,
+h2,
+h3,
 .hero h1,
-.section-label,
-section h2,
-.event-overlay h3,
-.card-overlay h4,
+.hero h2,
+.section-header h2,
+.about-left h2,
+.about-left h3,
+.experience-overlay h2,
 .gallery-header h2,
 #contact h2,
-footer h2{
-    font-family:"Matroska",sans-serif;
-    font-weight:normal;
-    letter-spacing:1px;
+#loader h1 {
+    font-family: 'Matroska', sans-serif;
 }
 
     overflow-x:hidden;
