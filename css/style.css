@@ -3,6 +3,13 @@
    STYLE.CSS
 ======================================================= */
 
+@font-face {
+    font-family: "Matroska";
+    src: url("../assets/fonts/Matroska-RppG6.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root{
 
     --bg:#050505;
