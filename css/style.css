@@ -60,6 +60,20 @@ body{
 
     font-family:"Inter",sans-serif;
 
+    .logo,
+.hero h1,
+.section-label,
+section h2,
+.event-overlay h3,
+.card-overlay h4,
+.gallery-header h2,
+#contact h2,
+footer h2{
+    font-family:"Matroska",sans-serif;
+    font-weight:normal;
+    letter-spacing:1px;
+}
+
     overflow-x:hidden;
 
 }
