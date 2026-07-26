@@ -117,6 +117,7 @@ window.addEventListener("scroll", () => {
             `scale(${1 + visible * 0.00008})`;
 
     }
+});
 
     /* ===========================
    EMAILJS
