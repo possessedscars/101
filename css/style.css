@@ -1152,6 +1152,7 @@ EVENTOS V2
 .featured-event:hover img{
 
     transform:scale(1.05);
+    filter: grayscale(0%);
 
 }
 
