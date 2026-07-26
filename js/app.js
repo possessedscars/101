@@ -123,6 +123,12 @@ window.addEventListener("scroll", () => {
    EMAILJS
 =========================== */
 
+const form = document.getElementById("contact-form");
+const button = document.getElementById("send-btn");
+
+console.log(form);
+console.log(button);
+
 emailjs.init({
     publicKey: "hX_u9GAOjJ2vsqVVb"
 });
