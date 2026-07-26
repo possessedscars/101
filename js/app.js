@@ -119,7 +119,7 @@ window.addEventListener("scroll", () => {
     }
 });
 
-    /* ===========================
+/* ===========================
    EMAILJS
 =========================== */
 
@@ -130,45 +130,44 @@ emailjs.init({
 const form = document.getElementById("contact-form");
 const button = document.getElementById("send-btn");
 
-form.addEventListener("submit", async function (e) {
+if (form && button) {
 
-    e.preventDefault();
+    form.addEventListener("submit", async function (e) {
 
-    button.disabled = true;
-    button.innerHTML = "A ENVIAR...";
+        e.preventDefault();
 
-    try {
+        button.disabled = true;
+        button.innerHTML = "A ENVIAR...";
 
-        await emailjs.sendForm(
-            "service_96uq7qr",
-            "template_st2eux6",
-            form
-        );
+        try {
 
-        button.innerHTML = "✓ MENSAGEM ENVIADA";
+            await emailjs.sendForm(
+                "service_96uq7qr",
+                "template_st2eux6",
+                form
+            );
 
-        form.reset();
+            button.innerHTML = "✓ MENSAGEM ENVIADA";
+            form.reset();
 
-        setTimeout(() => {
+            setTimeout(() => {
+                button.disabled = false;
+                button.innerHTML = "ENVIAR MENSAGEM →";
+            }, 3000);
+
+        } catch (error) {
+
+            console.error(error);
 
             button.disabled = false;
-            button.innerHTML = "ENVIAR MENSAGEM →";
+            button.innerHTML = "ERRO AO ENVIAR";
 
-        }, 3000);
+            setTimeout(() => {
+                button.innerHTML = "ENVIAR MENSAGEM →";
+            }, 3000);
 
-    } catch (error) {
+        }
 
-        console.error(error);
+    });
 
-        button.disabled = false;
-        button.innerHTML = "ERRO AO ENVIAR";
-
-        setTimeout(() => {
-
-            button.innerHTML = "ENVIAR MENSAGEM →";
-
-        }, 3000);
-
-    }
-
-});
+}
