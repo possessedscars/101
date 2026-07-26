@@ -1559,28 +1559,9 @@ GALLERY V2
     grid-column:span 8;
 
 }
-/* ==========================================
-   Crystal Clear Cursor
-========================================== */
-
+/* Custom Cursor */
 html,
-body{
-    cursor:url("../assets/Normal Select v4.1.cur"), auto;
-}
-
-a,
-button,
-.primary,
-.secondary,
-.about-button,
-.nav-button,
-.event-card,
-.featured-event,
-.gallery-item{
-    cursor:url("../assets/Link Select v4.1.cur"), pointer;
-}
-
-input,
-textarea{
-    cursor:url("../assets/Text Select v4.1.cur"), text;
+body,
+* {
+    cursor: url("../assets/cursor/cursor.cur"), auto;
 }
