@@ -1963,3 +1963,63 @@ grid-column:auto;
 }
 
 }
+
+/*==================================
+BACKGROUND
+==================================*/
+
+.contact-bg-text{
+
+    position:absolute;
+
+    top:50%;
+
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    font-size:26vw;
+
+    font-weight:900;
+
+    letter-spacing:-25px;
+
+    color:rgba(255,255,255,.018);
+
+    pointer-events:none;
+
+    user-select:none;
+
+    z-index:0;
+
+}
+
+.contact-grid{
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+
+    background-size:90px 90px;
+
+    opacity:.25;
+
+    mask-image:linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+
+    pointer-events:none;
+
+}
+
+.contact-container{
+
+    position:relative;
+
+    z-index:2;
+
+}
