@@ -1721,65 +1721,82 @@ textarea {
 
 }
 
-/*==========================
-CONTACT
-==========================*/
-
 #contact{
 
-    padding:220px 8%;
-
-    background:#090909;
+    padding:180px 30px;
+    background:#050505;
 
 }
 
 .contact-wrapper{
 
-    max-width:1100px;
-
-    margin:0 auto;
+    max-width:760px;
+    margin:auto;
+    text-align:center;
 
 }
 
 .contact-tag{
 
     display:block;
-
-    color:#777;
-
+    color:#888;
     letter-spacing:4px;
-
     font-size:13px;
-
-    margin-bottom:25px;
+    margin-bottom:20px;
 
 }
 
 .contact-wrapper h2{
 
-    font-size:clamp(4rem,7vw,7rem);
-
+    font-size:clamp(60px,8vw,110px);
     line-height:.9;
-
+    font-weight:800;
     margin-bottom:35px;
-
-    letter-spacing:-4px;
 
 }
 
-.contact-wrapper p{
-    text-align: center;
-    margin: 40px auto 80px;
-    max-width: 650px;
+.contact-description{
+
+    max-width:560px;
+    margin:0 auto 70px;
+    color:#8b8b8b;
+    font-size:18px;
+    line-height:1.8;
+
+}
+
+.contact-card{
+
+    background:#101010;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:28px;
+    padding:55px;
+    box-shadow:0 40px 120px rgba(0,0,0,.45);
+
 }
 
 .contact-form{
 
     display:flex;
-
     flex-direction:column;
+    gap:28px;
 
-    gap:40px;
+}
+
+.field{
+
+    text-align:left;
+
+}
+
+.field label{
+
+    display:block;
+    margin-bottom:12px;
+    color:#777;
+    font-size:13px;
+    letter-spacing:2px;
+    text-transform:uppercase;
 
 }
 
@@ -1787,122 +1804,52 @@ CONTACT
 .contact-form textarea{
 
     width:100%;
-
-    background:none;
-
-    border:none;
-
-    border-bottom:1px solid rgba(255,255,255,.15);
-
-    padding:0 0 20px;
-
+    background:#171717;
+    border:1px solid #252525;
+    border-radius:16px;
+    padding:20px;
     color:white;
-
-    font-size:20px;
-
-    font-family:inherit;
-
+    font-size:16px;
     transition:.35s;
+    outline:none;
 
 }
 
 .contact-form textarea{
 
-    resize:none;
+    resize:vertical;
+    min-height:180px;
 
 }
 
 .contact-form input:focus,
 .contact-form textarea:focus{
 
-    outline:none;
-
     border-color:white;
+    background:#1c1c1c;
 
 }
 
-.contact-form input::placeholder,
-.contact-form textarea::placeholder{
+#send-btn{
 
-    color:#555;
-
-}
-
-.contact-form button{
-
-    width:max-content;
-
-    margin-top:20px;
-
-    background:none;
-
+    margin-top:10px;
+    width:100%;
     border:none;
-
-    color:white;
-
-    font-size:18px;
-
-    letter-spacing:2px;
-
-    cursor:pointer;
-
-    position:relative;
-
-    padding:0;
-
-}
-
-.contact-form button::after{
-
-    content:"";
-
-    position:absolute;
-
-    left:0;
-    bottom:-10px;
-
-    width:0;
-
-    height:1px;
-
+    border-radius:999px;
     background:white;
-
+    color:black;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:2px;
+    padding:22px;
+    cursor:pointer;
     transition:.35s;
 
 }
 
-.contact-form button:hover::after{
+#send-btn:hover{
 
-    width:100%;
-
-}
-
-.contact-header{
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    text-align:center;
-
-    margin-bottom:120px;
-
-}
-
-.contact-tag{
-
-    margin-bottom:20px;
-
-}
-
-.contact-header h2{
-
-    max-width:1100px;
-
-    text-align:center;
-
-    margin:0 auto;
+    transform:translateY(-4px);
+    box-shadow:0 20px 60px rgba(255,255,255,.15);
 
 }
