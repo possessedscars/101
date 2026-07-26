@@ -308,13 +308,15 @@ HERO
 
 .hero-content{
 
-    position:relative;
+    position: relative;
 
-    z-index:5;
+    z-index: 5;
 
-    max-width:760px;
+    max-width: 760px;
 
-    margin-left:8%;
+    margin: 0 auto;
+
+    text-align: center;
 
 }
 
