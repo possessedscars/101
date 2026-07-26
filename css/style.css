@@ -102,29 +102,20 @@ section{
 LOADER
 ======================================================= */
 
-#loader{
-   
-   #loader img{
+#loader {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    transition: 1s;
+}
+
+#loader img {
     width: 180px;
     height: auto;
-}
-      
-    position:fixed;
-
-    inset:0;
-
-    background:#000;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    z-index:99999;
-
-    transition:1s;
-
 }
 
 #loader h1{
