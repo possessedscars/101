@@ -1896,7 +1896,11 @@ CONTACT
 
     border-color:white;
 
-    background:#1b1b1b;
+    background:transparent;
+
+border:1px solid rgba(255,255,255,.15);
+
+color:white;
 
 }
 
@@ -1928,9 +1932,13 @@ CONTACT
 
 #send-btn:hover{
 
-    transform:translateY(-4px);
+    background:white;
 
-    box-shadow:0 20px 60px rgba(255,255,255,.15);
+    color:black;
+
+    border-color:white;
+
+    transform:translateY(-5px);
 
 }
 
