@@ -1768,17 +1768,9 @@ CONTACT
 }
 
 .contact-wrapper p{
-
-    color:#8c8c8c;
-
-    font-size:20px;
-
-    max-width:600px;
-
-    line-height:1.8;
-
-    margin-bottom:80px;
-
+    text-align: center;
+    margin: 40px auto 80px;
+    max-width: 650px;
 }
 
 .contact-form{
