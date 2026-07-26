@@ -1722,64 +1722,62 @@ textarea {
 }
 
 /*==========================
-CONTACT
+CONTACT V2
 ==========================*/
 
 #contact{
 
-    padding:180px 8%;
+    padding:220px 8%;
 
     background:#090909;
 
 }
 
-.contact-container{
+.contact-wrapper{
 
-    max-width:1500px;
+    max-width:900px;
 
     margin:auto;
 
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:120px;
-
-    align-items:flex-start;
-
 }
 
-.contact-left span{
+.contact-tag{
+
+    display:block;
 
     color:#777;
 
     letter-spacing:4px;
 
-    font-size:14px;
+    font-size:13px;
+
+    margin-bottom:25px;
 
 }
 
-.contact-left h2{
+.contact-wrapper h2{
 
-    margin-top:20px;
+    font-size:clamp(4rem,7vw,7rem);
 
-    font-size:90px;
+    line-height:.9;
 
-    line-height:.95;
+    margin-bottom:35px;
+
+    letter-spacing:-4px;
 
 }
 
-.contact-left p{
+.contact-wrapper p{
 
-    margin-top:35px;
+    color:#8c8c8c;
 
-    color:#8d8d8d;
+    font-size:20px;
 
-    font-size:18px;
+    max-width:600px;
 
     line-height:1.8;
 
-    max-width:500px;
+    margin-bottom:80px;
 
 }
 
@@ -1789,7 +1787,7 @@ CONTACT
 
     flex-direction:column;
 
-    gap:22px;
+    gap:40px;
 
 }
 
@@ -1798,21 +1796,21 @@ CONTACT
 
     width:100%;
 
-    background:transparent;
+    background:none;
 
     border:none;
 
-    border-bottom:1px solid rgba(255,255,255,.12);
+    border-bottom:1px solid rgba(255,255,255,.15);
 
-    padding:20px 0;
+    padding:0 0 20px;
 
     color:white;
 
-    font-size:17px;
+    font-size:20px;
 
     font-family:inherit;
 
-    transition:.3s;
+    transition:.35s;
 
 }
 
@@ -1831,42 +1829,58 @@ CONTACT
 
 }
 
-.contact-form ::placeholder{
+.contact-form input::placeholder,
+.contact-form textarea::placeholder{
 
-    color:#666;
+    color:#555;
 
 }
 
 .contact-form button{
 
+    width:max-content;
+
     margin-top:20px;
 
-    width:fit-content;
+    background:none;
 
-    padding:18px 38px;
-
-    border:1px solid white;
-
-    background:transparent;
+    border:none;
 
     color:white;
 
-    border-radius:999px;
+    font-size:18px;
+
+    letter-spacing:2px;
 
     cursor:pointer;
 
-    transition:.35s;
+    position:relative;
 
-    font-size:15px;
-
-    letter-spacing:1px;
+    padding:0;
 
 }
 
-.contact-form button:hover{
+.contact-form button::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    bottom:-10px;
+
+    width:0;
+
+    height:1px;
 
     background:white;
 
-    color:black;
+    transition:.35s;
+
+}
+
+.contact-form button:hover::after{
+
+    width:100%;
 
 }
