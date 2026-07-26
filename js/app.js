@@ -123,21 +123,6 @@ window.addEventListener("scroll", () => {
    EMAILJS
 =========================== */
 
-console.log("Form:", form);
-console.log("Button:", button);
-
-if (form && button) {
-
-    form.addEventListener("submit", function (e) {
-
-        e.preventDefault();
-
-        console.log("O formulário foi submetido!");
-
-    });
-
-}
-
 emailjs.init({
     publicKey: "hX_u9GAOjJ2vsqVVb"
 });
@@ -147,12 +132,12 @@ const button = document.getElementById("send-btn");
 
 if (form && button) {
 
-    form.addEventListener("submit", async function (e) {
+    form.addEventListener("submit", async (e) => {
 
         e.preventDefault();
 
         button.disabled = true;
-        button.innerHTML = "A ENVIAR...";
+        button.textContent = "A ENVIAR...";
 
         try {
 
@@ -162,23 +147,28 @@ if (form && button) {
                 form
             );
 
-            button.innerHTML = "✓ MENSAGEM ENVIADA";
+            button.textContent = "✓ MENSAGEM ENVIADA";
+
             form.reset();
 
             setTimeout(() => {
+
                 button.disabled = false;
-                button.innerHTML = "ENVIAR MENSAGEM →";
+                button.textContent = "ENVIAR MENSAGEM →";
+
             }, 3000);
 
         } catch (error) {
 
-            console.error(error);
+            console.error("Erro EmailJS:", error);
 
             button.disabled = false;
-            button.innerHTML = "ERRO AO ENVIAR";
+            button.textContent = "ERRO AO ENVIAR";
 
             setTimeout(() => {
-                button.innerHTML = "ENVIAR MENSAGEM →";
+
+                button.textContent = "ENVIAR MENSAGEM →";
+
             }, 3000);
 
         }
