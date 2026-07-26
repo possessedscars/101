@@ -1565,3 +1565,11 @@ body,
 * {
     cursor: url("../assets/cursor/cursor.cur"), auto;
 }
+
+/* Custom Cursor Hand */
+a,
+button,
+.primary,
+.secondary {
+    cursor: url("../assets/cursor/pointer.cur"), pointer !important;
+}
