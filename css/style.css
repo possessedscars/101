@@ -103,7 +103,12 @@ LOADER
 ======================================================= */
 
 #loader{
-
+   
+   #loader img{
+    width: 180px;
+    height: auto;
+}
+      
     position:fixed;
 
     inset:0;
