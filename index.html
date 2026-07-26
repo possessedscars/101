@@ -368,60 +368,57 @@
 
     <div class="contact-wrapper">
 
-        <span class="contact-tag">
-            CONTACTO
-        </span>
+        <span class="contact-tag">CONTACTO</span>
 
         <h2>
-
             VAMOS CRIAR<br>
             ALGO EXTRAORDINÁRIO.
-
         </h2>
 
-        <p>
-
+        <p class="contact-description">
             Tens uma ideia, uma parceria ou um projeto?
-            Entra em contacto com a equipa da 1Ø1.
-
+            Conta-nos tudo e responderemos o mais rapidamente possível.
         </p>
 
-        <form id="contact-form" class="contact-form">
+        <div class="contact-card">
 
-    <input
-        type="text"
-        name="name"
-        placeholder="Nome"
-        required>
+            <form id="contact-form" class="contact-form">
 
-    <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        required>
+                <div class="field">
+                    <label>Nome</label>
+                    <input type="text" name="name" required>
+                </div>
 
-    <input
-        type="text"
-        name="discord"
-        placeholder="Discord (Opcional)">
+                <div class="field">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
 
-    <input
-        type="text"
-        name="subject"
-        placeholder="Assunto"
-        required>
+                <div class="field">
+                    <label>Discord</label>
+                    <input type="text" name="discord">
+                </div>
 
-    <textarea
-        name="message"
-        rows="6"
-        placeholder="Conta-nos a tua ideia..."
-        required></textarea>
+                <div class="field">
+                    <label>Assunto</label>
+                    <input type="text" name="subject" required>
+                </div>
 
-    <button id="send-btn" type="submit">
-    ENVIAR MENSAGEM →
-</button>
+                <div class="field">
+                    <label>Mensagem</label>
+                    <textarea
+                        name="message"
+                        rows="7"
+                        required></textarea>
+                </div>
 
-</form>
+                <button id="send-btn" type="submit">
+                    ENVIAR MENSAGEM →
+                </button>
+
+            </form>
+
+        </div>
 
     </div>
 
