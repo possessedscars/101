@@ -1559,75 +1559,28 @@ GALLERY V2
     grid-column:span 8;
 
 }
-.cursor{
-    position:fixed;
-    width:42px;
-    height:42px;
-    border:1px solid rgba(255,255,255,.45);
-    border-radius:50%;
-    pointer-events:none;
-    left:0;
-    top:0;
-    transform:translate(-50%,-50%);
-    z-index:99999;
-    transition:
-        width .25s,
-        height .25s,
-        border .25s,
-        background .25s,
-        transform .08s;
-    backdrop-filter:blur(4px);
-}
+/* ==========================================
+   Crystal Clear Cursor
+========================================== */
 
-.cursor-dot{
-    position:fixed;
-    width:8px;
-    height:8px;
-    background:#8B5CF6;
-    border-radius:50%;
-    pointer-events:none;
-    left:0;
-    top:0;
-    transform:translate(-50%,-50%);
-    z-index:100000;
-    transition:transform .04s linear;
-}
-
-.cursor.hover{
-    width:72px;
-    height:72px;
-    background:rgba(139,92,246,.12);
-    border-color:#8B5CF6;
-}
-
+html,
 body{
-    cursor:none;
+    cursor:url("../assets/Normal Select v4.1.cur"), auto;
 }
 
 a,
-button{
-    cursor:none;
+button,
+.primary,
+.secondary,
+.about-button,
+.nav-button,
+.event-card,
+.featured-event,
+.gallery-item{
+    cursor:url("../assets/Link Select v4.1.cur"), pointer;
 }
-.mouse-glow{
-    position:fixed;
-    width:700px;
-    height:700px;
-    border-radius:50%;
-    pointer-events:none;
-    z-index:0;
 
-    background:radial-gradient(
-        circle,
-        rgba(139,92,246,.18) 0%,
-        rgba(139,92,246,.08) 35%,
-        transparent 70%
-    );
-
-    filter:blur(70px);
-
-    transform:translate(-50%,-50%);
-
-    transition:
-        transform .08s linear,
-        opacity .35s;
+input,
+textarea{
+    cursor:url("../assets/Text Select v4.1.cur"), text;
 }
