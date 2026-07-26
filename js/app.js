@@ -127,7 +127,56 @@ emailjs.init({
     publicKey: "hX_u9GAOjJ2vsqVVb"
 });
 
-const form = document.getElementById("contact-form");
+document.addEventListener("DOMContentLoaded", () => {
+
+    emailjs.init({
+        publicKey: "hX_u9GAOjJ2vsqVVb"
+    });
+
+    const form = document.getElementById("contact-form");
+    const button = document.getElementById("send-btn");
+
+    if (!form || !button) {
+        console.error("Formulário ou botão não encontrados.");
+        return;
+    }
+
+    form.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        button.disabled = true;
+        button.textContent = "A ENVIAR...";
+
+        try {
+
+            await emailjs.sendForm(
+                "service_96uq7qr",
+                "template_st2eux6",
+                form
+            );
+
+            button.textContent = "✓ MENSAGEM ENVIADA";
+            form.reset();
+
+        } catch (err) {
+
+            console.error(err);
+
+            button.textContent = "ERRO AO ENVIAR";
+
+        }
+
+        setTimeout(() => {
+
+            button.disabled = false;
+            button.textContent = "ENVIAR MENSAGEM →";
+
+        },3000);
+
+    });
+
+});
 const button = document.getElementById("send-btn");
 
 if (form && button) {
