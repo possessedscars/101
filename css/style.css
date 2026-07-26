@@ -1612,123 +1612,39 @@ textarea {
 .fx-glitch {
     position: relative;
     display: inline-block;
-    color: inherit;
+    color: var(--ink);
     font: inherit;
     font-size: inherit;
     font-weight: inherit;
     line-height: inherit;
     letter-spacing: inherit;
     text-transform: inherit;
+    padding: 0;
+    overflow: hidden;
 }
 
-.fx-glitch::before,
 .fx-glitch::after {
-    content: attr(data-text);
+    content: "";
     position: absolute;
-    inset: 0;
-    pointer-events: none;
-    font: inherit;
-    color: inherit;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 34%;
+    background: var(--ink);
+    mix-blend-mode: difference;
+    animation: fx-negative 2.4s ease-in-out infinite alternate;
 }
 
-.fx-glitch::before {
-    color: var(--ink-2);
-    clip-path: inset(0 0 55% 0);
-    animation: fx-glitch-a 2.6s steps(1) infinite;
-}
-
-.fx-glitch::after {
-    color: var(--ink-3);
-    clip-path: inset(45% 0 0 0);
-    animation: fx-glitch-b 2.6s steps(1) infinite;
-}
-
-@keyframes fx-glitch-a {
-
-    0%,12%,20%,55%,100% {
-
-        transform: translate(0);
-
-        opacity:0;
-
+@keyframes fx-negative {
+    0% {
+        left: 0;
+        transform: translateX(0);
     }
 
-    13% {
-
-        transform:translate(-5px,-2px);
-
-        opacity:.9;
-
+    100% {
+        left: 100%;
+        transform: translateX(-100%);
     }
-
-    16% {
-
-        transform:translate(4px,1px);
-
-        opacity:.9;
-
-    }
-
-    48% {
-
-        transform:translate(-3px,2px);
-
-        opacity:.9;
-
-    }
-
-    51% {
-
-        transform:translate(2px,-1px);
-
-        opacity:.9;
-
-    }
-
-}
-
-@keyframes fx-glitch-b {
-
-    0%,14%,22%,60%,100% {
-
-        transform:translate(0);
-
-        opacity:0;
-
-    }
-
-    15% {
-
-        transform:translate(5px,2px);
-
-        opacity:.9;
-
-    }
-
-    18% {
-
-        transform:translate(-4px,-1px);
-
-        opacity:.9;
-
-    }
-
-    52% {
-
-        transform:translate(3px,-2px);
-
-        opacity:.9;
-
-    }
-
-    56% {
-
-        transform:translate(-2px,1px);
-
-        opacity:.9;
-
-    }
-
 }
 
 /*==================================
