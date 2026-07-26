@@ -126,8 +126,20 @@ window.addEventListener("scroll", () => {
 const form = document.getElementById("contact-form");
 const button = document.getElementById("send-btn");
 
-console.log(form);
-console.log(button);
+console.log("Form:", form);
+console.log("Button:", button);
+
+if (form && button) {
+
+    form.addEventListener("submit", function (e) {
+
+        e.preventDefault();
+
+        console.log("O formulário foi submetido!");
+
+    });
+
+}
 
 emailjs.init({
     publicKey: "hX_u9GAOjJ2vsqVVb"
