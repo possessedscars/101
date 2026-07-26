@@ -1602,37 +1602,34 @@ textarea {
 .fx-glitch {
     position: relative;
     display: inline-block;
-
-    color: var(--ink);
-
-    letter-spacing: .06em;
+    color: inherit;
+    font: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
 }
 
 .fx-glitch::before,
 .fx-glitch::after {
     content: attr(data-text);
-
     position: absolute;
     inset: 0;
-
     pointer-events: none;
+    font: inherit;
+    color: inherit;
 }
 
 .fx-glitch::before {
-
     color: var(--ink-2);
-
     clip-path: inset(0 0 55% 0);
-
     animation: fx-glitch-a 2.6s steps(1) infinite;
 }
 
 .fx-glitch::after {
-
     color: var(--ink-3);
-
     clip-path: inset(45% 0 0 0);
-
     animation: fx-glitch-b 2.6s steps(1) infinite;
 }
 
