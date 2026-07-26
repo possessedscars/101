@@ -118,4 +118,56 @@ window.addEventListener("scroll", () => {
 
     }
 
+    /* ===========================
+   EMAILJS
+=========================== */
+
+emailjs.init({
+    publicKey: "hX_u9GAOjJ2vsqVVb"
+});
+
+const form = document.getElementById("contact-form");
+const button = document.getElementById("send-btn");
+
+form.addEventListener("submit", async function (e) {
+
+    e.preventDefault();
+
+    button.disabled = true;
+    button.innerHTML = "A ENVIAR...";
+
+    try {
+
+        await emailjs.sendForm(
+            "service_96uq7qr",
+            "template_st2eux6",
+            form
+        );
+
+        button.innerHTML = "✓ MENSAGEM ENVIADA";
+
+        form.reset();
+
+        setTimeout(() => {
+
+            button.disabled = false;
+            button.innerHTML = "ENVIAR MENSAGEM →";
+
+        }, 3000);
+
+    } catch (error) {
+
+        console.error(error);
+
+        button.disabled = false;
+        button.innerHTML = "ERRO AO ENVIAR";
+
+        setTimeout(() => {
+
+            button.innerHTML = "ENVIAR MENSAGEM →";
+
+        }, 3000);
+
+    }
+
 });
