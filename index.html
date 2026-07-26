@@ -386,34 +386,44 @@
 
         </p>
 
-        <form class="contact-form">
+        <form id="contact-form" class="contact-form">
 
-            <input
-                type="text"
-                placeholder="Nome"
-                required>
+    <input
+        type="text"
+        name="name"
+        placeholder="Nome"
+        required>
 
-            <input
-                type="email"
-                placeholder="Email"
-                required>
+    <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        required>
 
-            <input
-                type="text"
-                placeholder="Discord (Opcional)">
+    <input
+        type="text"
+        name="discord"
+        placeholder="Discord (Opcional)">
 
-            <textarea
-                placeholder="Conta-nos a tua ideia..."
-                rows="5"
-                required></textarea>
+    <input
+        type="text"
+        name="subject"
+        placeholder="Assunto"
+        required>
 
-            <button type="submit">
+    <textarea
+        name="message"
+        rows="6"
+        placeholder="Conta-nos a tua ideia..."
+        required></textarea>
 
-                ENVIAR MENSAGEM →
+    <button type="submit">
 
-            </button>
+        ENVIAR MENSAGEM →
 
-        </form>
+    </button>
+
+</form>
 
     </div>
 
