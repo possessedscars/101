@@ -1573,3 +1573,19 @@ button,
 .secondary {
     cursor: url("../assets/cursor/pointer.cur"), pointer !important;
 }
+
+/* Custom Cursor Text Select */
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+label,
+input,
+textarea {
+    cursor: url("../assets/cursor/text.cur"), text;
+}
