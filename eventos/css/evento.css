@@ -298,3 +298,52 @@ DESCRIPTION
     line-height:2;
 
 }
+/*==================================
+COUNTDOWN
+==================================*/
+
+.countdown-section{
+
+    max-width:1500px;
+
+    margin:120px auto;
+
+    padding:0 80px;
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:40px;
+
+}
+
+.count-item{
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+    padding-top:25px;
+
+}
+
+.count-item span{
+
+    font-size:clamp(60px,7vw,120px);
+
+    font-weight:900;
+
+    letter-spacing:-5px;
+
+    display:block;
+
+}
+
+.count-item small{
+
+    color:#777;
+
+    letter-spacing:4px;
+
+    font-size:12px;
+
+}
