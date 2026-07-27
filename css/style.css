@@ -1960,7 +1960,15 @@ BACKGROUND
 
 }
 
-h1 img {
+.hero-content h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 30px;
+}
+
+.hero-content h1 img {
+    display: block;
     width: 250px;
     height: auto;
 }
