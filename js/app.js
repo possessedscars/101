@@ -28,11 +28,11 @@ window.addEventListener("load", () => {
 
             setTimeout(() => {
 
-        const logoBase = document.getElementById("logoBase");
-        const logoFill = document.getElementById("logoFill");
-
-        logoBase.classList.add("glitch");
-        logoFill.classList.add("glitch");
+        const logoBase = loader.querySelector(".logo-base");
+        const logoFill = loader.querySelector(".logo-fill");
+    
+        if (logoBase) logoBase.classList.add("glitch");
+        if (logoFill) logoFill.classList.add("glitch");
 
         setTimeout(() => {
 
@@ -42,10 +42,9 @@ window.addEventListener("load", () => {
         document.body.classList.remove("loading");
         document.body.classList.add("loaded");
 
-    }, 450);
+        }, 450);
 
-}, 300);
-
+    }, 300);
         }
 
     }, 18);
