@@ -364,7 +364,19 @@ COUNTDOWN
 
 .hero-countdown{
 
-    margin-top:70px;
+    position:absolute;
+
+    left:50%;
+
+    bottom:60px;
+
+    transform:translateX(-50%);
+
+    width:max-content;
+
+    z-index:20;
+
+    text-align:center;
 
 }
 
