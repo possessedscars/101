@@ -14,6 +14,8 @@ window.addEventListener("load", () => {
     const loader = document.getElementById("loader");
     const reveal = document.querySelector(".logo-reveal");
 
+    if (!loader || !reveal) return;
+
     let progress = 0;
 
     const timer = setInterval(() => {
@@ -42,29 +44,33 @@ window.addEventListener("load", () => {
 
 });
 
-// -------------------------------
+// --------------------------
 // NAVBAR
-// -------------------------------
+// --------------------------
 
 const header = document.querySelector("header");
 
-window.addEventListener("scroll", () => {
+if (header) {
 
-    if (window.scrollY > 80) {
+    window.addEventListener("scroll", () => {
 
-        header.classList.add("scrolled");
+        if (window.scrollY > 80) {
 
-    } else {
+            header.classList.add("scrolled");
 
-        header.classList.remove("scrolled");
+        } else {
 
-    }
+            header.classList.remove("scrolled");
 
-});
+        }
 
-// -------------------------------
+    });
+
+}
+
+// --------------------------
 // CURSOR
-// -------------------------------
+// --------------------------
 
 const cursor = document.querySelector(".cursor");
 
@@ -80,20 +86,26 @@ if (cursor) {
     document.querySelectorAll("a, button").forEach(item => {
 
         item.addEventListener("mouseenter", () => {
-            cursor.style.transform = "translate(-50%,-50%) scale(2)";
+
+            cursor.style.transform =
+                "translate(-50%,-50%) scale(2)";
+
         });
 
         item.addEventListener("mouseleave", () => {
-            cursor.style.transform = "translate(-50%,-50%) scale(1)";
+
+            cursor.style.transform =
+                "translate(-50%,-50%) scale(1)";
+
         });
 
     });
 
 }
 
-// -------------------------------
+// --------------------------
 // SCROLL REVEAL
-// -------------------------------
+// --------------------------
 
 const observer = new IntersectionObserver(entries => {
 
@@ -119,37 +131,38 @@ document.querySelectorAll("section").forEach(section => {
 
 });
 
-// =========================
-// Parallax Hero Vídeo
-// =========================
+// --------------------------
+// PARALLAX
+// --------------------------
 
 const experience = document.querySelector(".experience-video");
 
-window.addEventListener("scroll", () => {
+if (experience) {
 
-    if (!experience) return;
+    window.addEventListener("scroll", () => {
 
-    const rect = experience.getBoundingClientRect();
+        const rect = experience.getBoundingClientRect();
 
-    const visible = window.innerHeight - rect.top;
+        const visible = window.innerHeight - rect.top;
 
-    if (visible > 0) {
+        if (visible > 0) {
 
-        experience.style.transform =
-            `scale(${1 + visible * 0.00008})`;
+            experience.style.transform =
+                `scale(${1 + visible * 0.00008})`;
 
-    }
-});
+        }
 
-/* ===========================
-   EMAILJS
-=========================== */
+    });
 
-emailjs.init({
-    publicKey: "hX_u9GAOjJ2vsqVVb"
-});
+}
+
+// --------------------------
+// EMAILJS
+// --------------------------
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    if (typeof emailjs === "undefined") return;
 
     emailjs.init({
         publicKey: "hX_u9GAOjJ2vsqVVb"
@@ -158,10 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("contact-form");
     const button = document.getElementById("send-btn");
 
-    if (!form || !button) {
-        console.error("Formulário ou botão não encontrados.");
-        return;
-    }
+    if (!form || !button) return;
 
     form.addEventListener("submit", async (e) => {
 
@@ -173,17 +183,20 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
 
             await emailjs.sendForm(
+
                 "service_96uq7qr",
                 "template_st2eux6",
                 form
+
             );
 
             button.textContent = "✓ MENSAGEM ENVIADA";
+
             form.reset();
 
-        } catch (err) {
+        } catch (error) {
 
-            console.error(err);
+            console.error(error);
 
             button.textContent = "ERRO AO ENVIAR";
 
@@ -194,56 +207,8 @@ document.addEventListener("DOMContentLoaded", () => {
             button.disabled = false;
             button.textContent = "ENVIAR MENSAGEM →";
 
-        },3000);
+        }, 3000);
 
     });
 
 });
-const button = document.getElementById("send-btn");
-
-if (form && button) {
-
-    form.addEventListener("submit", async (e) => {
-
-        e.preventDefault();
-
-        button.disabled = true;
-        button.textContent = "A ENVIAR...";
-
-        try {
-
-            await emailjs.sendForm(
-                "service_96uq7qr",
-                "template_st2eux6",
-                form
-            );
-
-            button.textContent = "✓ MENSAGEM ENVIADA";
-
-            form.reset();
-
-            setTimeout(() => {
-
-                button.disabled = false;
-                button.textContent = "ENVIAR MENSAGEM →";
-
-            }, 3000);
-
-        } catch (error) {
-
-            console.error("Erro EmailJS:", error);
-
-            button.disabled = false;
-            button.textContent = "ERRO AO ENVIAR";
-
-            setTimeout(() => {
-
-                button.textContent = "ENVIAR MENSAGEM →";
-
-            }, 3000);
-
-        }
-
-    });
-
-}
