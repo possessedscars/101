@@ -1020,6 +1020,25 @@ HERO V2
     margin: 0;
 }
 
+.hero-subheading{
+
+    font-family: "Inter", sans-serif !important;
+
+    font-size: .95rem !important;
+
+    font-weight: 500 !important;
+
+    letter-spacing: .45em !important;
+
+    text-transform: uppercase !important;
+
+    color: rgba(255,255,255,.72) !important;
+
+    margin-top: -12px;
+
+    margin-bottom: 20px;
+
+}
 
 @keyframes scrollLine{
 
