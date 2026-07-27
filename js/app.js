@@ -28,13 +28,11 @@ window.addEventListener("load", () => {
 
             setTimeout(() => {
 
-        const logoBase = loader.querySelector(".logo-base");
-        const logoFill = loader.querySelector(".logo-fill");
-    
-        if (logoBase) logoBase.classList.add("glitch");
-        if (logoFill) logoFill.classList.add("glitch");
+    const logo = loader.querySelector(".logo-container");
 
-        setTimeout(() => {
+    if (logo) logo.classList.add("glitch");
+
+    setTimeout(() => {
 
         loader.style.opacity = "0";
         loader.style.visibility = "hidden";
@@ -42,10 +40,9 @@ window.addEventListener("load", () => {
         document.body.classList.remove("loading");
         document.body.classList.add("loaded");
 
-        }, 450);
+    }, 450);
 
-    }, 300);
-        }
+}, 300);
 
     }, 18);
 
