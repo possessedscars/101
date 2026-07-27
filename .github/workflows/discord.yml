@@ -1,4 +1,4 @@
-name: Discord GitHub Updates
+name: 101 GitHub Updates
 
 on:
   push:
@@ -10,48 +10,89 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Send Discord Webhook
+      - name: Detect Commit Type
+        id: commit
+        run: |
+          MESSAGE="${{ github.event.head_commit.message }}"
+
+          TYPE="📦 Atualização"
+          COLOR="16777215"
+          CLEAN="$MESSAGE"
+
+          if [[ "$MESSAGE" == feat:* ]]; then
+            TYPE="✨ Nova Funcionalidade"
+            CLEAN="${MESSAGE#feat: }"
+            COLOR="5814783"
+          elif [[ "$MESSAGE" == fix:* ]]; then
+            TYPE="🐛 Correção"
+            CLEAN="${MESSAGE#fix: }"
+            COLOR="15548997"
+          elif [[ "$MESSAGE" == style:* ]]; then
+            TYPE="🎨 Alteração Visual"
+            CLEAN="${MESSAGE#style: }"
+            COLOR="3447003"
+          elif [[ "$MESSAGE" == perf:* ]]; then
+            TYPE="⚡ Performance"
+            CLEAN="${MESSAGE#perf: }"
+            COLOR="3066993"
+          elif [[ "$MESSAGE" == docs:* ]]; then
+            TYPE="📚 Documentação"
+            CLEAN="${MESSAGE#docs: }"
+            COLOR="10181046"
+          elif [[ "$MESSAGE" == refactor:* ]]; then
+            TYPE="♻️ Refatoração"
+            CLEAN="${MESSAGE#refactor: }"
+            COLOR="15844367"
+          elif [[ "$MESSAGE" == hotfix:* ]]; then
+            TYPE="🚑 Hotfix"
+            CLEAN="${MESSAGE#hotfix: }"
+            COLOR="15158332"
+          fi
+
+          echo "type=$TYPE" >> $GITHUB_OUTPUT
+          echo "clean=$CLEAN" >> $GITHUB_OUTPUT
+          echo "color=$COLOR" >> $GITHUB_OUTPUT
+
+      - name: Send Discord Embed
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
         run: |
-          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
-          AUTHOR="${{ github.actor }}"
-          BRANCH="${GITHUB_REF#refs/heads/}"
-          COMMIT_URL="${{ github.event.head_commit.url }}"
-          REPO="${{ github.repository }}"
-
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d "{
-            \"username\":\"101-Bot\",
-            \"embeds\":[
+          -d '{
+            "username":"101-Bot",
+            "avatar_url":"https://raw.githubusercontent.com/possessedscars/101/main/assets/logo.png",
+            "embeds":[
               {
-                \"title\":\"🚀 Nova Atualização\",
-                \"description\":\"**$COMMIT_MESSAGE**\",
-                \"color\":16777215,
-                \"fields\":[
+                "title":"🚀 Website Atualizado",
+                "description":"## '"${{ steps.commit.outputs.type }}"'\n\n**'"${{ steps.commit.outputs.clean }}"'**",
+                "color":'${{ steps.commit.outputs.color }}',
+                "thumbnail":{
+                  "url":"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                },
+                "fields":[
                   {
-                    \"name\":\"👤 Autor\",
-                    \"value\":\"$AUTHOR\",
-                    \"inline\":true
+                    "name":"👤 Developer",
+                    "value":"${{ github.actor }}",
+                    "inline":true
                   },
                   {
-                    \"name\":\"🌿 Branch\",
-                    \"value\":\"$BRANCH\",
-                    \"inline\":true
+                    "name":"🌿 Branch",
+                    "value":"${{ github.ref_name }}",
+                    "inline":true
                   },
                   {
-                    \"name\":\"📦 Repositório\",
-                    \"value\":\"$REPO\"
+                    "name":"📦 Repositório",
+                    "value":"${{ github.repository }}",
+                    "inline":true
                   }
                 ],
-                \"url\":\"$COMMIT_URL\",
-                \"footer\":{
-                  \"text\":\"1Ø1 Community\"
+                "footer":{
+                  "text":"1Ø1 Community • GitHub"
                 },
-                \"timestamp\":\"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"
+                "timestamp":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"
               }
             ]
-          }" \
-          "$DISCORD_WEBHOOK_URL"
+          }' \
+          "$WEBHOOK"
