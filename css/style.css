@@ -102,30 +102,41 @@ section{
 LOADER
 ======================================================= */
 
-#loader {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
-    transition: 1s;
+#loader{
+    position:fixed;
+    inset:0;
+    background:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+    overflow:hidden;
+    transition:opacity .6s ease;
 }
 
-#loader img {
-    width: 450px;
-    height: auto;
+.logo-container{
+    position:relative;
+    width:520px;
 }
 
-#loader h1{
+.logo-base{
+    width:100%;
+    display:block;
+    opacity:.12;
+}
 
-    font-size:7rem;
+.logo-fill{
+    position:absolute;
+    inset:0;
 
-    letter-spacing:12px;
+    background:#fff;
 
-    font-weight:800;
+    clip-path:inset(0 100% 0 0);
 
+    -webkit-mask:url("../assets/logo/logo-white.png") center/contain no-repeat;
+    mask:url("../assets/logo/logo-white.png") center/contain no-repeat;
+
+    transition:clip-path .1s linear;
 }
 
 /* =======================================================
