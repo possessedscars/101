@@ -10,99 +10,76 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Detect Commit Type
-        id: commit
-        run: |
-          MESSAGE="${{ github.event.head_commit.message }}"
-
-          TYPE="📦 Atualização"
-          COLOR="16777215"
-          CLEAN="$MESSAGE"
-
-          if [[ "$MESSAGE" == feat:* ]]; then
-            TYPE="✨ Nova Funcionalidade"
-            CLEAN="${MESSAGE#feat: }"
-            COLOR="5814783"
-          elif [[ "$MESSAGE" == fix:* ]]; then
-            TYPE="🐛 Correção"
-            CLEAN="${MESSAGE#fix: }"
-            COLOR="15548997"
-          elif [[ "$MESSAGE" == style:* ]]; then
-            TYPE="🎨 Alteração Visual"
-            CLEAN="${MESSAGE#style: }"
-            COLOR="3447003"
-          elif [[ "$MESSAGE" == perf:* ]]; then
-            TYPE="⚡ Performance"
-            CLEAN="${MESSAGE#perf: }"
-            COLOR="3066993"
-          elif [[ "$MESSAGE" == docs:* ]]; then
-            TYPE="📚 Documentação"
-            CLEAN="${MESSAGE#docs: }"
-            COLOR="10181046"
-          elif [[ "$MESSAGE" == refactor:* ]]; then
-            TYPE="♻️ Refatoração"
-            CLEAN="${MESSAGE#refactor: }"
-            COLOR="15844367"
-          elif [[ "$MESSAGE" == hotfix:* ]]; then
-            TYPE="🚑 Hotfix"
-            CLEAN="${MESSAGE#hotfix: }"
-            COLOR="15158332"
-          fi
-
-          {
-  echo "type<<EOF"
-  echo "$TYPE"
-  echo "EOF"
-
-  echo "clean<<EOF"
-  echo "$CLEAN"
-  echo "EOF"
-
-  echo "color<<EOF"
-  echo "$COLOR"
-  echo "EOF"
-} >> "$GITHUB_OUTPUT"
-
-      - name: Send Discord Embed
+      - name: Send Discord Notification
         env:
           WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
         run: |
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d '{
-            "username":"101-Bot",
-            "avatar_url":"https://raw.githubusercontent.com/possessedscars/101/main/assets/logo.png",
-            "embeds":[
-              {
-                "title":"🚀 Website Atualizado",
-                "description":"## '"${{ steps.commit.outputs.type }}"'\n\n**'"${{ steps.commit.outputs.clean }}"'**",
-                "color":'${{ steps.commit.outputs.color }}',
-                "thumbnail":{
-                  "url":"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-                },
-                "fields":[
-                  {
-                    "name":"👤 Developer",
-                    "value":"${{ github.actor }}",
-                    "inline":true
-                  },
-                  {
-                    "name":"🌿 Branch",
-                    "value":"${{ github.ref_name }}",
-                    "inline":true
-                  },
-                  {
-                    "name":"📦 Repositório",
-                    "value":"${{ github.repository }}",
-                    "inline":true
+          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+          AUTHOR="${{ github.actor }}"
+          BRANCH="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
+          COMMIT_URL="${{ github.event.head_commit.url }}"
+
+          TYPE="📦 Atualização"
+
+          if [[ "$COMMIT_MESSAGE" == feat:* ]]; then
+            TYPE="✨ Nova Funcionalidade"
+          elif [[ "$COMMIT_MESSAGE" == fix:* ]]; then
+            TYPE="🐛 Correção"
+          elif [[ "$COMMIT_MESSAGE" == style:* ]]; then
+            TYPE="🎨 Alteração Visual"
+          elif [[ "$COMMIT_MESSAGE" == perf:* ]]; then
+            TYPE="⚡ Performance"
+          elif [[ "$COMMIT_MESSAGE" == docs:* ]]; then
+            TYPE="📚 Documentação"
+          elif [[ "$COMMIT_MESSAGE" == refactor:* ]]; then
+            TYPE="♻️ Refatoração"
+          elif [[ "$COMMIT_MESSAGE" == hotfix:* ]]; then
+            TYPE="🚑 Hotfix"
+          fi
+
+          jq -n \
+            --arg type "$TYPE" \
+            --arg message "$COMMIT_MESSAGE" \
+            --arg author "$AUTHOR" \
+            --arg branch "$BRANCH" \
+            --arg repo "$REPO" \
+            --arg url "$COMMIT_URL" \
+            '{
+              username: "101-Bot",
+              embeds: [
+                {
+                  title: "🚀 Website Atualizado",
+                  description: ("## " + $type + "\n\n**" + $message + "**"),
+                  color: 16777215,
+                  url: $url,
+                  fields: [
+                    {
+                      name: "👤 Developer",
+                      value: $author,
+                      inline: true
+                    },
+                    {
+                      name: "🌿 Branch",
+                      value: $branch,
+                      inline: true
+                    },
+                    {
+                      name: "📦 Repositório",
+                      value: $repo,
+                      inline: true
+                    }
+                  ],
+                  footer: {
+                    text: "1Ø1 Community • GitHub"
                   }
-                ],
-                "footer":{
-                  "text":"1Ø1 Community • GitHub"
-                },
-                "timestamp":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"
-              }
-            ]
-          }' \
-          "$WEBHOOK"
+                }
+              ]
+            }' > payload.json
+
+          curl \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d @payload.json \
+            "$WEBHOOK"
