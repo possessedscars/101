@@ -28,13 +28,23 @@ window.addEventListener("load", () => {
 
             setTimeout(() => {
 
-                loader.style.opacity = "0";
-                loader.style.visibility = "hidden";
+        const logoBase = document.getElementById("logoBase");
+        const logoFill = document.getElementById("logoFill");
 
-                document.body.classList.remove("loading");
-                document.body.classList.add("loaded");
+        logoBase.classList.add("glitch");
+        logoFill.classList.add("glitch");
 
-            }, 300);
+        setTimeout(() => {
+
+        loader.style.opacity = "0";
+        loader.style.visibility = "hidden";
+
+        document.body.classList.remove("loading");
+        document.body.classList.add("loaded");
+
+    }, 450);
+
+}, 300);
 
         }
 
