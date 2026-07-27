@@ -396,7 +396,9 @@ COUNTDOWN
 
     display:flex;
 
-    gap:20px;
+    justify-content:center;
+
+    gap:18px;
 
 }
 
