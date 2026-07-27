@@ -125,21 +125,24 @@ LOADER
     opacity:.12;
 }
 
-.logo-fill{
+.logo-reveal{
     position:absolute;
     top:0;
     left:0;
 
-    width:100%;
+    width:0%;
     height:100%;
 
+    overflow:hidden;
+    white-space:nowrap;
+}
+
+.logo-fill{
     display:block;
+    width:520px;
+    height:auto;
 
-    clip-path: inset(0 100% 0 0);
-
-    transition: clip-path .1s linear;
-
-    filter: drop-shadow(0 0 15px rgba(255,255,255,.8));
+    filter:drop-shadow(0 0 15px rgba(255,255,255,.8));
 }
 
 /* =======================================================
