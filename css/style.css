@@ -2109,7 +2109,9 @@ body.loaded .hero-scroll{
         opacity:1;
         transform:translateY(0);
     }
-   
+
+}
+
 /* ==========================
    LOADER GLITCH
 ========================== */
