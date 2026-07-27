@@ -358,53 +358,89 @@ DESCRIPTION
     line-height:2;
 
 }
-/*==================================
+/*==========================
 COUNTDOWN
-==================================*/
+==========================*/
 
-.countdown-section{
+.hero-countdown{
 
-    max-width:1500px;
-
-    margin:120px auto;
-
-    padding:0 80px;
-
-    display:grid;
-
-    grid-template-columns:repeat(4,1fr);
-
-    gap:40px;
+    margin-top:70px;
 
 }
 
-.count-item{
+.hero-countdown p{
 
-    border-top:1px solid rgba(255,255,255,.08);
-
-    padding-top:25px;
-
-}
-
-.count-item span{
-
-    font-size:clamp(60px,7vw,120px);
-
-    font-weight:900;
-
-    letter-spacing:-5px;
-
-    display:block;
-
-}
-
-.count-item small{
-
-    color:#777;
+    color:#8d8d8d;
 
     letter-spacing:4px;
 
     font-size:12px;
+
+    margin-bottom:25px;
+
+}
+
+.countdown-grid{
+
+    display:flex;
+
+    gap:20px;
+
+}
+
+.count-box{
+
+    width:120px;
+
+    height:120px;
+
+    background:rgba(255,255,255,.05);
+
+    backdrop-filter:blur(15px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    transition:.35s;
+
+}
+
+.count-box:hover{
+
+    transform:translateY(-6px);
+
+    border-color:white;
+
+}
+
+.count-box span{
+
+    font-size:48px;
+
+    font-weight:900;
+
+    line-height:1;
+
+}
+
+.count-box small{
+
+    margin-top:10px;
+
+    color:#9a9a9a;
+
+    letter-spacing:3px;
+
+    font-size:11px;
 
 }
 /*==================================
