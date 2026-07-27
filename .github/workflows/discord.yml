@@ -49,9 +49,19 @@ jobs:
             COLOR="15158332"
           fi
 
-          echo "type=$TYPE" >> $GITHUB_OUTPUT
-          echo "clean=$CLEAN" >> $GITHUB_OUTPUT
-          echo "color=$COLOR" >> $GITHUB_OUTPUT
+          {
+  echo "type<<EOF"
+  echo "$TYPE"
+  echo "EOF"
+
+  echo "clean<<EOF"
+  echo "$CLEAN"
+  echo "EOF"
+
+  echo "color<<EOF"
+  echo "$COLOR"
+  echo "EOF"
+} >> "$GITHUB_OUTPUT"
 
       - name: Send Discord Embed
         env:
