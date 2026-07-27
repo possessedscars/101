@@ -435,11 +435,12 @@ HERO
 }
 
 .secondary:hover{
+    background: white;
+    color: black;
 
-    background:white;
+    transform: translateY(-3px) scale(1.02);
 
-    color:black;
-
+    transition: all .3s ease;
 }
 
 .scroll-indicator{
