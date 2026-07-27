@@ -422,7 +422,7 @@ HERO
 
 .primary:hover{
 
-    transform:translateY(-5px);
+    transform: translateY(-3px) scale(1.02);
 
 }
 
@@ -971,7 +971,7 @@ HERO V2
 
     position:absolute;
 
-    bottom:45px;
+    bottom:35px;
 
     left:50%;
 
@@ -983,13 +983,17 @@ HERO V2
 
     align-items:center;
 
-    gap:15px;
+    gap:12px;
 
-    font-size:13px;
+    font-size:11px;
 
-    letter-spacing:3px;
+    font-weight:500;
 
-    color:#8d8d8d;
+    letter-spacing:4px;
+
+    text-transform:uppercase;
+
+    color:#9a9a9a;
 
 }
 
@@ -997,11 +1001,11 @@ HERO V2
 
     width:1px;
 
-    height:55px;
+    height:42px;
 
-    background:white;
+    background:rgba(255,255,255,.75);
 
-    animation:scrollLine 2s infinite;
+    animation:scrollLine 2s ease-in-out infinite;
 
 }
 
