@@ -2116,62 +2116,57 @@ body.loaded .hero-scroll{
    LOADER GLITCH
 ========================== */
 
-.logo-base.glitch,
-.logo-fill.glitch{
+.logo-container.glitch{
+   
+    animation:loaderGlitch .35s ease;
 
-    animation:loaderGlitch .45s steps(2,end);
+    filter:
+        drop-shadow(14px 0 rgba(246,0,153,.9))
+        drop-shadow(-14px 0 rgba(15,210,255,.9))
+        drop-shadow(-2px -2px rgba(255,210,0,.9));
 
 }
 
 @keyframes loaderGlitch{
 
     0%{
-        transform:translate(0);
-        filter:none;
+        transform:skewX(0deg);
     }
 
     10%{
-        transform:translate(-4px,2px);
-        filter:
-        drop-shadow(4px 0 #00ffff)
-        drop-shadow(-4px 0 #ff0066);
+        transform:skewX(24deg) translateX(-8px);
     }
 
     20%{
-        transform:translate(4px,-2px);
+        transform:skewX(-8deg) translateX(6px);
     }
 
     30%{
-        transform:translate(-5px,1px);
+        transform:skewX(55deg) translateX(-10px);
     }
 
     40%{
-        transform:translate(5px,-1px);
+        transform:skewX(-90deg);
     }
 
     50%{
-        transform:translate(-3px,2px);
+        transform:skewX(29deg);
     }
 
     60%{
-        transform:translate(3px,-2px);
+        transform:skewX(-18deg);
     }
 
     70%{
-        transform:translate(-2px,1px);
+        transform:skewX(8deg);
     }
 
     80%{
-        transform:translate(2px,-1px);
-    }
-
-    90%{
-        transform:translate(-1px,1px);
+        transform:skewX(-2deg);
     }
 
     100%{
         transform:none;
-        filter:none;
     }
 
 }
