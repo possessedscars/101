@@ -3,20 +3,41 @@
 // APP.JS
 // ==========================================
 
-// -------------------------------
+// --------------------------
 // LOADER
-// -------------------------------
+// --------------------------
 
-window.addEventListener("load", () => {
+wwindow.addEventListener("load", () => {
+
+    document.body.classList.add("loading");
 
     const loader = document.getElementById("loader");
+    const fill = document.querySelector(".logo-fill");
 
-    setTimeout(() => {
+    let progress = 0;
 
-        loader.style.opacity = "0";
-        loader.style.visibility = "hidden";
+    const timer = setInterval(() => {
 
-    }, 1200);
+        progress++;
+
+        fill.style.clipPath = `inset(0 ${100 - progress}% 0 0)`;
+
+        if (progress >= 100) {
+
+            clearInterval(timer);
+
+            setTimeout(() => {
+
+                loader.style.opacity = "0";
+                loader.style.visibility = "hidden";
+
+                document.body.classList.remove("loading");
+
+            }, 300);
+
+        }
+
+    }, 18);
 
 });
 
