@@ -12,7 +12,7 @@ wwindow.addEventListener("load", () => {
     document.body.classList.add("loading");
 
     const loader = document.getElementById("loader");
-    const fill = document.querySelector(".logo-fill");
+    const reveal = document.querySelector(".logo-reveal");
 
     let progress = 0;
 
@@ -20,7 +20,7 @@ wwindow.addEventListener("load", () => {
 
         progress++;
 
-        fill.style.clipPath = `inset(0 ${100 - progress}% 0 0)`;
+        reveal.style.width = progress + "%";
 
         if (progress >= 100) {
 
