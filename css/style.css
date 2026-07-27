@@ -2002,3 +2002,20 @@ BACKGROUND
     width: 250px;
     height: auto;
 }
+
+/* =========================================
+   PAGE INTRO ANIMATION
+========================================= */
+
+body.loading main,
+body.loading header{
+    opacity:0;
+    transform:translateY(30px);
+}
+
+body.loaded main,
+body.loaded header{
+    opacity:1;
+    transform:translateY(0);
+    transition:opacity .8s ease, transform .8s ease;
+}
