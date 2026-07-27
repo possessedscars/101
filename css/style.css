@@ -2032,7 +2032,7 @@ body.loading .hero-buttons,
 body.loading .hero-scroll{
 
     opacity:0;
-    transform:translateY(35px);
+    transform:translateY(-20px);
 }
 
 body.loaded .hero-tag{
@@ -2069,7 +2069,7 @@ body.loaded .hero-scroll{
 
     from{
         opacity:0;
-        transform:translateY(35px);
+        transform:translateY(-20px);
     }
 
     to{
