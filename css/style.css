@@ -2019,3 +2019,62 @@ body.loaded header{
     transform:translateY(0);
     transition:opacity .8s ease, transform .8s ease;
 }
+
+/* =========================================
+   HERO INTRO ANIMATION
+========================================= */
+
+body.loading .hero-tag,
+body.loading h1,
+body.loading .hero-heading,
+body.loading .hero-text,
+body.loading .hero-buttons,
+body.loading .hero-scroll{
+
+    opacity:0;
+    transform:translateY(35px);
+}
+
+body.loaded .hero-tag{
+    animation:intro .7s ease forwards;
+    animation-delay:.10s;
+}
+
+body.loaded h1{
+    animation:intro .7s ease forwards;
+    animation-delay:.25s;
+}
+
+body.loaded .hero-heading{
+    animation:intro .7s ease forwards;
+    animation-delay:.40s;
+}
+
+body.loaded .hero-text{
+    animation:intro .7s ease forwards;
+    animation-delay:.55s;
+}
+
+body.loaded .hero-buttons{
+    animation:intro .7s ease forwards;
+    animation-delay:.70s;
+}
+
+body.loaded .hero-scroll{
+    animation:intro .7s ease forwards;
+    animation-delay:.85s;
+}
+
+@keyframes intro{
+
+    from{
+        opacity:0;
+        transform:translateY(35px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
