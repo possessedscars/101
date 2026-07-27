@@ -32,6 +32,7 @@ window.addEventListener("load", () => {
                 loader.style.visibility = "hidden";
 
                 document.body.classList.remove("loading");
+                document.body.classList.add("loaded");
 
             }, 300);
 
