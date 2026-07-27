@@ -1197,6 +1197,11 @@ EVENTOS V2
 
 }
 
+.event-location{
+    display: block;
+    margin-top: 8px;
+}
+
 .event-overlay h3{
 
     font-size:64px;
