@@ -139,6 +139,46 @@ LOADER
     transition:clip-path .1s linear;
 }
 
+.logo-fill::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:-15%;
+    bottom:-15%;
+
+    width:70px;
+
+    right:-35px;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.25),
+        rgba(255,255,255,.95),
+        rgba(255,255,255,.25),
+        transparent
+    );
+
+    filter:blur(12px);
+
+    animation:loaderGlow 2s linear infinite;
+
+}
+
+@keyframes loaderGlow{
+
+    from{
+        transform:translateX(-650px);
+    }
+
+    to{
+        transform:translateX(650px);
+    }
+
+}
+
 /* =======================================================
 CURSOR
 ======================================================= */
