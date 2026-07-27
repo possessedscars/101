@@ -126,6 +126,7 @@ LOADER
 }
 
 .logo-reveal{
+
     position:absolute;
     top:0;
     left:0;
@@ -134,15 +135,22 @@ LOADER
     height:100%;
 
     overflow:hidden;
-    white-space:nowrap;
+
+    display:flex;
+    align-items:center;
+
 }
 
 .logo-fill{
-    display:block;
+
     width:520px;
-    height:auto;
+    max-width:none;
+    flex-shrink:0;
+
+    display:block;
 
     filter:drop-shadow(0 0 15px rgba(255,255,255,.8));
+
 }
 
 /* =======================================================
