@@ -2038,31 +2038,38 @@ body.loading .hero-scroll{
 body.loaded .hero-tag{
     animation:intro .7s ease forwards;
     animation-delay:.10s;
+    opacity: 0;
+   
 }
 
 body.loaded h1{
     animation:intro .7s ease forwards;
     animation-delay:.25s;
+    opacity: 0;
 }
 
 body.loaded .hero-heading{
     animation:intro .7s ease forwards;
     animation-delay:.40s;
+    opacity: 0;
 }
 
 body.loaded .hero-text{
     animation:intro .7s ease forwards;
     animation-delay:.55s;
+    opacity: 0;
 }
 
 body.loaded .hero-buttons{
     animation:intro .7s ease forwards;
     animation-delay:.70s;
+    opacity: 0;
 }
 
 body.loaded .hero-scroll{
     animation:intro .7s ease forwards;
     animation-delay:.85s;
+    opacity: 0;
 }
 
 @keyframes intro{
