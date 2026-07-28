@@ -184,15 +184,15 @@ HERO
 
 .hero-content{
 
-    position:absolute;
+    position:relative;
 
-    left:8%;
-
-    bottom:12%;
-
-    z-index:50;
+    z-index:5;
 
     max-width:760px;
+
+    padding-top:180px;
+
+    margin-left:120px;
 
 }
 
