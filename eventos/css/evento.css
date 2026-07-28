@@ -68,19 +68,20 @@ section{
 
 }
 
-/*==================================
+/*=========================
 HEADER
-==================================*/
+=========================*/
 
-.header{
+.event-header{
 
     position:fixed;
 
-    inset:0 0 auto 0;
+    top:0;
+    left:0;
 
-    height:90px;
+    width:100%;
 
-    padding:0 70px;
+    padding:35px 70px;
 
     display:flex;
 
@@ -90,48 +91,47 @@ HEADER
 
     z-index:9999;
 
-    backdrop-filter:blur(18px);
-
-    background:rgba(5,5,5,.35);
-
-    border-bottom:1px solid rgba(255,255,255,.04);
-
-    transition:.35s;
+    background:linear-gradient(
+        180deg,
+        rgba(0,0,0,.65),
+        transparent
+    );
 
 }
 
-.header-logo{
-
-    width:120px;
-
-    transition:.4s;
-
-}
-
-.header-logo:hover{
-
-    transform:scale(1.05);
-
-}
-
-.back{
+.back-btn{
 
     color:white;
 
-    font-size:13px;
+    text-decoration:none;
 
     letter-spacing:4px;
+
+    font-size:13px;
+
+    font-weight:700;
 
     transition:.3s;
 
 }
 
-.back:hover{
+.back-btn:hover{
 
-    color:var(--accent);
+    color:#8B5CF6;
+
+    transform:translateX(-8px);
 
 }
 
+.event-logo{
+
+    width:65px;
+
+    height:auto;
+
+    opacity:.95;
+
+}
 /*==================================
 HERO
 ==================================*/
