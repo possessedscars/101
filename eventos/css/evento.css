@@ -771,24 +771,28 @@ GALLERY
 
 .gallery-header h2{
 
-    margin:25px 0;
+    font-size:80px;
+    line-height:.95;
 
-    font-size:clamp(70px,8vw,150px);
+    max-width:700px;
+    width:100%;
 
-    line-height:.88;
+    margin:25px auto;
 
-    letter-spacing:-5px;
+    text-align:center;
 
 }
 
 .gallery-header p{
 
     color:#a8a8a8;
-
     font-size:18px;
-
     line-height:2;
 
+    max-width:800px;
+    margin:0 auto;
+
+    text-align:center;
 }
 
 .gallery-grid{
