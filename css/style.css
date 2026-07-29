@@ -831,7 +831,33 @@ footer p{
     color:#888;
 
     font-size:15px;
+    
+}
+    
+.footer-socials{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
 
+.footer-socials a{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.footer-socials img{
+    width:42px;
+    height:42px;
+
+    opacity:.7;
+
+    transition:.3s ease;
+}
+
+.footer-socials a:hover img{
+    opacity:1;
+    transform:translateY(-3px);
 }
 
 .footer-links{
