@@ -1281,3 +1281,14 @@ RESPONSIVO
     transform:translateY(0);
 
 }
+
+footer .footer-socials img{
+    width:24px;
+    height:24px;
+}
+
+footer .footer-socials{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
