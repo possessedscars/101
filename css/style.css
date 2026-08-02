@@ -384,6 +384,7 @@ HERO
     gap: 12px;
 
     padding: 0 24px;
+    transform: translateY(-8vh);
 }
 
 .hero-content span{
@@ -1038,7 +1039,7 @@ HERO V2
 
     position:absolute;
 
-    bottom:35px;
+    bottom:12px;
 
     left:50%;
 
