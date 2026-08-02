@@ -1139,7 +1139,7 @@ MANIFESTO
 
     display:inline-block;
 
-    margin-bottom:25px;
+    margin-bottom:20px;
 
     color:#8a8a8a;
 
@@ -1796,6 +1796,10 @@ CONTACT
 
 .contact-label{
 
+    display:block;
+
+    margin-bottom:20px;
+
     color:#7d7d7d;
 
     letter-spacing:5px;
@@ -1814,6 +1818,12 @@ CONTACT
 
     max-width:500px;
 
+    text-align:center;
+
+    margin-left:auto;
+
+    margin-right:auto;
+
 }
 
 .contact-links{
@@ -1823,6 +1833,8 @@ CONTACT
     gap:40px;
 
     margin-top:70px;
+
+    min-height:24px;
 
 }
 
