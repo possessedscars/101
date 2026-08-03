@@ -2191,3 +2191,102 @@ body.loaded .hero-scroll{
     }
 
 }
+
+/*======================================================
+TEAM PAGE
+======================================================*/
+
+#team-hero{
+    padding: 220px 8% 120px;
+    text-align: center;
+}
+
+#team-hero .container{
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+#team-hero h1{
+    font-size: clamp(3.5rem, 7vw, 7rem);
+    line-height: .95;
+    margin: 25px 0;
+    font-weight: 900;
+}
+
+#team-hero p{
+    max-width: 700px;
+    margin: 0 auto;
+    font-size: 20px;
+    line-height: 1.8;
+    color: #9d9d9d;
+}
+
+.team-arrow{
+
+    position:absolute;
+
+    right:-320px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    display:flex;
+
+    gap:10px;
+
+    text-decoration:none;
+
+}
+
+.team-arrow span{
+
+    width:24px;
+    height:24px;
+
+    border-top:4px solid #fff;
+    border-right:4px solid #fff;
+
+    transform:rotate(45deg);
+
+    opacity: .2;
+    animation: arrowFlow 1.2s infinite;
+
+}
+
+.team-arrow span:nth-child(2){
+    animation-delay: .2s;
+}
+
+.team-arrow span:nth-child(3){
+    animation-delay: .4s;
+}
+
+.team-title{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    position:relative;
+
+}
+
+@keyframes arrowFlow {
+
+    0% {
+        opacity: .2;
+    }
+
+    35% {
+        opacity: 1;
+    }
+
+    70% {
+        opacity: .2;
+    }
+
+    100% {
+        opacity: .2;
+    }
+
+}
