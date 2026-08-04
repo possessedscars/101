@@ -2197,20 +2197,34 @@ TEAM PAGE
 ======================================================*/
 
 #team-hero{
-    padding: 220px 8% 120px;
+    min-height: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     text-align: center;
+
+    padding: 0 8%;
 }
 
 #team-hero .container{
-    max-width: 900px;
-    margin: 0 auto;
+    width:100%;
+    max-width:900px;
+    margin:0 auto;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 }
 
-#team-hero h1{
-    font-size: clamp(3.5rem, 7vw, 7rem);
+#team-hero .team-title h1{
+    font-size: 96px !important;
     line-height: .95;
-    margin: 25px 0;
     font-weight: 900;
+    margin: 25px 0;
+
+    text-align: center;
 }
 
 #team-hero p{
@@ -2222,21 +2236,15 @@ TEAM PAGE
 }
 
 .team-arrow{
+    position: absolute;
+    left: 100%;
+    margin-left: 60px;
 
-    position:absolute;
+    top: 50%;
+    transform: translateY(-50%);
 
-    right:-320px;
-
-    top:50%;
-
-    transform:translateY(-50%);
-
-    display:flex;
-
-    gap:10px;
-
-    text-decoration:none;
-
+    display: flex;
+    gap: 10px;
 }
 
 .team-arrow span{
@@ -2263,12 +2271,9 @@ TEAM PAGE
 }
 
 .team-title{
-
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    position:relative;
-
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
 }
 
 @keyframes arrowFlow {
@@ -2288,5 +2293,215 @@ TEAM PAGE
     100% {
         opacity: .2;
     }
+
+}
+
+/* ==========================
+   TEAM SWIPE
+========================== */
+
+body{
+    overflow-x: hidden;
+}
+
+#team-hero{
+    position: relative;
+    z-index: 2;
+    transition: transform .9s cubic-bezier(.77,0,.18,1);
+}
+
+#team-members{
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    padding: 0;
+
+    background: #050505;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transform: translateX(100%);
+    transition: transform .9s cubic-bezier(.77,0,.18,1);
+
+    z-index: 100;
+}
+
+#team-members.active{
+    display: flex;
+}
+
+/* ==========================
+   TEAM GALLERY ANIMATION
+========================== */
+
+#team-hero{
+    transition: transform .9s cubic-bezier(.77,0,.18,1);
+}
+
+#team-members{
+    position:fixed;
+    inset:0;
+
+    width:100%;
+    height:100vh;
+
+    background:#050505;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    transform:translateX(100%);
+    transition:transform .9s cubic-bezier(.77,0,.18,1);
+
+    z-index:100;
+}
+
+body.gallery-open #team-hero{
+    transform:translateX(-100%);
+}
+
+body.gallery-open #team-members{
+    transform:translateX(0);
+}
+
+.team-gallery{
+    width:100%;
+    max-width:1400px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:100px;
+
+    padding:0 8%;
+}
+
+.team-photo{
+    flex:1;
+}
+
+.team-photo img{
+    width:100%;
+    max-width:550px;
+
+    display:block;
+
+    border-radius:12px;
+}
+
+.team-info{
+    flex:1;
+}
+
+.member-role{
+    display:block;
+
+    color:#8a8a8a;
+
+    letter-spacing:.3em;
+
+    margin-bottom:20px;
+}
+
+.team-info h2{
+
+    font-size:72px;
+
+    font-weight:900;
+
+    margin-bottom:30px;
+
+}
+
+.team-info p{
+
+    color:#bdbdbd;
+
+    font-size:20px;
+
+    line-height:1.8;
+
+}
+
+.gallery-controls{
+
+    position:absolute;
+
+    bottom:60px;
+    right:8%;
+
+    display:flex;
+    gap:20px;
+
+}
+
+.gallery-controls button{
+
+    width:60px;
+    height:60px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#111;
+
+    color:white;
+
+    font-size:26px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.gallery-controls button:hover{
+
+    background:#ffffff;
+    color:#000;
+
+}
+
+.back-arrow{
+
+    position:absolute;
+
+    top:40px;
+    left:40px;
+
+    width:60px;
+    height:60px;
+
+    border:1px solid rgba(255,255,255,.3);
+    background:transparent;
+
+    color:#fff;
+
+    font-size:28px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    z-index:1000;
+
+}
+
+.back-arrow:hover{
+
+    background:#fff;
+    color:#000;
 
 }
