@@ -2196,52 +2196,87 @@ body.loaded .hero-scroll{
 TEAM PAGE
 ======================================================*/
 
+/* ---------- HERO ---------- */
+
 #team-hero{
-    min-height: auto;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height:calc(100vh - 170px);
 
-    text-align: center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 
-    padding: 0 8%;
+    padding:0 8%;
+
+    text-align:center;
 }
 
 #team-hero .container{
-    width:100%;
-    max-width:900px;
-    margin:0 auto;
 
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+    width:100%;
+    max-width:1200px;
+
+    margin:auto;
 }
 
-#team-hero .team-title h1{
-    font-size: 96px !important;
-    line-height: .95;
-    font-weight: 900;
-    margin: 25px 0;
+#team-hero .section-label{
 
-    text-align: center;
+    display:block;
+
+    margin-bottom:20px;
+
+    color:#8a8a8a;
+
+    font-size:14px;
+
+    letter-spacing:6px;
+}
+
+.team-title{
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:40px;
+
+    margin-bottom:30px;
+}
+
+.team-title h1{
+
+    margin:0;
+
+    font-size:96px;
+
+    line-height:.95;
+
+    font-weight:900;
 }
 
 #team-hero p{
-    max-width: 700px;
-    margin: 0 auto;
-    font-size: 20px;
-    line-height: 1.8;
-    color: #9d9d9d;
+
+    max-width:700px;
+
+    margin:auto;
+
+    color:#9d9d9d;
+
+    font-size:20px;
+
+    line-height:1.8;
 }
 
+/* ---------- SETA ---------- */
+
 .team-arrow{
-    position: static;
 
-    transform: none;
+    display:flex;
 
-    display: flex;
-    gap: 10px;
+    gap:10px;
+
+    cursor:pointer;
 }
 
 .team-arrow span{
@@ -2254,131 +2289,78 @@ TEAM PAGE
 
     transform:rotate(45deg);
 
-    opacity: .2;
-    animation: arrowFlow 1.2s infinite;
+    opacity:.2;
 
+    animation:arrowFlow 1.2s infinite;
 }
 
 .team-arrow span:nth-child(2){
-    animation-delay: .2s;
+
+    animation-delay:.2s;
 }
 
 .team-arrow span:nth-child(3){
-    animation-delay: .4s;
+
+    animation-delay:.4s;
 }
 
-.team-title{
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 35px;
+@keyframes arrowFlow{
 
-    width: fit-content;
-    margin: 0 auto;
-}
+    0%,70%,100%{
 
-@keyframes arrowFlow {
-
-    0% {
-        opacity: .2;
+        opacity:.2;
     }
 
-    35% {
-        opacity: 1;
-    }
+    35%{
 
-    70% {
-        opacity: .2;
+        opacity:1;
     }
-
-    100% {
-        opacity: .2;
-    }
-
 }
 
-/* ==========================
-   TEAM SWIPE
-========================== */
-
-body{
-    overflow-x: hidden;
-}
-
-#team-hero{
-    position: relative;
-    z-index: 2;
-    transition: transform .9s cubic-bezier(.77,0,.18,1);
-}
+/* ---------- GALERIA ---------- */
 
 #team-members{
-    position: fixed;
-    inset: 0;
 
-    width: 100%;
-    height: 100vh;
-
-    padding: 0;
-
-    background: #050505;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    transform: translateX(100%);
-    transition: transform .9s cubic-bezier(.77,0,.18,1);
-
-    z-index: 100;
-}
-
-#team-members.active{
-    display: flex;
-}
-
-/* ==========================
-   TEAM GALLERY ANIMATION
-========================== */
-
-#team-hero{
-    transition: transform .9s cubic-bezier(.77,0,.18,1);
-}
-
-#team-members{
     position:fixed;
-    inset:0;
 
-    width:100%;
-    height:100vh;
+    inset:0;
 
     background:#050505;
 
     display:flex;
+
     justify-content:center;
+
     align-items:center;
 
     transform:translateX(100%);
+
     transition:transform .9s cubic-bezier(.77,0,.18,1);
 
     z-index:100;
 }
 
 body.gallery-open #team-hero{
+
     transform:translateX(-100%);
 }
 
 body.gallery-open #team-members{
+
     transform:translateX(0);
 }
 
 .team-gallery{
+
     width:100%;
+
     max-width:1400px;
 
     display:flex;
-    align-items:center;
+
     justify-content:space-between;
+
+    align-items:center;
 
     gap:100px;
 
@@ -2386,50 +2368,51 @@ body.gallery-open #team-members{
 }
 
 .team-photo{
+
     flex:1;
 }
 
 .team-photo img{
-    width:100%;
-    max-width:550px;
 
-    display:block;
+    width:100%;
+
+    max-width:550px;
 
     border-radius:12px;
 }
 
 .team-info{
+
     flex:1;
 }
 
 .member-role{
+
     display:block;
 
-    color:#8a8a8a;
+    margin-bottom:20px;
+
+    color:#888;
 
     letter-spacing:.3em;
-
-    margin-bottom:20px;
 }
 
 .team-info h2{
 
     font-size:72px;
 
-    font-weight:900;
-
     margin-bottom:30px;
 
+    font-weight:900;
 }
 
 .team-info p{
-
-    color:#bdbdbd;
 
     font-size:20px;
 
     line-height:1.8;
 
+    color:#bdbdbd;
 }
 
 .gallery-controls{
@@ -2437,14 +2420,16 @@ body.gallery-open #team-members{
     position:absolute;
 
     bottom:60px;
+
     right:8%;
 
     display:flex;
-    gap:20px;
 
+    gap:20px;
 }
 
-.gallery-controls button{
+.gallery-controls button,
+.back-arrow{
 
     width:60px;
     height:60px;
@@ -2455,7 +2440,7 @@ body.gallery-open #team-members{
 
     background:#111;
 
-    color:white;
+    color:#fff;
 
     font-size:26px;
 
@@ -2463,13 +2448,11 @@ body.gallery-open #team-members{
 
     transition:.3s;
 
-}
+    display:flex;
 
-.gallery-controls button:hover{
+    justify-content:center;
 
-    background:#ffffff;
-    color:#000;
-
+    align-items:center;
 }
 
 .back-arrow{
@@ -2477,33 +2460,14 @@ body.gallery-open #team-members{
     position:absolute;
 
     top:40px;
+
     left:40px;
-
-    width:60px;
-    height:60px;
-
-    border:1px solid rgba(255,255,255,.3);
-    background:transparent;
-
-    color:#fff;
-
-    font-size:28px;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    cursor:pointer;
-
-    transition:.3s;
-
-    z-index:1000;
-
 }
 
+.gallery-controls button:hover,
 .back-arrow:hover{
 
     background:#fff;
-    color:#000;
 
+    color:#000;
 }
