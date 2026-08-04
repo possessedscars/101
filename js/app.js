@@ -212,3 +212,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+// URL PAGE DIRECT
+
+const homeLink = document.getElementById("homeLink");
+
+if (homeLink) {
+
+    homeLink.addEventListener("click", function (e) {
+
+        if (window.location.pathname === "/") {
+
+            e.preventDefault();
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+    });
+
+}
