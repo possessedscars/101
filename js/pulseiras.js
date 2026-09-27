@@ -653,12 +653,28 @@
         });
 
         // gatilhos na página
+        // Ligamos diretamente aos botões existentes E usamos delegação
+        // para suportar botões criados posteriormente (ex.: o flutuante).
+        const openPulseiras = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const preset = document.getElementById("pzQty");
+            openModal(preset ? Number(preset.textContent) : null);
+        };
+
         document.querySelectorAll("[data-open-pulseiras]").forEach(btn => {
-            btn.addEventListener("click", e => {
-                e.preventDefault();
-                const preset = document.getElementById("pzQty");
-                openModal(preset ? Number(preset.textContent) : null);
-            });
+            btn.addEventListener("click", openPulseiras);
+        });
+
+        document.addEventListener("click", e => {
+            const target = e.target instanceof Element ? e.target : null;
+            const btn = target ? target.closest("[data-open-pulseiras]") : null;
+            if (!btn) return;
+            // Se o botão já recebeu o listener direto, este handler apenas
+            // evita que outros elementos comecem uma navegação inesperada.
+            if (e.defaultPrevented) return;
+            openPulseiras(e);
         });
 
         // stepper opcional já presente na página
@@ -703,11 +719,23 @@
 
     function init() {
 
-        buildModal();
-        cacheEls();
-        wireEvents();
-        updateQtyUI();
-        setupFloatingButton();
+        try {
+            buildModal();
+            cacheEls();
+
+            if (!els.overlay || !els.close || !els.toStep2 || !els.toStep3) {
+                throw new Error("O módulo de pulseiras não conseguiu criar o modal.");
+            }
+
+            wireEvents();
+            updateQtyUI();
+            setupFloatingButton();
+
+            document.documentElement.dataset.pulseirasReady = "true";
+            console.info("[101] Sistema de pulseiras carregado.");
+        } catch (error) {
+            console.error("[101] Erro a iniciar o sistema de pulseiras:", error);
+        }
 
     }
 
