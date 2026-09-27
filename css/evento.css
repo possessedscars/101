@@ -1,576 +1,754 @@
-/* ==========================================
-   101 EVENT PAGE
-========================================== */
+/* ==========================================================
+   101 • SISTEMA DE PULSEIRAS
+   ==========================================================
+   Módulo reutilizável de compra de pulseiras para eventos.
+
+   COMO USAR NUMA PÁGINA DE EVENTO:
+
+   1) Antes de incluir este ficheiro, define a configuração:
+
+        <script>
+          window.PULSEIRAS_CONFIG = {
+            evento: "SubmundØ Funk",       // nome mostrado ao utilizador
+            eventoSlug: "submundo-funk",   // usado no código do pedido
+            data: "29 Julho 2026",         // texto livre
+            preco: 150,                    // preço de 1 pulseira
+            moeda: "$",                    // símbolo (dinheiro do jogo)
+            maxPorPessoa: 6,                // limite de pulseiras por pedido
+            // Cola aqui o URL do teu Webhook do Discord:
+            // Servidor > Definições do Canal > Integrações > Webhooks > Novo Webhook > Copiar URL
+            webhookUrl: "COLOCA_AQUI_O_TEU_DISCORD_WEBHOOK_URL"
+          };
+        </script>
+        <link rel="stylesheet" href="../css/pulseiras.css">
+        <script src="../js/pulseiras.js"></script>
+
+   2) Qualquer botão/elemento com o atributo [data-open-pulseiras]
+      abre o modal de compra automaticamente:
+
+        <button data-open-pulseiras>COMPRAR PULSEIRA →</button>
+
+   3) (Opcional) Se a página tiver um bloco de seleção de
+      quantidade com estes IDs, o script sincroniza-os:
+
+        #pzQty          -> span com o número de pulseiras
+        #pzQtyMinus     -> botão "-"
+        #pzQtyPlus      -> botão "+"
+        #pzTotal        -> span com o total calculado
+
+   Sem backend: o pedido (dados + print do comprovativo) é
+   enviado diretamente para um Webhook do Discord através de
+   fetch/FormData. A equipa confirma o pagamento manualmente
+   no canal do Discord.
+========================================================== */
+
+(function () {
+
+    const cfg = Object.assign({
+        evento: "Evento 1Ø1",
+        eventoSlug: "evento",
+        data: "",
+        preco: 100,
+        moeda: "$",
+        maxPorPessoa: 8,
+        webhookUrl: ""
+    }, window.PULSEIRAS_CONFIG || {});
+
+    const MAX_IMG_MB = 8;
+    const state = {
+        qty: 1,
+        file: null,
+        step: 1,
+        sending: false
+    };
+
+    /* ---------------------------------------------------
+       INJETAR O MODAL NO DOM
+    --------------------------------------------------- */
+
+    function buildModal() {
+
+        const wrap = document.createElement("div");
+
+        wrap.innerHTML = `
+        <div class="pz-overlay" id="pzOverlay">
+            <div class="pz-modal" role="dialog" aria-modal="true">
+
+                <button class="pz-close" id="pzClose" aria-label="Fechar">✕</button>
+
+                <div class="pz-steps-track">
+                    <span data-step="1" class="active"></span>
+                    <span data-step="2"></span>
+                    <span data-step="3"></span>
+                    <span data-step="4"></span>
+                </div>
+
+                <!-- STEP 1: QUANTIDADE -->
+                <div class="pz-step active" data-step="1">
+                    <span class="pz-eyebrow">${escapeHtml(cfg.evento.toUpperCase())}</span>
+                    <h3>ESCOLHE A QUANTIDADE</h3>
+                    <p class="pz-sub">Cada pulseira dá acesso garantido ao evento. Confirma quantas queres levar.</p>
+
+                    <div class="pz-summary-row">
+                        <div class="qty-control">
+                            <button type="button" class="qty-btn" id="pzModalMinus">−</button>
+                            <span class="qty-value" id="pzModalQty">1</span>
+                            <button type="button" class="qty-btn" id="pzModalPlus">+</button>
+                        </div>
+                        <div style="text-align:right">
+                            <div style="color:#999;font-size:12px;letter-spacing:1px">PREÇO UNITÁRIO</div>
+                            <strong style="font-size:20px">${cfg.moeda}${cfg.preco}</strong>
+                        </div>
+                    </div>
+
+                    <div class="pz-total-line">
+                        <span style="color:#999;font-size:13px;letter-spacing:2px">TOTAL A PAGAR</span>
+                        <strong id="pzModalTotal">${cfg.moeda}${cfg.preco}</strong>
+                    </div>
+
+                    <div class="pz-actions">
+                        <button type="button" class="pz-btn pz-btn-primary" id="pzToStep2" style="flex:1">
+                            CONTINUAR →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: DADOS DO COMPRADOR -->
+                <div class="pz-step" data-step="2">
+                    <span class="pz-eyebrow">OS TEUS DADOS</span>
+                    <h3>QUEM VAI LEVANTAR</h3>
+                    <p class="pz-sub">Usa o teu nome de personagem e o teu Discord para a equipa te encontrar rápido.</p>
+
+                    <div class="pz-field">
+                        <label>NOME DA PERSONAGEM (IC)</label>
+                        <input type="text" id="pzNome" placeholder="Ex: John Doe" autocomplete="off">
+                    </div>
+
+                    <div class="pz-field">
+                        <label>DISCORD (UTILIZADOR)</label>
+                        <input type="text" id="pzDiscord" placeholder="Ex: nome_utilizador" autocomplete="off">
+                    </div>
+
+                    <div class="pz-field">
+                        <label>CONTACTO / TELEMÓVEL (OPCIONAL)</label>
+                        <input type="text" id="pzContacto" placeholder="Opcional" autocomplete="off">
+                    </div>
+
+                    <div class="pz-error" id="pzErrorStep2">Preenche o nome e o Discord para continuar.</div>
+
+                    <div class="pz-actions">
+                        <button type="button" class="pz-btn pz-btn-ghost" data-back="1">← VOLTAR</button>
+                        <button type="button" class="pz-btn pz-btn-primary" id="pzToStep3">CONTINUAR →</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: COMPROVATIVO -->
+                <div class="pz-step" data-step="3">
+                    <span class="pz-eyebrow">PAGAMENTO INGAME</span>
+                    <h3>ENVIA O COMPROVATIVO</h3>
+                    <p class="pz-sub">Faz a transferência ingame e anexa aqui o print (screenshot) da transação.</p>
+
+                    <label class="pz-dropzone" id="pzDropzone">
+                        <input type="file" id="pzFile" accept="image/*">
+                        <div class="pz-drop-icon">📎</div>
+                        <strong>Clica ou arrasta o print para aqui</strong>
+                        <small>PNG ou JPG • até ${MAX_IMG_MB}MB</small>
+                    </label>
+
+                    <div class="pz-preview" id="pzPreview">
+                        <img id="pzPreviewImg" alt="Pré-visualização">
+                        <span class="pz-preview-name" id="pzPreviewName"></span>
+                        <button type="button" class="pz-preview-remove" id="pzPreviewRemove">REMOVER</button>
+                    </div>
+
+                    <label class="pz-checkbox">
+                        <input type="checkbox" id="pzConfirm">
+                        Confirmo que o comprovativo enviado é verídico e corresponde a uma transferência real ingame.
+                    </label>
+
+                    <div class="pz-error" id="pzErrorStep3">Anexa o comprovativo e confirma a checkbox para continuar.</div>
+
+                    <div class="pz-actions">
+                        <button type="button" class="pz-btn pz-btn-ghost" data-back="2">← VOLTAR</button>
+                        <button type="button" class="pz-btn pz-btn-primary" id="pzSubmit">
+                            <span id="pzSubmitLabel">CONFIRMAR PEDIDO →</span>
+                        </button>
+                    </div>
+
+                    <div class="pz-error" id="pzErrorSubmit">Não foi possível enviar o pedido. Tenta novamente ou contacta a equipa no Discord.</div>
+                </div>
+
+                <!-- STEP 4: SUCESSO -->
+                <div class="pz-step" data-step="4">
+                    <div class="pz-success">
+                        <div class="pz-success-icon">✓</div>
+                        <h3>PEDIDO ENVIADO!</h3>
+                        <p class="pz-sub">
+                            O teu pedido foi enviado para a equipa da 1Ø1. Assim que o comprovativo
+                            for validado, a tua pulseira fica confirmada. Guarda o código abaixo.
+                        </p>
+
+                        <div class="pz-order-code">
+                            <span id="pzOrderCode">101-0000</span>
+                            <button type="button" id="pzCopyCode">COPIAR</button>
+                        </div>
+
+                        <div class="pz-actions">
+                            <button type="button" class="pz-btn pz-btn-primary" id="pzFinish" style="flex:1">
+                                CONCLUIR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        `;
+
+        document.body.appendChild(wrap.firstElementChild);
+    }
+
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, s => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        }[s]));
+    }
+
+    /* ---------------------------------------------------
+       HELPERS DE UI
+    --------------------------------------------------- */
+
+    let els = {};
+
+    function cacheEls() {
+        els = {
+            overlay: document.getElementById("pzOverlay"),
+            close: document.getElementById("pzClose"),
+            modalQty: document.getElementById("pzModalQty"),
+            modalTotal: document.getElementById("pzModalTotal"),
+            minus: document.getElementById("pzModalMinus"),
+            plus: document.getElementById("pzModalPlus"),
+            toStep2: document.getElementById("pzToStep2"),
+            toStep3: document.getElementById("pzToStep3"),
+            nome: document.getElementById("pzNome"),
+            discord: document.getElementById("pzDiscord"),
+            contacto: document.getElementById("pzContacto"),
+            errorStep2: document.getElementById("pzErrorStep2"),
+            errorStep3: document.getElementById("pzErrorStep3"),
+            errorSubmit: document.getElementById("pzErrorSubmit"),
+            dropzone: document.getElementById("pzDropzone"),
+            fileInput: document.getElementById("pzFile"),
+            preview: document.getElementById("pzPreview"),
+            previewImg: document.getElementById("pzPreviewImg"),
+            previewName: document.getElementById("pzPreviewName"),
+            previewRemove: document.getElementById("pzPreviewRemove"),
+            confirm: document.getElementById("pzConfirm"),
+            submit: document.getElementById("pzSubmit"),
+            submitLabel: document.getElementById("pzSubmitLabel"),
+            orderCode: document.getElementById("pzOrderCode"),
+            copyCode: document.getElementById("pzCopyCode"),
+            finish: document.getElementById("pzFinish"),
+            stepsTrack: document.querySelectorAll(".pz-steps-track span"),
+            steps: document.querySelectorAll(".pz-step")
+        };
+    }
+
+    function goToStep(n) {
+
+        state.step = n;
+
+        els.steps.forEach(s => {
+            s.classList.toggle("active", Number(s.dataset.step) === n);
+        });
+
+        els.stepsTrack.forEach(s => {
+            const stepN = Number(s.dataset.step);
+            s.classList.toggle("done", stepN < n);
+            s.classList.toggle("active", stepN <= n);
+        });
+
+    }
+
+    function updateQtyUI() {
+
+        if (els.modalQty) els.modalQty.textContent = state.qty;
+        if (els.modalTotal) els.modalTotal.textContent = cfg.moeda + (state.qty * cfg.preco);
+
+        // sincroniza com bloco da página, se existir
+        const pageQty = document.getElementById("pzQty");
+        const pageTotal = document.getElementById("pzTotal");
+
+        if (pageQty) pageQty.textContent = state.qty;
+        if (pageTotal) pageTotal.textContent = cfg.moeda + (state.qty * cfg.preco);
+
+    }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    function changeQty(delta) {
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+        const next = state.qty + delta;
 
-html{
-    scroll-behavior:smooth;
-}
+        if (next < 1 || next > cfg.maxPorPessoa) return;
 
-body{
+        state.qty = next;
+        updateQtyUI();
 
-    font-family:'Inter',sans-serif;
+    }
 
-    background:#050505;
+    function openModal(presetQty) {
 
-    color:white;
+        if (presetQty && presetQty > 0) {
+            state.qty = Math.min(presetQty, cfg.maxPorPessoa);
+        }
 
-    overflow-x:hidden;
+        updateQtyUI();
+        goToStep(1);
 
-}
+        els.overlay.classList.add("open");
+        document.body.style.overflow = "hidden";
 
-/* ===========================
-HEADER
-=========================== */
+    }
 
-header{
+    function closeModal() {
 
-    position:fixed;
+        els.overlay.classList.remove("open");
+        document.body.style.overflow = "";
 
-    top:0;
+    }
 
-    left:0;
+    /* ---------------------------------------------------
+       UPLOAD DO COMPROVATIVO
+    --------------------------------------------------- */
 
-    width:100%;
+    function handleFile(file) {
+
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            alert("Por favor envia uma imagem (PNG ou JPG).");
+            return;
+        }
+
+        if (file.size > MAX_IMG_MB * 1024 * 1024) {
+            alert(`A imagem excede o limite de ${MAX_IMG_MB}MB.`);
+            return;
+        }
+
+        state.file = file;
+
+        const reader = new FileReader();
+
+        reader.onload = e => {
+            els.previewImg.src = e.target.result;
+            els.previewName.textContent = file.name;
+            els.preview.classList.add("show");
+        };
 
-    padding:35px 80px;
+        reader.readAsDataURL(file);
 
-    display:flex;
+    }
 
-    justify-content:space-between;
+    // reduz o tamanho da imagem antes de enviar (mais rápido, cabe no webhook)
+    function compressImage(file) {
 
-    align-items:center;
+        return new Promise(resolve => {
 
-    z-index:999;
+            const img = new Image();
+            const reader = new FileReader();
 
-    transition:.4s;
+            reader.onload = e => {
 
-}
+                img.onload = () => {
 
-.back{
+                    const maxW = 1400;
+                    const scale = Math.min(1, maxW / img.width);
 
-    color:white;
+                    const canvas = document.createElement("canvas");
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
 
-    text-decoration:none;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-    font-size:14px;
+                    canvas.toBlob(blob => resolve(blob || file), "image/jpeg", 0.82);
 
-    letter-spacing:3px;
+                };
+
+                img.onerror = () => resolve(file);
+                img.src = e.target.result;
+
+            };
+
+            reader.onerror = () => resolve(file);
+            reader.readAsDataURL(file);
 
-    transition:.35s;
+        });
 
-}
+    }
 
-.back:hover{
+    /* ---------------------------------------------------
+       CÓDIGO DE PEDIDO
+    --------------------------------------------------- */
 
-    opacity:.6;
+    function generateOrderCode() {
 
-}
+        const prefix = (cfg.eventoSlug || "101").replace(/[^a-z0-9]/gi, "").slice(0, 4).toUpperCase() || "101";
+        const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+        const time = Date.now().toString(36).slice(-4).toUpperCase();
 
-.logo{
+        return `101-${prefix}-${rand}${time}`;
 
-    font-size:26px;
+    }
 
-    font-weight:900;
+    /* ---------------------------------------------------
+       ENVIO PARA O DISCORD (WEBHOOK)
+    --------------------------------------------------- */
 
-    letter-spacing:-2px;
+    async function sendOrder(orderCode) {
 
-}
+        const payload = {
+            embeds: [{
+                title: "🎟️ NOVO PEDIDO DE PULSEIRA",
+                color: 0x7C3AED,
+                fields: [
+                    { name: "Evento", value: cfg.evento, inline: true },
+                    { name: "Código", value: orderCode, inline: true },
+                    { name: "Quantidade", value: String(state.qty), inline: true },
+                    { name: "Total", value: `${cfg.moeda}${state.qty * cfg.preco}`, inline: true },
+                    { name: "Nome (IC)", value: els.nome.value.trim() || "—", inline: true },
+                    { name: "Discord", value: els.discord.value.trim() || "—", inline: true },
+                    { name: "Contacto", value: els.contacto.value.trim() || "—", inline: true }
+                ],
+                footer: { text: "1Ø1 • Sistema de Pulseiras" },
+                timestamp: new Date().toISOString()
+            }]
+        };
 
-/* ===========================
-HERO
-=========================== */
+        const form = new FormData();
+        form.append("payload_json", JSON.stringify(payload));
 
-.hero{
+        if (state.file) {
+            const compressed = await compressImage(state.file);
+            form.append("files[0]", compressed, "comprovativo.jpg");
+        }
 
-    position:relative;
+        if (!cfg.webhookUrl || cfg.webhookUrl.includes("COLOCA_AQUI")) {
+            throw new Error("Webhook não configurado");
+        }
 
-    height:100vh;
+        const res = await fetch(cfg.webhookUrl, {
+            method: "POST",
+            body: form
+        });
 
-    overflow:hidden;
+        if (!res.ok) throw new Error("Falha no envio (" + res.status + ")");
 
-}
+    }
 
-.hero img{
+    /* ---------------------------------------------------
+       CONFETTI
+    --------------------------------------------------- */
 
-    position:absolute;
+    function fireConfetti() {
 
-    inset:0;
+        let canvas = document.getElementById("pz-confetti-canvas");
 
-    width:100%;
+        if (!canvas) {
+            canvas = document.createElement("canvas");
+            canvas.id = "pz-confetti-canvas";
+            document.body.appendChild(canvas);
+        }
 
-    height:100%;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-    object-fit:cover;
+        const ctx = canvas.getContext("2d");
+        const colors = ["#7C3AED", "#A855F7", "#d1b8ff", "#ffffff", "#34d399"];
 
-}
+        const pieces = Array.from({ length: 140 }, () => ({
+            x: Math.random() * canvas.width,
+            y: -20 - Math.random() * canvas.height * 0.3,
+            r: 4 + Math.random() * 5,
+            c: colors[Math.floor(Math.random() * colors.length)],
+            vy: 2 + Math.random() * 3,
+            vx: -2 + Math.random() * 4,
+            rot: Math.random() * 360,
+            vr: -6 + Math.random() * 12
+        }));
 
-.hero-overlay{
+        let frame = 0;
+        const maxFrames = 130;
 
-    position:absolute;
+        function tick() {
 
-    inset:0;
+            frame++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    background:
-    linear-gradient(
-        rgba(0,0,0,.2),
-        rgba(0,0,0,.82)
-    );
+            pieces.forEach(p => {
 
-}
+                p.x += p.vx;
+                p.y += p.vy;
+                p.rot += p.vr;
 
-.hero-content{
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot * Math.PI / 180);
+                ctx.fillStyle = p.c;
+                ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.6);
+                ctx.restore();
 
-    position:absolute;
+            });
 
-    left:8%;
+            if (frame < maxFrames) {
+                requestAnimationFrame(tick);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
 
-    bottom:12%;
+        }
 
-    z-index:10;
+        requestAnimationFrame(tick);
 
-    max-width:720px;
+    }
 
-}
+    /* ---------------------------------------------------
+       VALIDAÇÃO POR STEP
+    --------------------------------------------------- */
 
-.hero-date{
+    function validateStep2() {
 
-    letter-spacing:4px;
+        const ok = els.nome.value.trim().length > 1 && els.discord.value.trim().length > 1;
+        els.errorStep2.classList.toggle("show", !ok);
+        return ok;
 
-    color:#bbb;
+    }
 
-    font-size:13px;
+    function validateStep3() {
 
-}
+        const ok = !!state.file && els.confirm.checked;
+        els.errorStep3.classList.toggle("show", !ok);
+        return ok;
 
-.hero h1{
+    }
 
-    margin:25px 0;
+    /* ---------------------------------------------------
+       WIRING
+    --------------------------------------------------- */
 
-    font-size:clamp(80px,9vw,150px);
+    function wireEvents() {
 
-    line-height:.9;
+        els.close.addEventListener("click", closeModal);
 
-    letter-spacing:-6px;
+        els.overlay.addEventListener("click", e => {
+            if (e.target === els.overlay) closeModal();
+        });
 
-}
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape" && els.overlay.classList.contains("open")) closeModal();
+        });
 
-.hero p{
+        els.minus.addEventListener("click", () => changeQty(-1));
+        els.plus.addEventListener("click", () => changeQty(1));
 
-    max-width:560px;
+        els.toStep2.addEventListener("click", () => goToStep(2));
 
-    color:#c5c5c5;
+        els.toStep3.addEventListener("click", () => {
+            if (validateStep2()) goToStep(3);
+        });
 
-    line-height:1.8;
+        document.querySelectorAll("[data-back]").forEach(btn => {
+            btn.addEventListener("click", () => goToStep(Number(btn.dataset.back)));
+        });
 
-    font-size:19px;
+        els.dropzone.addEventListener("dragover", e => {
+            e.preventDefault();
+            els.dropzone.classList.add("drag");
+        });
 
-}
+        els.dropzone.addEventListener("dragleave", () => {
+            els.dropzone.classList.remove("drag");
+        });
 
-.hero-buttons{
+        els.dropzone.addEventListener("drop", e => {
+            e.preventDefault();
+            els.dropzone.classList.remove("drag");
+            if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+        });
 
-    display:flex;
+        els.fileInput.addEventListener("change", e => {
+            handleFile(e.target.files[0]);
+        });
 
-    gap:20px;
+        els.previewRemove.addEventListener("click", () => {
+            state.file = null;
+            els.fileInput.value = "";
+            els.preview.classList.remove("show");
+        });
 
-    margin-top:45px;
+        els.submit.addEventListener("click", async () => {
 
-}
+            if (!validateStep3() || state.sending) return;
 
-.primary-btn,
-.secondary-btn{
+            state.sending = true;
+            els.submit.disabled = true;
+            els.errorSubmit.classList.remove("show");
+            els.submitLabel.textContent = "A ENVIAR...";
 
-    display:flex;
+            const orderCode = generateOrderCode();
 
-    justify-content:center;
+            try {
 
-    align-items:center;
+                await sendOrder(orderCode);
 
-    width:220px;
+                els.orderCode.textContent = orderCode;
+                goToStep(4);
+                fireConfetti();
 
-    height:68px;
+            } catch (err) {
 
-    border-radius:999px;
+                console.error("[pulseiras] erro ao enviar pedido:", err);
+                els.errorSubmit.classList.add("show");
 
-    text-decoration:none;
+            } finally {
 
-    transition:.35s;
+                state.sending = false;
+                els.submit.disabled = false;
+                els.submitLabel.textContent = "CONFIRMAR PEDIDO →";
 
-    letter-spacing:2px;
+            }
 
-}
+        });
 
-.primary-btn{
+        els.copyCode.addEventListener("click", () => {
 
-    background:white;
+            navigator.clipboard.writeText(els.orderCode.textContent).then(() => {
+                els.copyCode.textContent = "COPIADO ✓";
+                setTimeout(() => els.copyCode.textContent = "COPIAR", 1800);
+            });
 
-    color:black;
+        });
 
-}
+        els.finish.addEventListener("click", () => {
 
-.primary-btn:hover{
+            closeModal();
 
-    transform:translateY(-4px);
+            setTimeout(() => {
 
-}
+                // reset para o próximo pedido
+                state.qty = 1;
+                state.file = null;
+                els.nome.value = "";
+                els.discord.value = "";
+                els.contacto.value = "";
+                els.confirm.checked = false;
+                els.fileInput.value = "";
+                els.preview.classList.remove("show");
+                els.errorStep2.classList.remove("show");
+                els.errorStep3.classList.remove("show");
+                els.errorSubmit.classList.remove("show");
+                goToStep(1);
+                updateQtyUI();
 
-.secondary-btn{
+            }, 400);
 
-    border:1px solid rgba(255,255,255,.15);
+        });
 
-    color:white;
+        // gatilhos na página
+        // Ligamos diretamente aos botões existentes E usamos delegação
+        // para suportar botões criados posteriormente (ex.: o flutuante).
+        const openPulseiras = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
 
-}
+            const preset = document.getElementById("pzQty");
+            openModal(preset ? Number(preset.textContent) : null);
+        };
 
-.secondary-btn:hover{
+        document.querySelectorAll("[data-open-pulseiras]").forEach(btn => {
+            btn.addEventListener("click", openPulseiras);
+        });
 
-    background:white;
+        document.addEventListener("click", e => {
+            const target = e.target instanceof Element ? e.target : null;
+            const btn = target ? target.closest("[data-open-pulseiras]") : null;
+            if (!btn) return;
+            // Se o botão já recebeu o listener direto, este handler apenas
+            // evita que outros elementos comecem uma navegação inesperada.
+            if (e.defaultPrevented) return;
+            openPulseiras(e);
+        });
 
-    color:black;
+        // stepper opcional já presente na página
+        const pageMinus = document.getElementById("pzQtyMinus");
+        const pagePlus = document.getElementById("pzQtyPlus");
 
-}
+        if (pageMinus) pageMinus.addEventListener("click", () => changeQty(-1));
+        if (pagePlus) pagePlus.addEventListener("click", () => changeQty(1));
 
-.scroll-indicator{
+    }
 
-    position:absolute;
+    /* ---------------------------------------------------
+       BOTÃO FLUTUANTE
+    --------------------------------------------------- */
 
-    bottom:40px;
+    function setupFloatingButton() {
 
-    left:50%;
+        const section = document.getElementById("pulseiras");
+        if (!section) return;
 
-    transform:translateX(-50%);
+        const fab = document.createElement("button");
+        fab.className = "pz-floating-btn";
+        fab.setAttribute("data-open-pulseiras", "");
+        fab.innerHTML = `🎟️ <span class="pz-fb-text">COMPRAR PULSEIRA</span>`;
+        document.body.appendChild(fab);
 
-    display:flex;
+        window.addEventListener("scroll", () => {
 
-    flex-direction:column;
+            const rect = section.getBoundingClientRect();
+            const pastSection = rect.top < 0;
+            const nearBottom = (window.innerHeight + window.scrollY) >= (document.body.scrollHeight - 300);
 
-    align-items:center;
+            fab.classList.toggle("visible", pastSection && !nearBottom);
 
-    gap:15px;
+        });
 
-    color:#888;
+    }
 
-    letter-spacing:4px;
+    /* ---------------------------------------------------
+       INIT
+    --------------------------------------------------- */
 
-    font-size:12px;
+    function init() {
 
-}
+        try {
+            buildModal();
+            cacheEls();
 
-.scroll-indicator span{
+            if (!els.overlay || !els.close || !els.toStep2 || !els.toStep3) {
+                throw new Error("O módulo de pulseiras não conseguiu criar o modal.");
+            }
 
-    width:1px;
+            wireEvents();
+            updateQtyUI();
+            setupFloatingButton();
 
-    height:60px;
+            document.documentElement.dataset.pulseirasReady = "true";
+            console.info("[101] Sistema de pulseiras carregado.");
+        } catch (error) {
+            console.error("[101] Erro a iniciar o sistema de pulseiras:", error);
+        }
 
-    background:white;
+    }
 
-}
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        init();
+    }
 
-/* ===========================
-INFO
-=========================== */
+    // expõe uma API mínima caso seja preciso abrir o modal via outro script
+    window.Pulseiras = {
+        open: openModal,
+        close: closeModal
+    };
 
-.info{
-
-    max-width:1500px;
-
-    margin:120px auto;
-
-    padding:0 80px;
-
-    display:grid;
-
-    grid-template-columns:repeat(3,1fr);
-
-    gap:60px;
-
-}
-
-.info div{
-
-    border-top:1px solid rgba(255,255,255,.08);
-
-    padding-top:25px;
-
-}
-
-.info h3{
-
-    color:#777;
-
-    font-size:12px;
-
-    letter-spacing:3px;
-
-    margin-bottom:18px;
-
-}
-
-.info p{
-
-    font-size:20px;
-
-    line-height:1.8;
-
-}
-
-/* ===========================
-DESCRIPTION
-=========================== */
-
-.description{
-
-    max-width:900px;
-
-    margin:180px auto;
-
-    text-align:center;
-
-    padding:0 30px;
-
-}
-
-.description h2{
-
-    font-size:90px;
-
-    line-height:.9;
-
-    margin-bottom:50px;
-
-    letter-spacing:-4px;
-
-}
-
-.description p{
-
-    color:#9a9a9a;
-
-    font-size:20px;
-
-    line-height:2;
-
-}
-/*==========================
-COUNTDOWN
-==========================*/
-
-.hero-countdown{
-
-    position:absolute;
-
-    left:50%;
-
-    bottom:60px;
-
-    transform:translateX(-50%);
-
-    width:max-content;
-
-    z-index:20;
-
-    text-align:center;
-
-}
-
-.hero-countdown p{
-
-    color:#8d8d8d;
-
-    letter-spacing:4px;
-
-    font-size:12px;
-
-    margin-bottom:25px;
-
-}
-
-.countdown-grid{
-
-    display:flex;
-
-    justify-content:center;
-
-    gap:18px;
-
-}
-
-.count-box{
-
-    width:120px;
-
-    height:120px;
-
-    background:rgba(255,255,255,.05);
-
-    backdrop-filter:blur(15px);
-
-    border:1px solid rgba(255,255,255,.08);
-
-    border-radius:22px;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    align-items:center;
-
-    transition:.35s;
-
-}
-
-.count-box:hover{
-
-    transform:translateY(-6px);
-
-    border-color:white;
-
-}
-
-.count-box span{
-
-    font-size:48px;
-
-    font-weight:900;
-
-    line-height:1;
-
-}
-
-.count-box small{
-
-    margin-top:10px;
-
-    color:#9a9a9a;
-
-    letter-spacing:3px;
-
-    font-size:11px;
-
-}
-/*==================================
-GALERIA
-==================================*/
-
-.gallery{
-
-    max-width:1600px;
-
-    margin:220px auto;
-
-    padding:0 80px;
-
-}
-
-.gallery-title{
-
-    margin-bottom:80px;
-
-}
-
-.gallery-title span{
-
-    color:#777;
-
-    letter-spacing:4px;
-
-    font-size:13px;
-
-}
-
-.gallery-title h2{
-
-    margin-top:20px;
-
-    font-size:clamp(70px,7vw,130px);
-
-    line-height:.9;
-
-    letter-spacing:-4px;
-
-}
-
-.gallery-grid{
-
-    display:grid;
-
-    grid-template-columns:repeat(12,1fr);
-
-    gap:25px;
-
-}
-
-.gallery-item{
-
-    overflow:hidden;
-
-    border-radius:28px;
-
-    background:#111;
-
-    grid-column:span 4;
-
-    aspect-ratio:1/1;
-
-}
-
-.gallery-item.large{
-
-    grid-column:span 8;
-
-    aspect-ratio:16/9;
-
-}
-
-.gallery-item.wide{
-
-    grid-column:span 8;
-
-    aspect-ratio:16/9;
-
-}
-
-.gallery-item img{
-
-    width:100%;
-
-    height:100%;
-
-    object-fit:cover;
-
-    transition:1s;
-
-}
-
-.gallery-item:hover img{
-
-    transform:scale(1.08);
-
-}
-
-@media(max-width:1000px){
-
-.gallery-grid{
-
-grid-template-columns:1fr;
-
-}
-
-.gallery-item,
-.gallery-item.large,
-.gallery-item.wide{
-
-grid-column:auto;
-
-}
-
-}
+})();
