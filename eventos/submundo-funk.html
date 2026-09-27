@@ -21,7 +21,25 @@ href="css/evento.css">
 <link rel="stylesheet"
 href="../css/style.css">
 
+<link rel="stylesheet"
+href="../css/pulseiras.css">
 
+<script>
+    // Configuração da loja de pulseiras para ESTE evento.
+    // Para reutilizar noutro evento, copia este bloco e a secção
+    // #pulseiras para a nova página e ajusta os valores abaixo.
+    window.PULSEIRAS_CONFIG = {
+        evento: "SubmundØ Funk",
+        eventoSlug: "submundo-funk",
+        data: "29 Julho 2026",
+        preco: 150,
+        moeda: "$",
+        maxPorPessoa: 6,
+        // Cola aqui o URL do teu Webhook do Discord:
+        // Definições do Canal > Integrações > Webhooks > Novo Webhook > Copiar URL
+        webhookUrl: "COLOCA_AQUI_O_TEU_DISCORD_WEBHOOK_URL"
+    };
+</script>
 
 </head>
 
@@ -78,7 +96,7 @@ A 1Ø1: ØØTB LEVA-TE AØ CØRAÇÃØ DØ SUBMUNDØ DØ FUNK CØM UMA PRØDUÇ�
 
 <div class="hero-buttons">
 
-<a href="#" class="primary-btn">
+<a href="#pulseiras" class="primary-btn" data-open-pulseiras>
 
 RESERVAR LUGAR
 
@@ -419,6 +437,64 @@ NØITE
 
 </section>
 
+<section class="pulseiras-section" id="pulseiras">
+
+    <div class="pulseiras-card">
+
+        <div class="pulseiras-info">
+
+            <span class="pz-label">GARANTE JÁ A TUA</span>
+
+            <h2>
+                PULSEIRA<br>
+                SUBMUNDØ FUNK
+            </h2>
+
+            <p>
+                Acesso garantido à Garagem Underground dos Apartamentos.
+                Compra agora a tua pulseira e evita filas à entrada no dia do evento.
+            </p>
+
+            <ul class="pulseiras-perks">
+                <li>Acesso garantido ao SUB8Ø8</li>
+                <li>Sem filas na entrada</li>
+                <li>Confirmação direta pela equipa 1Ø1</li>
+            </ul>
+
+        </div>
+
+        <div class="pulseiras-buy">
+
+            <div class="pulseiras-price-row">
+                <span class="price-value">$150</span>
+                <span class="price-label">por pulseira</span>
+            </div>
+
+            <div class="qty-control">
+                <button type="button" class="qty-btn" id="pzQtyMinus">−</button>
+                <span class="qty-value" id="pzQty">1</span>
+                <button type="button" class="qty-btn" id="pzQtyPlus">+</button>
+            </div>
+
+            <div class="pulseiras-total">
+                TOTAL A PAGAR
+                <strong id="pzTotal">$150</strong>
+            </div>
+
+            <button type="button" class="pz-buy-btn" data-open-pulseiras>
+                🎟️ COMPRAR PULSEIRA →
+            </button>
+
+            <p class="pz-buy-note">
+                Pagamento ingame. Vais precisar de anexar o print da transferência no passo final.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
 <section class="event-cta">
 
     <span>
@@ -442,7 +518,7 @@ NØITE
 
     <div class="cta-buttons">
 
-        <a href="#" class="primary-btn">
+        <a href="#pulseiras" class="primary-btn" data-open-pulseiras>
 
             RESERVAR
 
@@ -487,6 +563,8 @@ NØITE
 </footer>
 
 <script src="js/evento.js"></script>
+<script src="../js/pulseiras.js"></script>
+<script src="../js/interactions.js"></script>
 
 </body>
 </html>
