@@ -296,6 +296,14 @@
 
     function openModal(presetQty) {
 
+        // O botão pode ser acionado antes do DOM do modal terminar de
+        // inicializar. Em vez de falhar silenciosamente, esperamos pelo init.
+        if (!els.overlay) {
+            window.__PULSEIRAS_PENDING_QTY = presetQty || 1;
+            console.warn("[101] Pulseiras: modal ainda não inicializado; abertura pendente.");
+            return false;
+        }
+
         if (presetQty && presetQty > 0) {
             state.qty = Math.min(presetQty, cfg.maxPorPessoa);
         }
@@ -305,6 +313,7 @@
 
         els.overlay.classList.add("open");
         document.body.style.overflow = "hidden";
+        return true;
 
     }
 
@@ -732,6 +741,12 @@
             setupFloatingButton();
 
             document.documentElement.dataset.pulseirasReady = "true";
+
+            if (window.__PULSEIRAS_PENDING_QTY) {
+                const pendingQty = window.__PULSEIRAS_PENDING_QTY;
+                delete window.__PULSEIRAS_PENDING_QTY;
+                openModal(pendingQty);
+            }
             console.info("[101] Sistema de pulseiras carregado.");
         } catch (error) {
             console.error("[101] Erro a iniciar o sistema de pulseiras:", error);
@@ -745,9 +760,12 @@
         init();
     }
 
-    // expõe uma API mínima caso seja preciso abrir o modal via outro script
+    // API pública. Pode ser chamada diretamente por onclick, links ou outros scripts.
     window.Pulseiras = {
-        open: openModal,
+        open: function (qty) {
+            const preset = qty || (document.getElementById("pzQty") ? Number(document.getElementById("pzQty").textContent) : 1);
+            return openModal(preset);
+        },
         close: closeModal
     };
 
