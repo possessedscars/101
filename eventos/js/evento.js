@@ -12,6 +12,7 @@ const days = document.getElementById("days");
 const hours = document.getElementById("hours");
 const minutes = document.getElementById("minutes");
 const seconds = document.getElementById("seconds");
+let countdownInterval = null;
 
 function updateCountdown() {
 
@@ -25,7 +26,7 @@ function updateCountdown() {
         minutes.textContent = "00";
         seconds.textContent = "00";
 
-        clearInterval(countdownInterval);
+        if (countdownInterval) clearInterval(countdownInterval);
 
         return;
 
@@ -45,7 +46,7 @@ function updateCountdown() {
 
 updateCountdown();
 
-const countdownInterval = setInterval(updateCountdown, 1000);
+countdownInterval = setInterval(updateCountdown, 1000);
 
 /*==========================================================
 HEADER
