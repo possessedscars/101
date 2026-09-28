@@ -60,9 +60,8 @@
             --black: #050505;
             --white: #fff;
             --gray: #777;
-            --dark-gray: #181818;
-            --line: rgba(255,255,255,.14);
-            --container: 1520px;
+            --line: rgba(255,255,255,.16);
+            --container: 1600px;
         }
 
 
@@ -71,76 +70,23 @@
         ========================================================= */
 
         .page {
+            width: 100%;
             min-height: 100vh;
             background: #050505;
-            position: relative;
         }
 
 
         /* =========================================================
-           FIXED SIDE
+           MAIN
         ========================================================= */
 
-        .side-label {
-
-            position: fixed;
-
-            left: 24px;
-            top: 50%;
-
-            transform:
-                translateY(-50%)
-                rotate(-90deg);
-
-            transform-origin: left center;
-
-            font-size: 8px;
-
-            letter-spacing: .35em;
-
-            color: #555;
-
-            text-transform: uppercase;
-
-            z-index: 20;
-
-            white-space: nowrap;
-        }
-
-
-        .side-number {
-
-            position: fixed;
-
-            right: 24px;
-            bottom: 28px;
-
-            font-size: 8px;
-
-            letter-spacing: .2em;
-
-            color: #555;
-
-            z-index: 20;
-        }
-
-
-        /* =========================================================
-           CONTAINER
-        ========================================================= */
-
-        .container {
-
+        .main {
             width: min(
                 var(--container),
-                calc(100% - 120px)
+                calc(100% - 70px)
             );
 
             margin: 0 auto;
-
-            position: relative;
-
-            z-index: 2;
         }
 
 
@@ -149,59 +95,37 @@
         ========================================================= */
 
         .nav {
+            height: 82px;
 
-            height: 90px;
+            display: grid;
 
-            display: flex;
+            grid-template-columns: 1fr auto 1fr;
 
             align-items: center;
-
-            justify-content: space-between;
 
             border-bottom: 1px solid var(--line);
         }
 
+        .nav-logo {
+            font-size: 11px;
 
-        .logo {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-            font-size: 10px;
-
-            font-weight: 800;
-
-            letter-spacing: .25em;
-        }
-
-
-        .logo-dot {
-
-            width: 6px;
-            height: 6px;
-
-            background: #fff;
-
-            border-radius: 50%;
-        }
-
-
-        .nav-center {
-
-            font-size: 8px;
+            font-weight: 900;
 
             letter-spacing: .28em;
+        }
 
-            color: #555;
+        .nav-center {
+            font-size: 8px;
+
+            color: #666;
+
+            letter-spacing: .35em;
 
             text-transform: uppercase;
         }
 
-
-        .back {
+        .nav-right {
+            justify-self: end;
 
             font-size: 8px;
 
@@ -216,70 +140,118 @@
             transition: .25s ease;
         }
 
-
-        .back:hover {
+        .nav-right:hover {
             color: #fff;
         }
 
 
         /* =========================================================
-           HEADER
+           HERO
         ========================================================= */
 
-        .header {
+        .hero {
 
-            padding: 85px 0 65px;
+            min-height: calc(100vh - 82px);
+
+            display: grid;
+
+            grid-template-columns: 48% 52%;
 
             position: relative;
+
+            border-bottom: 1px solid var(--line);
         }
 
 
-        .header-small {
+        /* =========================================================
+           GIANT TYPE
+        ========================================================= */
 
-            font-size: 9px;
+        .hero-left {
 
-            font-weight: 600;
+            position: relative;
 
-            letter-spacing: .32em;
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            padding:
+                35px
+                35px
+                35px
+                0;
+
+            border-right: 1px solid var(--line);
+
+            overflow: hidden;
+        }
+
+
+        .hero-label {
+
+            font-size: 8px;
+
+            font-weight: 700;
+
+            letter-spacing: .3em;
 
             color: #666;
 
             text-transform: uppercase;
-
-            margin-bottom: 25px;
         }
 
 
-        .header-title {
+        .hero-word {
+
+            position: absolute;
+
+            left: -18px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
 
             font-size: clamp(
-                90px,
-                15vw,
-                220px
+                130px,
+                18vw,
+                310px
             );
 
-            line-height: .69;
+            line-height: .72;
 
-            letter-spacing: -.1em;
+            letter-spacing: -.115em;
 
             font-weight: 900;
 
+            white-space: nowrap;
+
             text-transform: uppercase;
+
+            writing-mode: vertical-rl;
+
+            transform-origin: center;
+
+            color: #fff;
         }
 
 
-        .header-title .outline {
+        .hero-word span {
 
             color: transparent;
 
             -webkit-text-stroke:
-                1px rgba(255,255,255,.4);
-
-            margin-left: 12vw;
+                1px rgba(255,255,255,.24);
         }
 
 
-        .header-bottom {
+        .hero-meta {
+
+            position: relative;
+
+            z-index: 5;
 
             display: flex;
 
@@ -287,157 +259,43 @@
 
             align-items: flex-end;
 
-            margin-top: 65px;
-
-            border-top: 1px solid var(--line);
-
-            padding-top: 18px;
-        }
-
-
-        .header-bottom-left {
-
-            display: flex;
-
-            gap: 35px;
-
-            font-size: 8px;
-
-            color: #666;
-
-            letter-spacing: .18em;
-
-            text-transform: uppercase;
-        }
-
-
-        .header-bottom-right {
-
             font-size: 8px;
 
             color: #555;
 
-            letter-spacing: .18em;
+            letter-spacing: .2em;
 
             text-transform: uppercase;
         }
 
 
         /* =========================================================
-           FILTER BAR
+           IMAGE SIDE
         ========================================================= */
 
-        .filters {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            border-top: 1px solid var(--line);
-
-            border-bottom: 1px solid var(--line);
-
-            height: 65px;
-
-            margin-bottom: 25px;
-        }
-
-
-        .filters-left {
-
-            display: flex;
-
-            align-items: center;
-
-            height: 100%;
-        }
-
-
-        .filter {
-
-            height: 100%;
-
-            display: flex;
-
-            align-items: center;
-
-            padding: 0 22px;
-
-            border-right: 1px solid var(--line);
-
-            font-size: 8px;
-
-            font-weight: 700;
-
-            letter-spacing: .2em;
-
-            color: #555;
-
-            text-transform: uppercase;
-
-            transition: .25s ease;
-        }
-
-
-        .filter:first-child {
-            padding-left: 0;
-        }
-
-
-        .filter.active {
-            color: #fff;
-        }
-
-
-        .filter:hover {
-            color: #fff;
-        }
-
-
-        .filters-count {
-
-            font-size: 8px;
-
-            color: #555;
-
-            letter-spacing: .2em;
-        }
-
-
-        /* =========================================================
-           FEATURED EVENT
-        ========================================================= */
-
-        .featured {
-
-            height: min(
-                760px,
-                70vw
-            );
-
-            min-height: 620px;
+        .hero-right {
 
             position: relative;
 
             overflow: hidden;
 
-            border: 1px solid var(--line);
-
-            background: #0a0a0a;
+            padding: 35px;
         }
 
 
-        .featured-image {
+        .hero-image {
 
             position: absolute;
 
-            inset: 0;
+            inset: 35px;
+
+            overflow: hidden;
+
+            background: #111;
         }
 
 
-        .featured-image img {
+        .hero-image img {
 
             width: 100%;
 
@@ -445,26 +303,24 @@
 
             object-fit: cover;
 
-            object-position: center;
-
             filter: grayscale(100%);
 
-            opacity: .72;
+            opacity: .8;
 
             transition:
-                transform 1.2s
+                transform 1.4s
                 cubic-bezier(.2,.8,.2,1);
         }
 
 
-        .featured:hover
-        .featured-image img {
+        .hero-right:hover
+        .hero-image img {
 
             transform: scale(1.045);
         }
 
 
-        .featured::after {
+        .hero-image::after {
 
             content: "";
 
@@ -474,152 +330,173 @@
 
             background:
                 linear-gradient(
-                    90deg,
-                    rgba(0,0,0,.94) 0%,
-                    rgba(0,0,0,.65) 42%,
-                    rgba(0,0,0,.15) 100%
-                ),
-
-                linear-gradient(
-                    0deg,
-                    rgba(0,0,0,.9),
-                    transparent 60%
+                    180deg,
+                    rgba(0,0,0,.05),
+                    rgba(0,0,0,.25)
                 );
-
-            z-index: 1;
         }
 
 
-        .featured-top {
+        .hero-number {
 
             position: absolute;
 
-            top: 24px;
+            top: 12px;
 
-            left: 25px;
+            right: 0;
 
-            right: 25px;
+            font-size: 8px;
 
-            z-index: 4;
+            color: #555;
 
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
+            letter-spacing: .2em;
         }
 
 
-        .featured-tag {
+        .hero-date {
 
-            padding: 9px 12px;
+            position: absolute;
 
-            border: 1px solid rgba(255,255,255,.3);
+            left: 0;
 
-            background: rgba(0,0,0,.25);
+            bottom: 20px;
 
-            font-size: 7px;
-
-            font-weight: 700;
-
-            letter-spacing: .22em;
-
-            text-transform: uppercase;
-        }
-
-
-        .featured-index {
+            z-index: 5;
 
             font-size: 8px;
 
             color: #777;
 
             letter-spacing: .2em;
+
+            text-transform: uppercase;
         }
 
 
-        .featured-content {
+        .hero-event-number {
 
             position: absolute;
 
+            top: 55px;
+
             left: 55px;
 
-            right: 55px;
+            z-index: 5;
 
-            bottom: 50px;
+            width: 46px;
 
-            z-index: 4;
+            height: 46px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: 1px solid rgba(255,255,255,.35);
+
+            background: rgba(0,0,0,.3);
+
+            font-size: 8px;
+
+            font-weight: 700;
+
+            letter-spacing: .12em;
         }
 
 
-        .featured-date {
+        /* =========================================================
+           EVENT NAME
+        ========================================================= */
 
-            font-size: 9px;
+        .hero-event-title {
 
-            color: #aaa;
+            position: absolute;
 
-            letter-spacing: .22em;
+            left: 25px;
 
-            font-weight: 600;
+            bottom: 45px;
 
-            text-transform: uppercase;
-
-            margin-bottom: 22px;
-        }
-
-
-        .featured-title {
+            z-index: 8;
 
             font-size: clamp(
-                85px,
-                13vw,
+                80px,
+                11vw,
                 190px
             );
 
-            line-height: .64;
+            line-height: .66;
 
-            letter-spacing: -.1em;
+            letter-spacing: -.105em;
 
             font-weight: 900;
 
             text-transform: uppercase;
 
             white-space: nowrap;
+
+            pointer-events: none;
         }
 
 
-        .featured-title span {
+        .hero-event-title span {
 
             display: block;
         }
 
 
-        .featured-info {
+        /* =========================================================
+           EVENT DETAILS
+        ========================================================= */
 
-            display: flex;
+        .hero-bottom {
 
-            align-items: flex-end;
+            position: absolute;
 
-            justify-content: space-between;
+            left: 0;
 
-            width: min(
-                850px,
-                100%
-            );
+            right: 0;
 
-            margin-top: 45px;
+            bottom: 0;
 
-            padding-top: 20px;
+            height: 92px;
 
-            border-top: 1px solid rgba(255,255,255,.18);
+            border-top: 1px solid var(--line);
+
+            display: grid;
+
+            grid-template-columns:
+                48%
+                1fr
+                auto;
+
+            align-items: center;
+
+            z-index: 10;
+
+            background: #050505;
         }
 
 
-        .featured-location {
+        .hero-bottom-location {
+
+            padding-left: 0;
 
             font-size: 8px;
 
-            color: #888;
+            color: #666;
+
+            letter-spacing: .2em;
+
+            text-transform: uppercase;
+        }
+
+
+        .hero-bottom-info {
+
+            font-size: 8px;
+
+            color: #777;
 
             letter-spacing: .18em;
 
@@ -627,11 +504,21 @@
         }
 
 
-        .featured-link {
+        .hero-button {
+
+            height: 100%;
+
+            min-width: 180px;
+
+            padding: 0 25px;
+
+            border-left: 1px solid var(--line);
 
             display: flex;
 
             align-items: center;
+
+            justify-content: center;
 
             gap: 18px;
 
@@ -643,81 +530,65 @@
 
             text-transform: uppercase;
 
-            padding-bottom: 10px;
-
-            border-bottom: 1px solid #fff;
-
-            transition: .25s ease;
+            transition: .3s ease;
         }
 
 
-        .featured-link span {
+        .hero-button span {
 
             font-size: 17px;
 
-            transition: .25s ease;
+            transition: .3s ease;
         }
 
 
-        .featured-link:hover span {
+        .hero-button:hover {
+
+            background: #fff;
+
+            color: #000;
+        }
+
+
+        .hero-button:hover span {
 
             transform: translateX(6px);
         }
 
 
         /* =========================================================
-           NEXT SECTION
+           EVENTS
         ========================================================= */
 
-        .next-section {
+        .events {
 
-            padding: 130px 0 0;
+            padding-top: 150px;
         }
 
 
-        .section-head {
+        .events-heading {
 
             display: flex;
-
-            justify-content: space-between;
 
             align-items: flex-end;
 
-            margin-bottom: 30px;
+            justify-content: space-between;
+
+            margin-bottom: 40px;
         }
 
 
-        .section-head-left {
-
-            display: flex;
-
-            align-items: baseline;
-
-            gap: 20px;
-        }
-
-
-        .section-number {
-
-            font-size: 8px;
-
-            color: #555;
-
-            letter-spacing: .2em;
-        }
-
-
-        .section-title {
+        .events-heading-title {
 
             font-size: clamp(
-                50px,
-                7vw,
-                105px
+                80px,
+                11vw,
+                180px
             );
 
-            line-height: .75;
+            line-height: .67;
 
-            letter-spacing: -.075em;
+            letter-spacing: -.1em;
 
             font-weight: 900;
 
@@ -725,63 +596,70 @@
         }
 
 
-        .section-description {
+        .events-heading-side {
+
+            padding-bottom: 8px;
 
             font-size: 8px;
 
             color: #555;
 
-            letter-spacing: .18em;
+            letter-spacing: .25em;
 
             text-transform: uppercase;
         }
 
 
         /* =========================================================
-           EVENT LIST
+           EVENT ROWS
         ========================================================= */
 
-        .event-list {
+        .events-list {
 
             border-top: 1px solid var(--line);
         }
 
 
-        .event-row {
+        .event {
 
-            min-height: 145px;
+            min-height: 190px;
 
             display: grid;
 
             grid-template-columns:
-                70px
+                100px
                 1fr
-                230px
-                50px;
+                220px
+                60px;
 
             align-items: center;
 
-            gap: 30px;
+            gap: 25px;
 
             border-bottom: 1px solid var(--line);
 
+            position: relative;
+
+            overflow: hidden;
+
             transition:
-                background .3s ease,
-                padding .3s ease;
+                padding .4s ease,
+                background .4s ease;
         }
 
 
-        .event-row:hover {
+        .event:hover {
 
-            background: rgba(255,255,255,.025);
+            padding-left: 25px;
 
-            padding-left: 15px;
+            background:
+                rgba(255,255,255,.025);
         }
 
 
-        .event-row-number {
+        .event-index {
 
-            font-size: 8px;
+            font-size: 9px;
 
             color: #555;
 
@@ -789,88 +667,53 @@
         }
 
 
-        .event-row-main {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 25px;
-        }
-
-
-        .event-row-thumb {
-
-            width: 110px;
-
-            height: 75px;
-
-            overflow: hidden;
-
-            flex-shrink: 0;
-
-            background: #111;
-        }
-
-
-        .event-row-thumb img {
-
-            width: 100%;
-
-            height: 100%;
-
-            object-fit: cover;
-
-            filter: grayscale(100%);
-
-            transition: .5s ease;
-        }
-
-
-        .event-row:hover
-        .event-row-thumb img {
-
-            transform: scale(1.08);
-        }
-
-
-        .event-row-name {
+        .event-name {
 
             font-size: clamp(
-                24px,
-                3vw,
-                42px
+                45px,
+                6vw,
+                95px
             );
+
+            line-height: .7;
+
+            letter-spacing: -.085em;
 
             font-weight: 900;
 
-            line-height: .8;
-
-            letter-spacing: -.055em;
-
             text-transform: uppercase;
+
+            transition: .4s ease;
         }
 
 
-        .event-row-date {
+        .event:hover .event-name {
+
+            transform: translateX(10px);
+        }
+
+
+        .event-date {
 
             font-size: 8px;
 
             color: #666;
 
-            letter-spacing: .18em;
+            line-height: 1.8;
+
+            letter-spacing: .17em;
 
             text-transform: uppercase;
         }
 
 
-        .event-row-arrow {
+        .event-arrow {
 
-            width: 38px;
+            width: 45px;
 
-            height: 38px;
+            height: 45px;
 
-            border: 1px solid rgba(255,255,255,.25);
+            border: 1px solid rgba(255,255,255,.2);
 
             display: flex;
 
@@ -878,14 +721,13 @@
 
             justify-content: center;
 
-            font-size: 15px;
+            font-size: 17px;
 
             transition: .3s ease;
         }
 
 
-        .event-row:hover
-        .event-row-arrow {
+        .event:hover .event-arrow {
 
             background: #fff;
 
@@ -894,180 +736,74 @@
 
 
         /* =========================================================
-           VISUAL BREAK
-        ========================================================= */
-
-        .visual-break {
-
-            margin-top: 120px;
-
-            height: 340px;
-
-            position: relative;
-
-            overflow: hidden;
-
-            border-top: 1px solid var(--line);
-
-            border-bottom: 1px solid var(--line);
-        }
-
-
-        .visual-break-text {
-
-            position: absolute;
-
-            left: -20px;
-
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            font-size: clamp(
-                110px,
-                18vw,
-                280px
-            );
-
-            line-height: .7;
-
-            letter-spacing: -.1em;
-
-            font-weight: 900;
-
-            color: transparent;
-
-            -webkit-text-stroke:
-                1px rgba(255,255,255,.13);
-
-            white-space: nowrap;
-
-            user-select: none;
-        }
-
-
-        .visual-break-center {
-
-            position: absolute;
-
-            inset: 0;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            z-index: 2;
-        }
-
-
-        .visual-break-center span {
-
-            font-size: 8px;
-
-            font-weight: 700;
-
-            letter-spacing: .35em;
-
-            color: #777;
-
-            text-transform: uppercase;
-        }
-
-
-        /* =========================================================
-           ARCHIVE
+           HUGE ARCHIVE TEXT
         ========================================================= */
 
         .archive {
 
-            padding: 130px 0 0;
-        }
+            padding:
+                180px
+                0
+                130px;
 
-
-        .archive-head {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: flex-end;
-
-            padding-bottom: 30px;
+            overflow: hidden;
         }
 
 
         .archive-title {
 
             font-size: clamp(
-                50px,
-                7vw,
-                105px
+                110px,
+                19vw,
+                310px
             );
 
-            line-height: .75;
+            line-height: .62;
 
-            letter-spacing: -.075em;
+            letter-spacing: -.12em;
 
             font-weight: 900;
 
-            text-transform: uppercase;
+            white-space: nowrap;
+
+            color: transparent;
+
+            -webkit-text-stroke:
+                1px rgba(255,255,255,.22);
+
+            transform: translateX(-20px);
+
+            margin-bottom: 100px;
         }
 
 
-        .archive-year {
-
-            font-size: 8px;
-
-            color: #555;
-
-            letter-spacing: .2em;
-        }
-
-
-        .archive-list {
-
-            border-top: 1px solid var(--line);
-        }
-
-
-        .archive-item {
-
-            min-height: 95px;
+        .archive-line {
 
             display: grid;
 
             grid-template-columns:
-                70px
+                100px
                 1fr
-                190px
-                190px
-                30px;
+                250px
+                50px;
 
             align-items: center;
 
             gap: 25px;
 
+            min-height: 100px;
+
+            border-top: 1px solid var(--line);
+
             border-bottom: 1px solid var(--line);
-
-            transition: .3s ease;
-        }
-
-
-        .archive-item:hover {
-
-            background: rgba(255,255,255,.025);
-
-            padding-left: 15px;
         }
 
 
         .archive-number {
 
-            color: #555;
-
             font-size: 8px;
+
+            color: #555;
 
             letter-spacing: .2em;
         }
@@ -1075,24 +811,23 @@
 
         .archive-name {
 
-            font-size: 18px;
+            font-size: 22px;
 
             font-weight: 800;
 
-            letter-spacing: -.03em;
+            letter-spacing: -.04em;
 
             text-transform: uppercase;
         }
 
 
-        .archive-date,
-        .archive-location {
+        .archive-date {
 
             font-size: 8px;
 
             color: #666;
 
-            letter-spacing: .16em;
+            letter-spacing: .18em;
 
             text-transform: uppercase;
         }
@@ -1100,9 +835,9 @@
 
         .archive-arrow {
 
-            color: #777;
+            font-size: 16px;
 
-            text-align: right;
+            color: #666;
         }
 
 
@@ -1112,116 +847,169 @@
 
         .footer {
 
-            margin-top: 130px;
-
-            padding: 30px 0;
+            height: 100px;
 
             border-top: 1px solid var(--line);
 
             display: flex;
 
-            justify-content: space-between;
-
             align-items: center;
 
-            color: #444;
+            justify-content: space-between;
 
             font-size: 7px;
 
-            letter-spacing: .22em;
+            color: #444;
+
+            letter-spacing: .25em;
 
             text-transform: uppercase;
         }
 
 
         /* =========================================================
-           RESPONSIVE
+           TABLET
         ========================================================= */
 
         @media (max-width: 900px) {
 
-            .container {
+            .main {
 
-                width: calc(100% - 60px);
+                width: calc(100% - 40px);
             }
 
 
-            .side-label {
+            .hero {
+
+                grid-template-columns: 1fr;
+
+                min-height: auto;
+            }
+
+
+            .hero-left {
+
+                height: 300px;
+
+                border-right: 0;
+
+                border-bottom: 1px solid var(--line);
+            }
+
+
+            .hero-word {
+
+                writing-mode: horizontal-tb;
+
+                top: 50%;
+
+                left: -5px;
+
+                font-size: 20vw;
+
+                transform:
+                    translateY(-50%);
+            }
+
+
+            .hero-right {
+
+                height: 620px;
+
+                padding: 20px;
+            }
+
+
+            .hero-image {
+
+                inset: 20px;
+            }
+
+
+            .hero-event-title {
+
+                left: 25px;
+
+                bottom: 35px;
+
+                font-size: 14vw;
+            }
+
+
+            .hero-bottom {
+
+                position: relative;
+
+                grid-template-columns:
+                    1fr auto;
+
+                height: 80px;
+            }
+
+
+            .hero-bottom-location {
+
+                padding-left: 0;
+            }
+
+
+            .hero-bottom-info {
 
                 display: none;
             }
 
 
-            .header-title {
+            .hero-button {
 
-                font-size: 16vw;
+                min-width: 160px;
             }
 
 
-            .header-title .outline {
+            .events {
 
-                margin-left: 0;
+                padding-top: 100px;
             }
 
 
-            .featured {
+            .events-heading-title {
 
-                height: 650px;
-
-                min-height: 650px;
+                font-size: 13vw;
             }
 
 
-            .featured-content {
+            .event {
 
-                left: 35px;
-
-                right: 35px;
-
-                bottom: 35px;
+                grid-template-columns:
+                    55px
+                    1fr
+                    45px;
             }
 
 
-            .featured-title {
+            .event-date {
 
-                font-size: 14vw;
+                display: none;
+            }
+
+
+            .archive-title {
+
+                font-size: 20vw;
 
                 white-space: normal;
             }
 
 
-            .featured-title span {
-
-                width: 100%;
-            }
-
-
-            .event-row {
+            .archive-line {
 
                 grid-template-columns:
-                    50px
+                    55px
                     1fr
-                    40px;
+                    45px;
             }
 
 
-            .event-row-date {
-
-                display: none;
-            }
-
-
-            .archive-item {
-
-                grid-template-columns:
-                    50px
-                    1fr
-                    35px;
-            }
-
-
-            .archive-date,
-            .archive-location {
+            .archive-date {
 
                 display: none;
             }
@@ -1229,17 +1017,21 @@
         }
 
 
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
         @media (max-width: 600px) {
 
-            .container {
+            .main {
 
-                width: calc(100% - 32px);
+                width: calc(100% - 24px);
             }
 
 
             .nav {
 
-                height: 75px;
+                height: 70px;
             }
 
 
@@ -1249,187 +1041,159 @@
             }
 
 
-            .header {
+            .hero-left {
 
-                padding: 65px 0 50px;
+                height: 230px;
+
+                padding-top: 20px;
             }
 
 
-            .header-title {
+            .hero-word {
 
-                font-size: 18vw;
+                font-size: 21vw;
 
-                line-height: .75;
+                left: -3px;
             }
 
 
-            .header-bottom {
+            .hero-right {
 
-                margin-top: 45px;
+                height: 540px;
 
-                display: block;
+                padding: 12px;
             }
 
 
-            .header-bottom-left {
+            .hero-image {
 
-                gap: 15px;
-
-                flex-wrap: wrap;
+                inset: 12px;
             }
 
 
-            .header-bottom-right {
+            .hero-event-number {
 
-                margin-top: 18px;
+                top: 28px;
+
+                left: 28px;
             }
 
 
-            .filters {
+            .hero-event-title {
 
-                height: 55px;
-
-                overflow-x: auto;
-            }
-
-
-            .filter {
-
-                padding: 0 15px;
-
-                white-space: nowrap;
-            }
-
-
-            .filter:first-child {
-
-                padding-left: 0;
-            }
-
-
-            .filters-count {
-
-                display: none;
-            }
-
-
-            .featured {
-
-                height: 620px;
-
-                min-height: 620px;
-            }
-
-
-            .featured-content {
-
-                left: 22px;
-
-                right: 22px;
+                left: 15px;
 
                 bottom: 25px;
+
+                font-size: 15vw;
             }
 
 
-            .featured-title {
+            .hero-date {
 
-                font-size: 17vw;
+                left: 15px;
 
-                line-height: .68;
+                bottom: 15px;
             }
 
 
-            .featured-info {
+            .hero-bottom {
 
-                margin-top: 30px;
+                height: 70px;
+            }
+
+
+            .hero-bottom-location {
+
+                font-size: 7px;
+            }
+
+
+            .hero-button {
+
+                min-width: 130px;
+
+                padding: 0 12px;
+
+                font-size: 7px;
+            }
+
+
+            .events {
+
+                padding-top: 80px;
+            }
+
+
+            .events-heading {
 
                 display: block;
             }
 
 
-            .featured-link {
+            .events-heading-title {
 
-                margin-top: 22px;
-
-                width: fit-content;
+                font-size: 18vw;
             }
 
 
-            .next-section {
+            .events-heading-side {
 
-                padding-top: 85px;
+                margin-top: 25px;
             }
 
 
-            .section-head {
+            .event {
 
-                display: block;
-            }
-
-
-            .section-description {
-
-                margin-top: 20px;
-            }
-
-
-            .event-row {
-
-                min-height: 115px;
+                min-height: 120px;
 
                 grid-template-columns:
                     35px
                     1fr
                     35px;
 
-                gap: 12px;
+                gap: 10px;
             }
 
 
-            .event-row-main {
+            .event-name {
 
-                gap: 15px;
+                font-size: 10vw;
             }
 
 
-            .event-row-thumb {
+            .event-arrow {
 
-                width: 65px;
+                width: 32px;
 
-                height: 55px;
-            }
-
-
-            .event-row-name {
-
-                font-size: 20px;
-            }
-
-
-            .visual-break {
-
-                height: 230px;
-
-                margin-top: 85px;
+                height: 32px;
             }
 
 
             .archive {
 
-                padding-top: 85px;
+                padding-top: 100px;
             }
 
 
-            .archive-item {
+            .archive-title {
+
+                font-size: 23vw;
+
+                margin-bottom: 60px;
+            }
+
+
+            .archive-line {
 
                 min-height: 80px;
 
                 grid-template-columns:
                     35px
                     1fr
-                    25px;
+                    30px;
 
-                gap: 12px;
+                gap: 10px;
             }
 
 
@@ -1441,13 +1205,9 @@
 
             .footer {
 
-                margin-top: 90px;
+                height: 90px;
 
-                flex-direction: column;
-
-                align-items: flex-start;
-
-                gap: 12px;
+                font-size: 6px;
             }
 
         }
@@ -1463,24 +1223,7 @@
 <div class="page">
 
 
-    <!-- SIDE INFORMATION -->
-
-    <div class="side-label">
-
-        101 / EVENTØS / EXPERIENCE
-
-    </div>
-
-
-    <div class="side-number">
-
-        01 — 01
-
-    </div>
-
-
-
-    <main class="container">
+    <main class="main">
 
 
         <!-- =====================================================
@@ -1492,10 +1235,8 @@
 
             <a
                 href="/"
-                class="logo"
+                class="nav-logo"
             >
-
-                <span class="logo-dot"></span>
 
                 1Ø1
 
@@ -1511,7 +1252,7 @@
 
             <a
                 href="/"
-                class="back"
+                class="nav-right"
             >
 
                 ← INICÍØ
@@ -1524,42 +1265,37 @@
 
 
         <!-- =====================================================
-             HEADER
+             HERO
         ====================================================== -->
 
-        <section class="header">
+        <section class="hero">
 
 
-            <div class="header-small">
+            <!-- LEFT -->
 
-                101 / EXPERIENCE
-
-            </div>
+            <div class="hero-left">
 
 
-            <h1 class="header-title">
+                <div class="hero-label">
 
-                EVENTØS
+                    101 / EXPERIENCE
 
-                <span class="outline">
-
-                    101
-
-                </span>
-
-            </h1>
+                </div>
 
 
-            <div class="header-bottom">
+                <div class="hero-word">
 
-
-                <div class="header-bottom-left">
+                    EVENTØS
 
                     <span>
-
-                        ALL EXPERIENCES
-
+                        101
                     </span>
+
+                </div>
+
+
+                <div class="hero-meta">
+
 
                     <span>
 
@@ -1567,110 +1303,13 @@
 
                     </span>
 
-                </div>
 
+                    <span>
 
-                <div class="header-bottom-right">
+                        01 / 01
 
-                    01 — 01
+                    </span>
 
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =====================================================
-             FILTER
-        ====================================================== -->
-
-        <div class="filters">
-
-
-            <div class="filters-left">
-
-
-                <a
-                    href="#upcoming"
-                    class="filter active"
-                >
-
-                    PRÓXIMØS
-
-                </a>
-
-
-                <a
-                    href="#all"
-                    class="filter"
-                >
-
-                    TØDØS
-
-                </a>
-
-
-                <a
-                    href="#archive"
-                    class="filter"
-                >
-
-                    ARQUIVØ
-
-                </a>
-
-
-            </div>
-
-
-            <div class="filters-count">
-
-                01 EVENTØ
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- =====================================================
-             FEATURED EVENT
-        ====================================================== -->
-
-        <section
-            class="featured"
-            id="upcoming"
-        >
-
-
-            <div class="featured-image">
-
-                <img
-                    src="../assets/images/evento-principal.png"
-                    alt="SubmundØ Funk"
-                >
-
-            </div>
-
-
-            <div class="featured-top">
-
-
-                <div class="featured-tag">
-
-                    PRÓXIMØ EVENTØ
-
-                </div>
-
-
-                <div class="featured-index">
-
-                    001 / 101
 
                 </div>
 
@@ -1678,17 +1317,44 @@
             </div>
 
 
-            <div class="featured-content">
+
+            <!-- RIGHT -->
+
+            <div class="hero-right">
 
 
-                <div class="featured-date">
+                <div class="hero-number">
 
-                    29 JULHØ 2026 — 22:ØØ
+                    001
 
                 </div>
 
 
-                <h2 class="featured-title">
+                <div class="hero-image">
+
+                    <img
+                        src="../assets/images/evento-principal.png"
+                        alt="SubmundØ Funk"
+                    >
+
+                </div>
+
+
+                <div class="hero-event-number">
+
+                    01
+
+                </div>
+
+
+                <div class="hero-date">
+
+                    29 JULHØ 2026 / 22:ØØ
+
+                </div>
+
+
+                <div class="hero-event-title">
 
                     <span>
                         SUBMUNDØ
@@ -1698,37 +1364,45 @@
                         FUNK
                     </span>
 
-                </h2>
+                </div>
 
 
-                <div class="featured-info">
+            </div>
 
 
-                    <div class="featured-location">
 
-                        GARAGEM UNDERGRØUND
-                        APARTAMENTØS
+            <!-- BOTTOM BAR -->
 
-                    </div>
+            <div class="hero-bottom">
 
 
-                    <a
-                        href="/eventos/submundo-funk.html"
-                        class="featured-link"
-                    >
+                <div class="hero-bottom-location">
 
-                        VER EVENTO
-
-                        <span>
-
-                            →
-
-                        </span>
-
-                    </a>
-
+                    GARAGEM UNDERGRØUND
+                    / APARTAMENTØS
 
                 </div>
+
+
+                <div class="hero-bottom-info">
+
+                    PRÓXIMØ EVENTØ
+
+                </div>
+
+
+                <a
+                    href="/eventos/submundo-funk.html"
+                    class="hero-button"
+                >
+
+                    VER EVENTO
+
+                    <span>
+                        →
+                    </span>
+
+                </a>
 
 
             </div>
@@ -1739,91 +1413,59 @@
 
 
         <!-- =====================================================
-             EVENT LIST
+             EVENTS
         ====================================================== -->
 
-        <section
-            class="next-section"
-            id="all"
-        >
+        <section class="events">
 
 
-            <div class="section-head">
+            <div class="events-heading">
 
 
-                <div class="section-head-left">
+                <h2 class="events-heading-title">
+
+                    EVENTØS
+
+                </h2>
 
 
-                    <span class="section-number">
+                <div class="events-heading-side">
 
-                        / 01
-
-                    </span>
-
-
-                    <h2 class="section-title">
-
-                        EVENTØS
-
-                    </h2>
-
+                    101 / ALL EXPERIENCES
 
                 </div>
-
-
-                <span class="section-description">
-
-                    101 / SELECTED EXPERIENCES
-
-                </span>
 
 
             </div>
 
 
 
-            <div class="event-list">
+            <div class="events-list">
 
 
                 <!-- EVENTO 001 -->
 
                 <a
                     href="/eventos/submundo-funk.html"
-                    class="event-row"
+                    class="event"
                 >
 
 
-                    <div class="event-row-number">
+                    <div class="event-index">
 
                         001
 
                     </div>
 
 
-                    <div class="event-row-main">
+                    <div class="event-name">
 
-
-                        <div class="event-row-thumb">
-
-                            <img
-                                src="../assets/images/evento-principal.png"
-                                alt="SubmundØ Funk"
-                            >
-
-                        </div>
-
-
-                        <div class="event-row-name">
-
-                            SUBMUNDØ FUNK
-
-                        </div>
-
+                        SUBMUNDØ FUNK
 
                     </div>
 
 
-                    <div class="event-row-date">
+                    <div class="event-date">
 
                         29 JULHØ 2026
                         <br>
@@ -1832,7 +1474,7 @@
                     </div>
 
 
-                    <div class="event-row-arrow">
+                    <div class="event-arrow">
 
                         ↗
 
@@ -1843,42 +1485,80 @@
 
 
 
-                <!-- FUTURO -->
+                <!-- EVENTO 002 -->
 
                 <div
-                    class="event-row"
-                    style="opacity:.35;"
+                    class="event"
+                    style="opacity:.32;"
                 >
 
 
-                    <div class="event-row-number">
+                    <div class="event-index">
 
                         002
 
                     </div>
 
 
-                    <div class="event-row-main">
+                    <div class="event-name">
 
-
-                        <div class="event-row-name">
-
-                            A ANUNCIAR
-
-                        </div>
-
+                        PRÓXIMØ EVENTØ
 
                     </div>
 
 
-                    <div class="event-row-date">
+                    <div class="event-date">
 
-                        101 / SOON
+                        TØ BE
+                        <br>
+                        ANNØUNCED
 
                     </div>
 
 
-                    <div class="event-row-arrow">
+                    <div class="event-arrow">
+
+                        +
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- EVENTO 003 -->
+
+                <div
+                    class="event"
+                    style="opacity:.18;"
+                >
+
+
+                    <div class="event-index">
+
+                        003
+
+                    </div>
+
+
+                    <div class="event-name">
+
+                        101 / TBA
+
+                    </div>
+
+
+                    <div class="event-date">
+
+                        TØ BE
+                        <br>
+                        ANNØUNCED
+
+                    </div>
+
+
+                    <div class="event-arrow">
 
                         +
 
@@ -1896,108 +1576,49 @@
 
 
         <!-- =====================================================
-             VISUAL BREAK
-        ====================================================== -->
-
-        <section class="visual-break">
-
-
-            <div class="visual-break-text">
-
-                1Ø1 1Ø1 1Ø1
-
-            </div>
-
-
-            <div class="visual-break-center">
-
-                <span>
-
-                    ØUTSIDE ØF THE BØX
-
-                </span>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =====================================================
              ARCHIVE
         ====================================================== -->
 
-        <section
-            class="archive"
-            id="archive"
-        >
+        <section class="archive">
 
 
-            <div class="archive-head">
+            <div class="archive-title">
 
-
-                <h2 class="archive-title">
-
-                    ARQUIVØ
-
-                </h2>
-
-
-                <span class="archive-year">
-
-                    2026
-
-                </span>
-
+                ARQUIVØ
 
             </div>
 
 
+            <div class="archive-line">
 
-            <div class="archive-list">
+
+                <div class="archive-number">
+
+                    001
+
+                </div>
+
+
+                <div class="archive-name">
+
+                    SUBMUNDØ FUNK
+
+                </div>
+
+
+                <div class="archive-date">
+
+                    29 JULHØ 2026
+
+                </div>
 
 
                 <a
                     href="/eventos/submundo-funk.html"
-                    class="archive-item"
+                    class="archive-arrow"
                 >
 
-
-                    <span class="archive-number">
-
-                        001
-
-                    </span>
-
-
-                    <span class="archive-name">
-
-                        SUBMUNDØ FUNK
-
-                    </span>
-
-
-                    <span class="archive-date">
-
-                        29 JULHØ 2026
-
-                    </span>
-
-
-                    <span class="archive-location">
-
-                        GARAGEM UNDERGRØUND
-
-                    </span>
-
-
-                    <span class="archive-arrow">
-
-                        ↗
-
-                    </span>
-
+                    ↗
 
                 </a>
 
@@ -2018,7 +1639,7 @@
 
             <span>
 
-                © 2026 101
+                1Ø1
 
             </span>
 
@@ -2032,7 +1653,7 @@
 
             <span>
 
-                ØUTSIDE ØF THE BØX
+                2026
 
             </span>
 
