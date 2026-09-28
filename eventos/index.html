@@ -856,239 +856,171 @@ img {
 
 
 /* =========================================================
-   EVENT FEATURE STRIP
+   EVENT INDEX — HOVER GALLERY
 ========================================================= */
 
-.event-feature {
-    margin-top: 95px;
-    padding: 28px 0;
-    border-top: 1px solid var(--line);
+.event-index-wrap {
+    padding: 110px 0 120px;
+}
+
+.event-index-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 18px;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.event-index-kicker {
+    font-size: 10px;
+    color: #888;
+    font-weight: 700;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+}
+
+.event-index-count {
+    font-size: 9px;
+    color: #555;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+}
+
+.event-index-row {
+    min-height: 175px;
     border-bottom: 1px solid var(--line);
     display: grid;
-    grid-template-columns: 250px 1fr auto;
+    grid-template-columns: 80px minmax(0,1fr) 180px 54px;
     align-items: center;
-    gap: 42px;
+    gap: 24px;
     position: relative;
-}
-
-.event-feature-media {
-    width: 250px;
-    height: 150px;
     overflow: hidden;
-    background: #111;
+    isolation: isolate;
+    transition: padding .5s cubic-bezier(.2,.8,.2,1), color .4s ease;
 }
 
-.event-feature-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(100%);
-    opacity: .72;
-    transform: scale(1.01);
-    transition:
-        filter .6s ease,
-        opacity .6s ease,
-        transform .9s cubic-bezier(.2,.8,.2,1);
+.event-index-row::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    transform: translateY(100%);
+    transition: transform .55s cubic-bezier(.2,.8,.2,1);
+    z-index: -2;
 }
 
-.event-feature:hover .event-feature-media img {
-    filter: grayscale(0%);
-    opacity: 1;
-    transform: scale(1.06);
+.event-index-row:hover::before {
+    transform: translateY(0);
 }
 
-.event-feature-label {
-    margin-bottom: 12px;
-    font-size: 9px;
+.event-index-row:hover {
+    color: #000;
+    padding: 0 24px;
+}
+
+.event-index-no {
+    font-size: 10px;
     color: #666;
+    letter-spacing: .24em;
     font-weight: 700;
-    letter-spacing: .28em;
-    text-transform: uppercase;
+    position: relative;
+    z-index: 4;
 }
 
-.event-feature-title {
-    font-size: clamp(34px, 4.5vw, 68px);
-    line-height: .78;
-    letter-spacing: -.075em;
+.event-index-name {
+    font-size: clamp(38px, 5.2vw, 78px);
+    line-height: .76;
+    letter-spacing: -.085em;
     font-weight: 900;
     text-transform: uppercase;
-    transition: transform .45s cubic-bezier(.2,.8,.2,1);
+    position: relative;
+    z-index: 4;
+    transition: transform .6s cubic-bezier(.2,.8,.2,1);
 }
 
-.event-feature:hover .event-feature-title {
-    transform: translateX(8px);
+.event-index-row:hover .event-index-name {
+    transform: translateX(14px);
 }
 
-.event-feature-meta {
-    margin-top: 18px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 22px;
+.event-index-meta {
     font-size: 9px;
-    color: #777;
-    font-weight: 600;
-    letter-spacing: .16em;
+    line-height: 1.8;
+    color: #666;
+    letter-spacing: .19em;
     text-transform: uppercase;
+    position: relative;
+    z-index: 4;
 }
 
-.event-feature-link {
-    width: 82px;
-    height: 82px;
-    border: 1px solid rgba(255,255,255,.3);
-    border-radius: 50%;
+.event-index-arrow {
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255,255,255,.24);
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    gap: 3px;
-    flex-shrink: 0;
-    font-size: 7px;
-    font-weight: 800;
-    letter-spacing: .13em;
-    text-transform: uppercase;
+    font-size: 17px;
+    position: relative;
+    z-index: 6;
+    transition: transform .45s ease, border-color .35s ease, background .35s ease;
+}
+
+.event-index-row:hover .event-index-arrow {
+    border-color: #000;
+    transform: rotate(45deg);
+}
+
+.event-index-poster {
+    position: absolute;
+    right: 125px;
+    top: 50%;
+    width: 245px;
+    height: 155px;
+    object-fit: cover;
+    opacity: 0;
+    filter: grayscale(100%);
+    transform: translate(55px,-50%) rotate(6deg) scale(.82);
+    pointer-events: none;
+    z-index: 2;
+    box-shadow: 0 25px 70px rgba(0,0,0,.28);
     transition:
-        background .3s ease,
-        color .3s ease,
-        transform .3s ease;
+        opacity .35s ease,
+        filter .6s ease,
+        transform .7s cubic-bezier(.2,.8,.2,1);
 }
 
-.event-feature-link strong {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 1;
+.event-index-row:hover .event-index-poster {
+    opacity: 1;
+    filter: grayscale(0%);
+    transform: translate(0,-50%) rotate(-3deg) scale(1);
 }
 
-.event-feature-link:hover {
-    background: #fff;
-    color: #000;
-    transform: scale(1.08);
+.event-index-row.future {
+    opacity: .28;
 }
 
+.event-index-row.future::before {
+    display: none;
+}
+
+.event-index-row.future:hover {
+    padding: 0;
+    color: #fff;
+}
+
+.event-index-row.future:hover .event-index-name {
+    transform: none;
+}
+
+.event-index-row.future:hover .event-index-arrow {
+    transform: none;
+    border-color: rgba(255,255,255,.24);
+}
 
 /* =========================================================
-   ARCHIVE
+   FOOTER
 ========================================================= */
-
-.archive {
-
-    padding:
-        95px 0 120px;
-}
-
-.archive-head {
-
-    display: flex;
-
-    align-items: flex-end;
-
-    justify-content: space-between;
-
-    margin-bottom: 45px;
-}
-
-.archive-title {
-
-    font-size:
-        clamp(
-            54px,
-            7vw,
-            105px
-        );
-
-    line-height: .68;
-
-    letter-spacing:
-        -.09em;
-
-    font-weight: 900;
-
-    text-transform: uppercase;
-}
-
-.archive-count {
-
-    font-size: 9px;
-
-    color: #555;
-
-    letter-spacing: .2em;
-}
-
-.archive-row {
-
-    min-height: 100px;
-
-    border-top:
-        1px solid var(--line);
-
-    display: grid;
-
-    grid-template-columns:
-        80px
-        1fr
-        220px
-        50px;
-
-    align-items: center;
-
-    gap: 25px;
-
-    transition:
-        background .3s ease,
-        padding .3s ease;
-}
-
-.archive-row:last-child {
-
-    border-bottom:
-        1px solid var(--line);
-}
-
-.archive-row:hover {
-
-    background:
-        rgba(255,255,255,.035);
-
-    padding-left: 15px;
-}
-
-.archive-index {
-
-    font-size: 8px;
-
-    color: #555;
-
-    letter-spacing: .2em;
-}
-
-.archive-name {
-
-    font-size: 20px;
-
-    font-weight: 800;
-
-    letter-spacing: -.035em;
-
-    text-transform: uppercase;
-}
-
-.archive-date {
-
-    font-size: 8px;
-
-    color: #666;
-
-    letter-spacing: .18em;
-
-    text-transform: uppercase;
-}
-
-.archive-arrow {
-
-    font-size: 16px;
-
-    color: #666;
-}
 
 
 /* =========================================================
@@ -1356,64 +1288,50 @@ img {
         height: 32px;
     }
 
-    .event-feature {
-        margin-top: 70px;
-        padding: 18px 0;
-        grid-template-columns: 110px 1fr auto;
-        gap: 18px;
+    .event-index-wrap {
+
+        padding: 80px 0 90px;
     }
 
-    .event-feature-media {
-        width: 110px;
-        height: 105px;
+    .event-index-head {
+
+        padding-bottom: 14px;
     }
 
-    .event-feature-title {
-        font-size: 9vw;
+    .event-index-kicker {
+
+        font-size: 8px;
     }
 
-    .event-feature-meta {
-        margin-top: 10px;
+    .event-index-count {
+
         font-size: 7px;
-        gap: 7px 12px;
     }
 
-    .event-feature-link {
-        width: 58px;
-        height: 58px;
-        font-size: 5px;
-    }
+    .event-index-row {
 
-    .event-feature-link strong {
-        font-size: 12px;
-    }
+        min-height: 120px;
 
-    .archive {
-
-        padding:
-            90px 0;
-    }
-
-    .archive-title {
-
-        font-size: 19vw;
-    }
-
-    .archive-row {
-
-        min-height: 80px;
-
-        grid-template-columns:
-            35px
-            1fr
-            30px;
+        grid-template-columns: 34px minmax(0,1fr) 35px;
 
         gap: 10px;
     }
 
-    .archive-name {
+    .event-index-name {
 
-        font-size: 15px;
+        font-size: 9.4vw;
+    }
+
+    .event-index-meta {
+
+        display: none;
+    }
+
+    .event-index-poster {
+
+        right: 42px;
+        width: 150px;
+        height: 96px;
     }
 
     .footer {
@@ -1502,7 +1420,7 @@ img {
 
                 <span class="hero-top-right">
 
-                    01 / 03
+                    01 / 02
 
                 </span>
 
@@ -1514,8 +1432,8 @@ img {
             <div class="hero-image">
 
                 <img
-                    src="../assets/images/evento-principal.png"
-                    alt="SubmundØ Funk"
+                    src="../assets/images/BPM_KILLER.png"
+                    alt="BPM KILLER"
                 >
 
             </div>
@@ -1527,14 +1445,14 @@ img {
 
                 <span class="hero-title-line">
 
-                    SUBMUNDØ
+                    BPM
 
                 </span>
 
 
                 <span class="hero-title-line">
 
-                    FUNK
+                    KILLER
 
                 </span>
 
@@ -1545,11 +1463,9 @@ img {
 
             <div class="hero-date">
 
-                29 JULHØ 2026
+                21 ØUTUBRO 2026
                 ·
-                22:ØØ
-                ·
-                GARAGEM UNDERGRØUND
+                HALLOWEEN
 
             </div>
 
@@ -1557,14 +1473,14 @@ img {
 
             <div class="hero-number">
 
-                001 / SUBMUNDØ FUNK
+                001 / BPM KILLER
 
             </div>
 
 
 
             <a
-                href="/eventos/submundo-funk.html"
+                href="/eventos/bpm-killer.html"
                 class="hero-button"
             >
 
@@ -1584,270 +1500,105 @@ img {
 
 
         <!-- =====================================================
-             EVENTS
+             EVENT INDEX
         ====================================================== -->
 
-        <section class="events">
+        <section class="event-index-wrap">
 
+            <div class="event-index-head">
 
-            <div class="events-header">
+                <span class="event-index-kicker">
+                    EVENT INDEX / 101
+                </span>
 
-
-                <h2 class="events-heading">
-
-                    EVENTØS
-
-                </h2>
-
-
-                <div class="events-counter">
-
-                    01 — 03 / 101
-
-                </div>
-
+                <span class="event-index-count">
+                    02 EXPERIÊNCIAS
+                </span>
 
             </div>
 
 
+            <a
+                href="/eventos/bpm-killer.html"
+                class="event-index-row"
+            >
 
-            <!-- EVENTO 001 -->
+                <span class="event-index-no">
+                    001
+                </span>
+
+                <span class="event-index-name">
+                    BPM KILLER
+                </span>
+
+                <span class="event-index-meta">
+                    21 ØUTUBRO 2026
+                    <br>
+                    HALLOWEEN
+                </span>
+
+                <span class="event-index-arrow">
+                    ↗
+                </span>
+
+                <img
+                    class="event-index-poster"
+                    src="../assets/images/BPM_KILLER.png"
+                    alt="BPM KILLER"
+                >
+
+            </a>
+
 
             <a
                 href="/eventos/submundo-funk.html"
-                class="event-row"
+                class="event-index-row"
             >
 
+                <span class="event-index-no">
+                    002
+                </span>
 
-                <div class="event-index">
-
-                    001
-
-                </div>
-
-
-                <div class="event-name">
-
+                <span class="event-index-name">
                     SUBMUNDØ FUNK
+                </span>
 
-                </div>
-
-
-                <div class="event-date">
-
+                <span class="event-index-meta">
                     29 JULHØ 2026
                     <br>
                     22:ØØ
+                </span>
 
-                </div>
-
-
-                <div class="event-arrow">
-
+                <span class="event-index-arrow">
                     ↗
-
-                </div>
-
+                </span>
 
             </a>
 
 
+            <div class="event-index-row future">
 
-            <!-- EVENTO 002 -->
-
-            <div
-                class="event-row future"
-            >
-
-
-                <div class="event-index">
-
-                    002
-
-                </div>
-
-
-                <div class="event-name">
-
-                    PRÓXIMØ EVENTØ
-
-                </div>
-
-
-                <div class="event-date">
-
-                    TØ BE
-                    <br>
-                    ANNØUNCED
-
-                </div>
-
-
-                <div class="event-arrow">
-
-                    +
-
-                </div>
-
-
-            </div>
-
-
-
-            <!-- EVENTO 003 -->
-
-            <div
-                class="event-row future"
-            >
-
-
-                <div class="event-index">
-
+                <span class="event-index-no">
                     003
+                </span>
 
-                </div>
-
-
-                <div class="event-name">
-
+                <span class="event-index-name">
                     TBA
+                </span>
 
-                </div>
-
-
-                <div class="event-date">
-
+                <span class="event-index-meta">
                     101
                     <br>
                     SOON
+                </span>
 
-                </div>
-
-
-                <div class="event-arrow">
-
+                <span class="event-index-arrow">
                     +
-
-                </div>
-
+                </span>
 
             </div>
-
 
         </section>
-
-
-
-        <!-- =====================================================
-             EVENT FEATURE
-        ====================================================== -->
-
-        <section class="event-feature">
-
-            <div class="event-feature-media">
-                <img
-                    src="../assets/images/evento-principal.png"
-                    alt="SubmundØ Funk"
-                >
-            </div>
-
-            <div class="event-feature-copy">
-
-                <div class="event-feature-label">
-                    101 / ØUTSIDE ØF THE BØX
-                </div>
-
-                <div class="event-feature-title">
-                    SUBMUNDØ FUNK
-                </div>
-
-                <div class="event-feature-meta">
-                    <span>29 JULHØ 2026</span>
-                    <span>22:ØØ</span>
-                    <span>GARAGEM UNDERGRØUND</span>
-                </div>
-
-            </div>
-
-            <a
-                href="/eventos/submundo-funk.html"
-                class="event-feature-link"
-                aria-label="Ver evento SubmundØ Funk"
-            >
-                <span>VER</span>
-                <strong>↗</strong>
-            </a>
-
-        </section>
-
-
-        <!-- =====================================================
-             ARCHIVE
-        ====================================================== -->
-
-        <section class="archive">
-
-
-            <div class="archive-head">
-
-
-                <h2 class="archive-title">
-
-                    ARQUIVØ
-
-                </h2>
-
-
-                <span class="archive-count">
-
-                    001 EVENTØ
-
-                </span>
-
-
-            </div>
-
-
-
-            <a
-                href="/eventos/submundo-funk.html"
-                class="archive-row"
-            >
-
-
-                <span class="archive-index">
-
-                    001
-
-                </span>
-
-
-                <span class="archive-name">
-
-                    SUBMUNDØ FUNK
-
-                </span>
-
-
-                <span class="archive-date">
-
-                    29 JULHØ 2026
-
-                </span>
-
-
-                <span class="archive-arrow">
-
-                    ↗
-
-                </span>
-
-
-            </a>
-
-
-        </section>
-
 
 
         <!-- =====================================================
