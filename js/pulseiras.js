@@ -1,10 +1,6 @@
 /* ==========================================================
    101 • SISTEMA DE PULSEIRAS
-   ==========================================================
-   Sistema de compra de pulseiras para eventos 101.
-
-   O pedido é enviado diretamente para um Webhook do Discord.
-========================================================== */
+   ========================================================== */
 
 (function () {
 
@@ -35,7 +31,7 @@
 
 
     /* =====================================================
-       INJETAR MODAL
+       CRIAR MODAL
     ===================================================== */
 
     function buildModal() {
@@ -61,27 +57,18 @@
                 </button>
 
 
-                <!-- PROGRESSO -->
-
                 <div class="pz-steps-track">
 
-                    <span
-                        data-step="1"
-                        class="active"
-                    ></span>
-
+                    <span data-step="1" class="active"></span>
                     <span data-step="2"></span>
-
                     <span data-step="3"></span>
-
                     <span data-step="4"></span>
 
                 </div>
 
 
-
                 <!-- =================================================
-                     STEP 1 — QUANTIDADE
+                     STEP 1
                 ================================================== -->
 
                 <div
@@ -195,9 +182,8 @@
                 </div>
 
 
-
                 <!-- =================================================
-                     STEP 2 — DADOS
+                     STEP 2
                 ================================================== -->
 
                 <div
@@ -301,9 +287,8 @@
                 </div>
 
 
-
                 <!-- =================================================
-                     STEP 3 — COMPROVATIVO
+                     STEP 3
                 ================================================== -->
 
                 <div
@@ -356,7 +341,6 @@
                     </label>
 
 
-
                     <div
                         class="pz-preview"
                         id="pzPreview"
@@ -385,7 +369,6 @@
                     </div>
 
 
-
                     <label class="pz-checkbox">
 
                         <input
@@ -400,7 +383,6 @@
                     </label>
 
 
-
                     <div
                         class="pz-error"
                         id="pzErrorStep3"
@@ -408,7 +390,6 @@
                         Anexa o comprovativo e confirma a checkbox
                         para continuar.
                     </div>
-
 
 
                     <div class="pz-actions">
@@ -437,12 +418,6 @@
                     </div>
 
 
-
-                    <!--
-                        Este erro agora recebe
-                        a mensagem REAL do Discord.
-                    -->
-
                     <div
                         class="pz-error"
                         id="pzErrorSubmit"
@@ -455,9 +430,8 @@
                 </div>
 
 
-
                 <!-- =================================================
-                     STEP 4 — SUCESSO
+                     STEP 4
                 ================================================== -->
 
                 <div
@@ -537,7 +511,6 @@
     }
 
 
-
     /* =====================================================
        ESCAPE HTML
     ===================================================== */
@@ -556,7 +529,6 @@
         );
 
     }
-
 
 
     /* =====================================================
@@ -663,7 +635,6 @@
     }
 
 
-
     /* =====================================================
        MUDAR STEP
     ===================================================== */
@@ -688,10 +659,12 @@
             const stepN =
                 Number(step.dataset.step);
 
+
             step.classList.toggle(
                 "done",
                 stepN < n
             );
+
 
             step.classList.toggle(
                 "active",
@@ -701,7 +674,6 @@
         });
 
     }
-
 
 
     /* =====================================================
@@ -730,6 +702,7 @@
         const pageQty =
             document.getElementById("pzQty");
 
+
         const pageTotal =
             document.getElementById("pzTotal");
 
@@ -753,7 +726,6 @@
     }
 
 
-
     function changeQty(delta) {
 
         const next =
@@ -764,16 +736,19 @@
             next < 1 ||
             next > cfg.maxPorPessoa
         ) {
+
             return;
+
         }
 
 
-        state.qty = next;
+        state.qty =
+            next;
+
 
         updateQtyUI();
 
     }
-
 
 
     /* =====================================================
@@ -801,13 +776,15 @@
         goToStep(1);
 
 
-        els.overlay.classList.add("open");
+        els.overlay.classList.add(
+            "open"
+        );
+
 
         document.body.style.overflow =
             "hidden";
 
     }
-
 
 
     /* =====================================================
@@ -825,19 +802,21 @@
             "opacity"
         );
 
+
         els.overlay.style.removeProperty(
             "visibility"
         );
+
 
         els.overlay.style.removeProperty(
             "pointer-events"
         );
 
 
-        document.body.style.overflow = "";
+        document.body.style.overflow =
+            "";
 
     }
-
 
 
     /* =====================================================
@@ -847,17 +826,22 @@
     function handleFile(file) {
 
         if (!file) {
+
             return;
+
         }
 
 
-        if (!file.type.startsWith("image/")) {
+        if (
+            !file.type.startsWith("image/")
+        ) {
 
             alert(
                 "Por favor envia uma imagem (PNG ou JPG)."
             );
 
             return;
+
         }
 
 
@@ -871,10 +855,12 @@
             );
 
             return;
+
         }
 
 
-        state.file = file;
+        state.file =
+            file;
 
 
         const reader =
@@ -886,8 +872,10 @@
             els.previewImg.src =
                 e.target.result;
 
+
             els.previewName.textContent =
                 file.name;
+
 
             els.preview.classList.add(
                 "show"
@@ -896,14 +884,15 @@
         };
 
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(
+            file
+        );
 
     }
 
 
-
     /* =====================================================
-       COMPRESSÃO DA IMAGEM
+       COMPRESSÃO
     ===================================================== */
 
     function compressImage(file) {
@@ -913,6 +902,7 @@
             const img =
                 new Image();
 
+
             const reader =
                 new FileReader();
 
@@ -921,7 +911,9 @@
 
                 img.onload = () => {
 
-                    const maxW = 1400;
+                    const maxW =
+                        1400;
+
 
                     const scale =
                         Math.min(
@@ -937,10 +929,13 @@
 
 
                     canvas.width =
-                        img.width * scale;
+                        img.width *
+                        scale;
+
 
                     canvas.height =
-                        img.height * scale;
+                        img.height *
+                        scale;
 
 
                     const ctx =
@@ -963,7 +958,8 @@
                         blob => {
 
                             resolve(
-                                blob || file
+                                blob ||
+                                file
                             );
 
                         },
@@ -979,7 +975,9 @@
 
                 img.onerror = () => {
 
-                    resolve(file);
+                    resolve(
+                        file
+                    );
 
                 };
 
@@ -992,21 +990,24 @@
 
             reader.onerror = () => {
 
-                resolve(file);
+                resolve(
+                    file
+                );
 
             };
 
 
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(
+                file
+            );
 
         });
 
     }
 
 
-
     /* =====================================================
-       CÓDIGO DO PEDIDO
+       GERAR CÓDIGO
     ===================================================== */
 
     function generateOrderCode() {
@@ -1020,7 +1021,10 @@
                     /[^a-z0-9]/gi,
                     ""
                 )
-                .slice(0, 4)
+                .slice(
+                    0,
+                    4
+                )
                 .toUpperCase() ||
             "101";
 
@@ -1044,9 +1048,8 @@
     }
 
 
-
     /* =====================================================
-       ENVIO PARA DISCORD
+       ENVIAR PARA DISCORD
     ===================================================== */
 
     async function sendOrder(orderCode) {
@@ -1058,7 +1061,7 @@
 
 
         /* -------------------------------------------------
-           VALIDAR WEBHOOK
+           WEBHOOK
         ------------------------------------------------- */
 
         if (
@@ -1076,7 +1079,7 @@
 
 
         /* -------------------------------------------------
-           VALIDAR COMPROVATIVO
+           COMPROVATIVO
         ------------------------------------------------- */
 
         if (!state.file) {
@@ -1092,10 +1095,37 @@
            DADOS
         ------------------------------------------------- */
 
+        const nome =
+            els.nome.value.trim() ||
+            "—";
+
+
+        const discord =
+            els.discord.value.trim() ||
+            "—";
+
+
+        const contacto =
+            els.contacto.value.trim() ||
+            "—";
+
+
+        const quantidade =
+            state.qty;
+
+
+        const total =
+            `${cfg.moeda}${state.qty * cfg.preco}`;
+
+
+        /* =================================================
+           EMBED 101 • TICKETING
+        ================================================= */
+
         const payload = {
 
             username:
-                "1Ø1 • PULSEIRAS",
+                "1Ø1 • TICKETING",
 
 
             embeds: [
@@ -1103,112 +1133,142 @@
                 {
 
                     title:
-                        "🎟️ NOVO PEDIDO DE PULSEIRA",
+                        "🎟️  NOVO PEDIDO DE PULSEIRA",
+
+
+                    description:
+
+                        `**${cfg.evento}**\n\n` +
+
+                        `Um novo pedido foi submetido através do ` +
+                        `sistema oficial de pulseiras da **1Ø1**.`,
 
 
                     color:
-                        0x7C3AED,
+                        0x9146FF,
 
 
                     fields: [
 
+                        /* =================================
+                           CÓDIGO
+                        ================================= */
+
                         {
+
                             name:
-                                "EVENTO",
+                                "🎫  CÓDIGO DO PEDIDO",
 
                             value:
-                                String(
-                                    cfg.evento
-                                ),
+                                `\`${orderCode}\``,
 
                             inline:
-                                true
+                                false
+
                         },
 
 
+                        /* =================================
+                           COMPRADOR
+                        ================================= */
+
                         {
+
                             name:
-                                "CÓDIGO",
+                                "👤  COMPRADOR",
 
                             value:
-                                orderCode,
+                                [
+                                    "**Nome (IC)**",
+                                    nome,
+                                    "",
+                                    "**Discord**",
+                                    discord,
+                                    "",
+                                    "**Contacto**",
+                                    contacto
+                                ].join("\n"),
 
                             inline:
                                 true
+
                         },
 
 
+                        /* =================================
+                           PEDIDO
+                        ================================= */
+
                         {
+
                             name:
-                                "QUANTIDADE",
+                                "🎟️  PEDIDO",
 
                             value:
-                                String(
-                                    state.qty
-                                ),
+                                [
+                                    "**Quantidade**",
+                                    `${quantidade} ${
+                                        quantidade === 1
+                                            ? "pulseira"
+                                            : "pulseiras"
+                                    }`,
+                                    "",
+                                    "**Preço unitário**",
+                                    `${cfg.moeda}${cfg.preco}`,
+                                    "",
+                                    "**TOTAL**",
+                                    `**${total}**`
+                                ].join("\n"),
 
                             inline:
                                 true
+
                         },
 
 
-                        {
-                            name:
-                                "TOTAL",
-
-                            value:
-                                `${cfg.moeda}${state.qty * cfg.preco}`,
-
-                            inline:
-                                true
-                        },
-
+                        /* =================================
+                           ESTADO
+                        ================================= */
 
                         {
+
                             name:
-                                "NOME (IC)",
+                                "🟢  ESTADO",
 
                             value:
-                                els.nome.value.trim() ||
-                                "—",
+                                [
+                                    "**AGUARDA VALIDAÇÃO**",
+                                    "O pagamento deve ser confirmado pela equipa 1Ø1."
+                                ].join("\n"),
 
                             inline:
-                                true
-                        },
+                                false
 
-
-                        {
-                            name:
-                                "DISCORD",
-
-                            value:
-                                els.discord.value.trim() ||
-                                "—",
-
-                            inline:
-                                true
-                        },
-
-
-                        {
-                            name:
-                                "CONTACTO",
-
-                            value:
-                                els.contacto.value.trim() ||
-                                "—",
-
-                            inline:
-                                true
                         }
 
                     ],
 
 
+                    /* =====================================
+                       COMPROVATIVO
+                    ===================================== */
+
+                    image: {
+
+                        url:
+                            "attachment://comprovativo.jpg"
+
+                    },
+
+
+                    /* =====================================
+                       FOOTER
+                    ===================================== */
+
                     footer: {
 
                         text:
-                            "1Ø1 • Sistema de Pulseiras"
+                            "1Ø1 • Sistema Oficial de Pulseiras"
 
                     },
 
@@ -1223,9 +1283,9 @@
         };
 
 
-        /* -------------------------------------------------
-           COMPRIMIR IMAGEM
-        ------------------------------------------------- */
+        /* =================================================
+           COMPRIMIR
+        ================================================= */
 
         console.log(
             "[101] A comprimir comprovativo..."
@@ -1245,9 +1305,9 @@
         );
 
 
-        /* -------------------------------------------------
+        /* =================================================
            FORM DATA
-        ------------------------------------------------- */
+        ================================================= */
 
         const form =
             new FormData();
@@ -1266,9 +1326,9 @@
         );
 
 
-        /* -------------------------------------------------
-           VALIDAR URL
-        ------------------------------------------------- */
+        /* =================================================
+           WEBHOOK URL
+        ================================================= */
 
         let webhookUrl;
 
@@ -1287,6 +1347,7 @@
                 error
             );
 
+
             throw new Error(
                 "O URL do webhook do Discord é inválido."
             );
@@ -1300,9 +1361,9 @@
         );
 
 
-        /* -------------------------------------------------
+        /* =================================================
            FETCH
-        ------------------------------------------------- */
+        ================================================= */
 
         let response;
 
@@ -1342,9 +1403,9 @@
         }
 
 
-        /* -------------------------------------------------
-           LER RESPOSTA
-        ------------------------------------------------- */
+        /* =================================================
+           RESPOSTA
+        ================================================= */
 
         const responseText =
             await response.text();
@@ -1357,13 +1418,14 @@
         );
 
 
-        /* -------------------------------------------------
+        /* =================================================
            ERRO
-        ------------------------------------------------- */
+        ================================================= */
 
         if (!response.ok) {
 
-            let details = "";
+            let details =
+                "";
 
 
             try {
@@ -1403,9 +1465,9 @@
         }
 
 
-        /* -------------------------------------------------
+        /* =================================================
            SUCESSO
-        ------------------------------------------------- */
+        ================================================= */
 
         console.log(
             "[101] Pedido enviado com sucesso."
@@ -1415,7 +1477,6 @@
         return true;
 
     }
-
 
 
     /* =====================================================
@@ -1437,6 +1498,7 @@
                     "canvas"
                 );
 
+
             canvas.id =
                 "pz-confetti-canvas";
 
@@ -1450,6 +1512,7 @@
 
         canvas.width =
             window.innerWidth;
+
 
         canvas.height =
             window.innerHeight;
@@ -1525,9 +1588,12 @@
             );
 
 
-        let frame = 0;
+        let frame =
+            0;
 
-        const maxFrames = 130;
+
+        const maxFrames =
+            130;
 
 
         function tick() {
@@ -1615,9 +1681,8 @@
     }
 
 
-
     /* =====================================================
-       VALIDAÇÃO
+       VALIDAÇÃO STEP 2
     ===================================================== */
 
     function validateStep2() {
@@ -1638,6 +1703,9 @@
     }
 
 
+    /* =====================================================
+       VALIDAÇÃO STEP 3
+    ===================================================== */
 
     function validateStep3() {
 
@@ -1655,7 +1723,6 @@
         return ok;
 
     }
-
 
 
     /* =====================================================
@@ -1858,24 +1925,32 @@
             "click",
             () => {
 
-                state.file = null;
+                state.file =
+                    null;
 
-                els.fileInput.value = "";
+
+                els.fileInput.value =
+                    "";
+
 
                 els.preview.classList.remove(
                     "show"
                 );
 
-                els.previewImg.src = "";
 
-                els.previewName.textContent = "";
+                els.previewImg.src =
+                    "";
+
+
+                els.previewName.textContent =
+                    "";
 
             }
         );
 
 
         /* =================================================
-           ENVIAR PEDIDO
+           ENVIAR
         ================================================= */
 
         els.submit.addEventListener(
@@ -1892,7 +1967,8 @@
                 }
 
 
-                state.sending = true;
+                state.sending =
+                    true;
 
 
                 els.submit.disabled =
@@ -1933,17 +2009,13 @@
 
                 } catch (err) {
 
-
                     console.error(
                         "[pulseiras] erro ao enviar pedido:",
                         err
                     );
 
 
-                    /*
-                       MOSTRAR O ERRO REAL
-                       NO MODAL
-                    */
+                    /* MOSTRAR ERRO REAL */
 
                     els.errorSubmit.textContent =
                         err &&
@@ -2026,43 +2098,61 @@
                 setTimeout(
                     () => {
 
-                        state.qty = 1;
+                        state.qty =
+                            1;
 
-                        state.file = null;
 
-                        els.nome.value = "";
+                        state.file =
+                            null;
 
-                        els.discord.value = "";
 
-                        els.contacto.value = "";
+                        els.nome.value =
+                            "";
+
+
+                        els.discord.value =
+                            "";
+
+
+                        els.contacto.value =
+                            "";
+
 
                         els.confirm.checked =
                             false;
 
+
                         els.fileInput.value =
                             "";
+
 
                         els.preview.classList.remove(
                             "show"
                         );
 
+
                         els.previewImg.src =
                             "";
 
+
                         els.previewName.textContent =
                             "";
+
 
                         els.errorStep2.classList.remove(
                             "show"
                         );
 
+
                         els.errorStep3.classList.remove(
                             "show"
                         );
 
+
                         els.errorSubmit.classList.remove(
                             "show"
                         );
+
 
                         goToStep(1);
 
@@ -2077,7 +2167,7 @@
 
 
         /* =================================================
-           BOTÕES DE ABRIR MODAL
+           ABRIR MODAL
         ================================================= */
 
         document
@@ -2114,7 +2204,7 @@
 
 
         /* =================================================
-           STEPPER OPCIONAL NA PÁGINA
+           STEPPER OPCIONAL
         ================================================= */
 
         const pageMinus =
@@ -2151,7 +2241,6 @@
     }
 
 
-
     /* =====================================================
        BOTÃO FLUTUANTE
     ===================================================== */
@@ -2165,7 +2254,9 @@
 
 
         if (!section) {
+
             return;
+
         }
 
 
@@ -2229,7 +2320,6 @@
     }
 
 
-
     /* =====================================================
        INIT
     ===================================================== */
@@ -2249,7 +2339,6 @@
     }
 
 
-
     if (
         document.readyState ===
         "loading"
@@ -2265,7 +2354,6 @@
         init();
 
     }
-
 
 
     /* =====================================================
