@@ -3,19 +3,40 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>1Ø1 — EVENTØS</title>
+    <title>1Ø1 — EVENTØS</title>
 
-<link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet"
->
+    <meta
+        name="theme-color"
+        content="#050505"
+    >
+
+    <!-- =====================================================
+         FAVICON 101
+    ====================================================== -->
+
+    <link
+        rel="icon"
+        type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23050505'/%3E%3Ctext x='50' y='61' text-anchor='middle' font-family='Arial,sans-serif' font-size='32' font-weight='900' fill='white'%3E101%3C/text%3E%3C/svg%3E"
+    >
+
+    <link
+        rel="apple-touch-icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23050505'/%3E%3Ctext x='50' y='61' text-anchor='middle' font-family='Arial,sans-serif' font-size='32' font-weight='900' fill='white'%3E101%3C/text%3E%3C/svg%3E"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
 
 <style>
 
@@ -57,40 +78,17 @@ img {
 ========================================================= */
 
 :root {
+
     --black: #050505;
     --white: #fff;
+
     --gray: #777;
-    --line: rgba(255,255,255,.14);
-}
 
+    --line:
+        rgba(255,255,255,.15);
 
-/* =========================================================
-   CURSOR LIGHT
-========================================================= */
-
-.cursor-light {
-
-    position: fixed;
-
-    width: 500px;
-    height: 500px;
-
-    border-radius: 50%;
-
-    pointer-events: none;
-
-    z-index: 1;
-
-    transform: translate(-50%, -50%);
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,255,255,.045),
-            transparent 68%
-        );
-
-    mix-blend-mode: screen;
+    --container:
+        1600px;
 }
 
 
@@ -99,81 +97,177 @@ img {
 ========================================================= */
 
 .page {
-    position: relative;
+
     min-height: 100vh;
-    background: #050505;
+
+    background:
+        radial-gradient(
+            circle at 50% 15%,
+            rgba(255,255,255,.035),
+            transparent 35%
+        ),
+        #050505;
+
+    position: relative;
+
     overflow: hidden;
 }
 
 
 /* =========================================================
-   NAV
+   GRAIN
 ========================================================= */
 
-.nav {
+.page::after {
+
+    content: "";
 
     position: fixed;
 
-    top: 0;
-    left: 0;
-    right: 0;
+    inset: 0;
 
-    height: 80px;
+    pointer-events: none;
 
-    padding: 0 35px;
+    z-index: 100;
+
+    opacity: .025;
+
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container {
+
+    width:
+        min(
+            var(--container),
+            calc(100% - 70px)
+        );
+
+    margin: 0 auto;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+
+    height: 100px;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        auto
+        1fr;
+
+    align-items: center;
+
+    border-bottom:
+        1px solid var(--line);
+
+    position: relative;
+
+    z-index: 20;
+}
+
+
+/* LOGO */
+
+.logo {
+
+    justify-self: start;
 
     display: flex;
 
     align-items: center;
 
-    justify-content: space-between;
+    gap: 13px;
 
-    z-index: 50;
-
-    mix-blend-mode: difference;
-
-    pointer-events: none;
-}
-
-.nav a {
-    pointer-events: auto;
-}
-
-.logo {
-
-    font-size: 12px;
+    font-size: 18px;
 
     font-weight: 900;
 
-    letter-spacing: .3em;
+    letter-spacing: .24em;
 }
 
-.nav-middle {
+.logo-mark {
 
-    position: absolute;
+    width: 10px;
 
-    left: 50%;
+    height: 10px;
 
-    transform: translateX(-50%);
+    background: #fff;
 
-    font-size: 8px;
+    border-radius: 50%;
+}
 
-    letter-spacing: .35em;
 
-    color: #aaa;
+/* CENTER */
+
+.header-title {
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    letter-spacing: .42em;
 
     text-transform: uppercase;
 }
+
+
+/* HOME */
 
 .home {
 
-    font-size: 8px;
+    justify-self: end;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    font-size: 10px;
 
     font-weight: 700;
 
-    letter-spacing: .22em;
+    letter-spacing: .2em;
 
     text-transform: uppercase;
+
+    color: #aaa;
+
+    transition:
+        color .25s ease,
+        transform .25s ease;
+}
+
+.home:hover {
+
+    color: #fff;
+
+    transform:
+        translateX(-5px);
+}
+
+.home-arrow {
+
+    font-size: 16px;
+
+    line-height: 1;
 }
 
 
@@ -183,9 +277,10 @@ img {
 
 .hero {
 
-    position: relative;
+    min-height:
+        calc(100vh - 100px);
 
-    min-height: 100vh;
+    position: relative;
 
     display: flex;
 
@@ -195,22 +290,75 @@ img {
 
     overflow: hidden;
 
-    border-bottom: 1px solid var(--line);
+    border-bottom:
+        1px solid var(--line);
 }
 
 
 /* =========================================================
-   HERO IMAGE
+   HERO TOP INFO
+========================================================= */
+
+.hero-top {
+
+    position: absolute;
+
+    top: 28px;
+
+    left: 0;
+
+    right: 0;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    z-index: 10;
+
+    pointer-events: none;
+}
+
+.hero-top-left {
+
+    font-size: 9px;
+
+    color: #777;
+
+    font-weight: 700;
+
+    letter-spacing: .25em;
+
+    text-transform: uppercase;
+}
+
+.hero-top-right {
+
+    font-size: 9px;
+
+    color: #555;
+
+    letter-spacing: .25em;
+}
+
+
+/* =========================================================
+   IMAGE
 ========================================================= */
 
 .hero-image {
 
     position: absolute;
 
-    width: 63vw;
-    height: 82vh;
+    width: min(
+        850px,
+        65vw
+    );
 
-    max-width: 1100px;
+    height: 72vh;
+
+    min-height: 560px;
 
     top: 50%;
 
@@ -218,14 +366,15 @@ img {
 
     transform:
         translate(-50%, -50%)
-        rotate(-2deg);
+        rotate(-1.7deg);
 
     overflow: hidden;
 
     background: #111;
 
     transition:
-        transform 1.2s
+        transform
+        1s
         cubic-bezier(.2,.8,.2,1);
 }
 
@@ -234,19 +383,30 @@ img {
     transform:
         translate(-50%, -50%)
         rotate(0deg)
-        scale(1.025);
+        scale(1.018);
 }
 
 .hero-image img {
 
     width: 100%;
+
     height: 100%;
 
     object-fit: cover;
 
     filter: grayscale(100%);
 
-    opacity: .72;
+    opacity: .78;
+
+    transition:
+        transform
+        1.3s
+        cubic-bezier(.2,.8,.2,1);
+}
+
+.hero:hover .hero-image img {
+
+    transform: scale(1.045);
 }
 
 .hero-image::after {
@@ -260,156 +420,164 @@ img {
     background:
         linear-gradient(
             180deg,
-            rgba(0,0,0,.15),
-            rgba(0,0,0,.4)
+            rgba(0,0,0,.05),
+            rgba(0,0,0,.5)
         );
 }
 
 
 /* =========================================================
-   HUGE TYPOGRAPHY
+   GIANT EVENT TITLE
 ========================================================= */
 
 .hero-title {
 
     position: relative;
 
-    z-index: 5;
+    z-index: 7;
 
     width: 100%;
 
-    text-align: center;
-
     pointer-events: none;
 
-    mix-blend-mode: normal;
+    text-align: center;
+
+    user-select: none;
 }
 
-.hero-title .top {
+.hero-title-line {
 
     display: block;
 
-    font-size: clamp(
-        100px,
-        15vw,
-        250px
-    );
+    font-size:
+        clamp(
+            85px,
+            12vw,
+            185px
+        );
 
-    line-height: .72;
+    line-height: .66;
 
-    letter-spacing: -.105em;
+    letter-spacing:
+        -.105em;
 
     font-weight: 900;
 
-    transform: translateX(-7vw);
-
     text-transform: uppercase;
+
+    white-space: nowrap;
+
+    transition:
+        transform .8s
+        cubic-bezier(.2,.8,.2,1);
 }
 
-.hero-title .bottom {
+.hero-title-line:first-child {
 
-    display: block;
+    transform:
+        translateX(-5vw);
+}
 
-    font-size: clamp(
-        100px,
-        15vw,
-        250px
-    );
+.hero-title-line:last-child {
 
-    line-height: .72;
+    transform:
+        translateX(7vw);
+}
 
-    letter-spacing: -.105em;
+.hero:hover
+.hero-title-line:first-child {
 
-    font-weight: 900;
+    transform:
+        translateX(-6.5vw);
+}
 
-    transform: translateX(9vw);
+.hero:hover
+.hero-title-line:last-child {
 
-    text-transform: uppercase;
+    transform:
+        translateX(8.5vw);
 }
 
 
 /* =========================================================
-   HERO META
+   EVENT DATE
 ========================================================= */
 
-.hero-meta {
+.hero-date {
 
     position: absolute;
 
-    z-index: 8;
+    left: 0;
 
-    left: 35px;
+    bottom: 38px;
 
-    bottom: 35px;
+    z-index: 12;
 
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 9px;
-}
-
-.hero-meta span {
-
-    font-size: 8px;
+    font-size: 9px;
 
     color: #888;
 
-    letter-spacing: .22em;
+    font-weight: 600;
+
+    letter-spacing: .24em;
 
     text-transform: uppercase;
 }
 
 
 /* =========================================================
-   HERO NUMBER
+   EVENT NUMBER
 ========================================================= */
 
 .hero-number {
 
     position: absolute;
 
-    right: 35px;
+    right: 0;
 
     top: 50%;
 
-    transform: translateY(-50%);
+    transform:
+        translateY(-50%);
 
-    z-index: 8;
+    writing-mode:
+        vertical-rl;
 
-    writing-mode: vertical-rl;
+    z-index: 12;
 
-    font-size: 8px;
+    font-size: 9px;
 
     color: #666;
 
-    letter-spacing: .3em;
+    letter-spacing: .28em;
 
     text-transform: uppercase;
 }
 
 
 /* =========================================================
-   HERO EVENT BUTTON
+   EVENT BUTTON
 ========================================================= */
 
-.hero-action {
+.hero-button {
 
     position: absolute;
 
-    right: 35px;
+    right: 0;
 
-    bottom: 35px;
+    bottom: 27px;
 
-    z-index: 10;
+    z-index: 15;
 
-    width: 95px;
+    width: 110px;
 
-    height: 95px;
+    height: 110px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.38);
 
     border-radius: 50%;
-
-    border: 1px solid rgba(255,255,255,.4);
 
     display: flex;
 
@@ -419,114 +587,76 @@ img {
 
     text-align: center;
 
-    font-size: 7px;
+    font-size: 8px;
 
     font-weight: 800;
 
-    letter-spacing: .15em;
+    letter-spacing: .16em;
 
     text-transform: uppercase;
 
-    transition: .4s ease;
+    transition:
+        background .35s ease,
+        color .35s ease,
+        transform .35s ease;
 }
 
-.hero-action::after {
+.hero-button::after {
 
     content: "↗";
 
     position: absolute;
 
-    font-size: 17px;
+    font-size: 20px;
 
     opacity: 0;
 
-    transform: translateY(5px);
+    transform:
+        translateY(5px);
 
     transition: .3s ease;
 }
 
-.hero-action:hover {
+.hero-button:hover {
 
     background: #fff;
 
     color: #000;
 
-    transform: scale(1.08);
+    transform:
+        scale(1.08);
 }
 
-.hero-action:hover span {
+.hero-button:hover span {
 
     opacity: 0;
 }
 
-.hero-action:hover::after {
+.hero-button:hover::after {
 
     opacity: 1;
 
-    transform: translateY(0);
+    transform:
+        translateY(0);
 }
 
 
 /* =========================================================
-   EVENT NUMBER
+   EVENT LIST
 ========================================================= */
 
-.hero-event-number {
+.events {
 
-    position: absolute;
-
-    top: 105px;
-
-    left: 35px;
-
-    z-index: 10;
-
-    font-size: 8px;
-
-    color: #666;
-
-    letter-spacing: .25em;
+    padding:
+        125px 0 0;
 }
 
 
 /* =========================================================
-   SCROLL
+   SECTION HEADER
 ========================================================= */
 
-.scroll {
-
-    position: absolute;
-
-    bottom: 30px;
-
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    z-index: 10;
-
-    font-size: 7px;
-
-    color: #555;
-
-    letter-spacing: .35em;
-
-    text-transform: uppercase;
-}
-
-
-/* =========================================================
-   EVENT INDEX
-========================================================= */
-
-.index-section {
-
-    padding: 160px 35px 0;
-
-    position: relative;
-}
-
-.index-top {
+.events-header {
 
     display: flex;
 
@@ -534,122 +664,128 @@ img {
 
     align-items: flex-end;
 
-    margin-bottom: 70px;
+    margin-bottom: 40px;
 }
 
-.index-label {
+.events-heading {
 
-    font-size: 8px;
+    font-size:
+        clamp(
+            60px,
+            8vw,
+            120px
+        );
 
-    color: #555;
+    line-height: .7;
 
-    letter-spacing: .3em;
-
-    text-transform: uppercase;
-}
-
-.index-title {
-
-    font-size: clamp(
-        90px,
-        16vw,
-        260px
-    );
-
-    line-height: .62;
-
-    letter-spacing: -.12em;
+    letter-spacing:
+        -.09em;
 
     font-weight: 900;
 
     text-transform: uppercase;
 }
 
-.index-year {
+.events-counter {
 
-    font-size: 8px;
+    font-size: 9px;
 
     color: #555;
 
-    letter-spacing: .2em;
+    letter-spacing: .22em;
+
+    text-transform: uppercase;
 }
 
 
 /* =========================================================
-   EVENT STRIP
+   EVENT ROW
 ========================================================= */
 
-.event-strip {
+.event-row {
 
-    position: relative;
+    min-height: 165px;
 
-    min-height: 220px;
-
-    border-top: 1px solid var(--line);
-
-    border-bottom: 1px solid var(--line);
+    border-top:
+        1px solid var(--line);
 
     display: grid;
 
     grid-template-columns:
-        100px
+        80px
         1fr
-        220px
-        60px;
+        200px
+        55px;
 
     align-items: center;
 
-    gap: 30px;
+    gap: 25px;
+
+    position: relative;
 
     overflow: hidden;
 
     transition:
-        background .4s ease,
-        padding .4s ease;
+        background .35s ease,
+        padding .35s ease;
 }
 
-.event-strip:hover {
+.event-row:last-child {
+
+    border-bottom:
+        1px solid var(--line);
+}
+
+.event-row:hover {
 
     background: #fff;
 
     color: #000;
 
-    padding-left: 25px;
+    padding:
+        0 20px;
 }
 
-.event-strip-number {
+.event-index {
 
-    font-size: 8px;
-
-    letter-spacing: .25em;
+    font-size: 9px;
 
     color: #666;
+
+    letter-spacing: .2em;
 }
 
-.event-strip:hover
-.event-strip-number {
+.event-name {
 
-    color: #777;
-}
+    font-size:
+        clamp(
+            40px,
+            5.5vw,
+            82px
+        );
 
-.event-strip-name {
+    line-height: .7;
 
-    font-size: clamp(
-        45px,
-        8vw,
-        125px
-    );
-
-    line-height: .65;
-
-    letter-spacing: -.09em;
+    letter-spacing:
+        -.075em;
 
     font-weight: 900;
 
     text-transform: uppercase;
+
+    transition:
+        transform .45s
+        cubic-bezier(.2,.8,.2,1);
 }
 
-.event-strip-date {
+.event-row:hover
+.event-name {
+
+    transform:
+        translateX(10px);
+}
+
+.event-date {
 
     font-size: 8px;
 
@@ -662,13 +798,15 @@ img {
     text-transform: uppercase;
 }
 
-.event-strip-arrow {
+.event-arrow {
 
-    width: 45px;
+    width: 42px;
 
-    height: 45px;
+    height: 42px;
 
-    border: 1px solid rgba(255,255,255,.3);
+    border:
+        1px solid
+        rgba(255,255,255,.25);
 
     display: flex;
 
@@ -677,80 +815,54 @@ img {
     justify-content: center;
 
     font-size: 17px;
+
+    transition: .3s ease;
 }
 
-.event-strip:hover
-.event-strip-arrow {
+.event-row:hover
+.event-arrow {
 
     border-color: #000;
 }
 
 
 /* =========================================================
-   UPCOMING EMPTY
+   FUTURE ROW
 ========================================================= */
 
-.empty-strip {
+.event-row.future {
 
-    min-height: 160px;
+    opacity: .3;
 
-    display: grid;
-
-    grid-template-columns:
-        100px
-        1fr
-        220px
-        60px;
-
-    align-items: center;
-
-    gap: 30px;
-
-    border-bottom: 1px solid var(--line);
-
-    opacity: .28;
+    cursor: default;
 }
 
-.empty-name {
+.event-row.future:hover {
 
-    font-size: clamp(
-        35px,
-        5vw,
-        70px
-    );
+    background:
+        rgba(255,255,255,.025);
 
-    line-height: .7;
+    color: #fff;
 
-    font-weight: 900;
-
-    letter-spacing: -.07em;
-
-    text-transform: uppercase;
+    padding-left: 0;
 }
 
-.empty-date {
+.event-row.future:hover
+.event-name {
 
-    font-size: 8px;
-
-    color: #666;
-
-    letter-spacing: .2em;
-
-    text-transform: uppercase;
+    transform: none;
 }
 
 
 /* =========================================================
-   GIANT IMAGE BREAK
+   VISUAL BREAK
 ========================================================= */
 
-.break {
+.visual-break {
 
-    margin-top: 180px;
+    margin-top: 150px;
 
-    height: 75vh;
-
-    min-height: 500px;
+    height: 500px;
 
     position: relative;
 
@@ -761,18 +873,22 @@ img {
     align-items: center;
 
     justify-content: center;
+
+    border-top:
+        1px solid var(--line);
+
+    border-bottom:
+        1px solid var(--line);
 }
 
-.break-image {
+.visual-break-image {
 
     position: absolute;
 
     inset: 0;
-
-    overflow: hidden;
 }
 
-.break-image img {
+.visual-break-image img {
 
     width: 100%;
 
@@ -782,12 +898,13 @@ img {
 
     filter: grayscale(100%);
 
-    opacity: .22;
+    opacity: .18;
 
-    transform: scale(1.08);
+    transform:
+        scale(1.08);
 }
 
-.break::after {
+.visual-break::after {
 
     content: "";
 
@@ -796,52 +913,51 @@ img {
     inset: 0;
 
     background:
-        linear-gradient(
-            90deg,
-            #050505,
-            transparent 35%,
-            transparent 65%,
-            #050505
+        radial-gradient(
+            circle,
+            transparent 15%,
+            #050505 85%
         );
 }
 
-.break-text {
+.visual-break-title {
 
     position: relative;
 
-    z-index: 3;
+    z-index: 5;
 
     text-align: center;
-}
 
-.break-text-small {
+    font-size:
+        clamp(
+            90px,
+            15vw,
+            230px
+        );
 
-    font-size: 8px;
+    line-height: .6;
 
-    color: #777;
-
-    letter-spacing: .4em;
-
-    text-transform: uppercase;
-
-    margin-bottom: 30px;
-}
-
-.break-text-big {
-
-    font-size: clamp(
-        80px,
-        16vw,
-        250px
-    );
-
-    line-height: .62;
-
-    letter-spacing: -.11em;
+    letter-spacing:
+        -.11em;
 
     font-weight: 900;
 
     text-transform: uppercase;
+}
+
+.visual-break-small {
+
+    display: block;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    color: #777;
+
+    letter-spacing: .35em;
+
+    margin-bottom: 28px;
 }
 
 
@@ -851,31 +967,34 @@ img {
 
 .archive {
 
-    padding: 170px 35px 130px;
+    padding:
+        130px 0;
 }
 
-.archive-header {
+.archive-head {
 
     display: flex;
 
-    justify-content: space-between;
-
     align-items: flex-end;
 
-    margin-bottom: 70px;
+    justify-content: space-between;
+
+    margin-bottom: 45px;
 }
 
 .archive-title {
 
-    font-size: clamp(
-        80px,
-        14vw,
-        220px
-    );
+    font-size:
+        clamp(
+            60px,
+            9vw,
+            135px
+        );
 
-    line-height: .63;
+    line-height: .68;
 
-    letter-spacing: -.1em;
+    letter-spacing:
+        -.09em;
 
     font-weight: 900;
 
@@ -884,28 +1003,24 @@ img {
 
 .archive-count {
 
-    font-size: 8px;
+    font-size: 9px;
 
     color: #555;
 
-    letter-spacing: .25em;
+    letter-spacing: .2em;
 }
-
-
-/* =========================================================
-   ARCHIVE ROW
-========================================================= */
 
 .archive-row {
 
-    min-height: 110px;
+    min-height: 100px;
 
-    border-top: 1px solid var(--line);
+    border-top:
+        1px solid var(--line);
 
     display: grid;
 
     grid-template-columns:
-        100px
+        80px
         1fr
         220px
         50px;
@@ -914,19 +1029,23 @@ img {
 
     gap: 25px;
 
-    transition: .35s ease;
+    transition:
+        background .3s ease,
+        padding .3s ease;
 }
 
 .archive-row:last-child {
 
-    border-bottom: 1px solid var(--line);
+    border-bottom:
+        1px solid var(--line);
 }
 
 .archive-row:hover {
 
-    padding-left: 20px;
+    background:
+        rgba(255,255,255,.035);
 
-    background: rgba(255,255,255,.025);
+    padding-left: 15px;
 }
 
 .archive-index {
@@ -940,11 +1059,11 @@ img {
 
 .archive-name {
 
-    font-size: 25px;
+    font-size: 20px;
 
     font-weight: 800;
 
-    letter-spacing: -.04em;
+    letter-spacing: -.035em;
 
     text-transform: uppercase;
 }
@@ -953,7 +1072,7 @@ img {
 
     font-size: 8px;
 
-    color: #555;
+    color: #666;
 
     letter-spacing: .18em;
 
@@ -974,11 +1093,10 @@ img {
 
 .footer {
 
-    height: 120px;
+    height: 100px;
 
-    margin: 0 35px;
-
-    border-top: 1px solid var(--line);
+    border-top:
+        1px solid var(--line);
 
     display: flex;
 
@@ -986,7 +1104,7 @@ img {
 
     justify-content: space-between;
 
-    font-size: 7px;
+    font-size: 8px;
 
     color: #444;
 
@@ -1002,57 +1120,53 @@ img {
 
 @media (max-width: 900px) {
 
-    .nav {
-        padding: 0 20px;
+    .container {
+
+        width:
+            calc(100% - 40px);
     }
 
-    .nav-middle {
-        display: none;
+    .header {
+
+        height: 85px;
+    }
+
+    .header-title {
+
+        font-size: 10px;
+    }
+
+    .logo {
+
+        font-size: 15px;
+    }
+
+    .home {
+
+        font-size: 9px;
     }
 
     .hero {
-        min-height: 850px;
+
+        min-height:
+            calc(100vh - 85px);
     }
 
     .hero-image {
-        width: 82vw;
+
+        width: 78vw;
+
         height: 65vh;
+
+        min-height: 500px;
     }
 
-    .hero-title .top,
-    .hero-title .bottom {
-        font-size: 17vw;
+    .hero-title-line {
+
+        font-size: 14vw;
     }
 
-    .hero-title .top {
-        transform: translateX(-3vw);
-    }
-
-    .hero-title .bottom {
-        transform: translateX(3vw);
-    }
-
-    .index-section,
-    .archive {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-
-    .event-strip {
-
-        grid-template-columns:
-            55px
-            1fr
-            45px;
-
-        gap: 15px;
-    }
-
-    .event-strip-date {
-        display: none;
-    }
-
-    .empty-strip {
+    .event-row {
 
         grid-template-columns:
             55px
@@ -1060,7 +1174,8 @@ img {
             45px;
     }
 
-    .empty-date {
+    .event-date {
+
         display: none;
     }
 
@@ -1069,178 +1184,207 @@ img {
         grid-template-columns:
             55px
             1fr
-            40px;
+            45px;
     }
 
     .archive-date {
-        display: none;
-    }
 
-    .footer {
-        margin: 0 20px;
+        display: none;
     }
 }
 
 
 @media (max-width: 600px) {
 
-    .nav {
-        height: 70px;
+    .container {
+
+        width:
+            calc(100% - 24px);
+    }
+
+    .header {
+
+        height: 72px;
+
+        grid-template-columns:
+            1fr
+            auto;
+    }
+
+    .header-title {
+
+        display: none;
     }
 
     .logo {
-        font-size: 10px;
+
+        font-size: 14px;
+    }
+
+    .home {
+
+        font-size: 8px;
     }
 
     .hero {
-        min-height: 750px;
+
+        min-height:
+            calc(100vh - 72px);
+    }
+
+    .hero-top {
+
+        top: 20px;
+    }
+
+    .hero-top-left,
+    .hero-top-right {
+
+        font-size: 7px;
     }
 
     .hero-image {
 
         width: 94vw;
 
-        height: 61vh;
+        height: 62vh;
+
+        min-height: 440px;
+    }
+
+    .hero-title-line {
+
+        font-size: 16vw;
+
+        line-height: .68;
+    }
+
+    .hero-title-line:first-child {
 
         transform:
-            translate(-50%, -50%)
-            rotate(-1deg);
+            translateX(-2vw);
     }
 
-    .hero:hover .hero-image {
+    .hero-title-line:last-child {
 
         transform:
-            translate(-50%, -50%)
-            rotate(0deg)
-            scale(1.015);
+            translateX(2vw);
     }
 
-    .hero-title .top,
-    .hero-title .bottom {
+    .hero:hover
+    .hero-title-line:first-child {
 
-        font-size: 18vw;
-
-        line-height: .7;
+        transform:
+            translateX(-2vw);
     }
 
-    .hero-event-number {
+    .hero:hover
+    .hero-title-line:last-child {
 
-        left: 20px;
-
-        top: 90px;
+        transform:
+            translateX(2vw);
     }
 
-    .hero-meta {
+    .hero-date {
 
-        left: 20px;
+        bottom: 22px;
 
-        bottom: 25px;
+        font-size: 7px;
     }
 
-    .hero-action {
+    .hero-number {
 
-        right: 20px;
-
-        bottom: 20px;
-
-        width: 72px;
-
-        height: 72px;
-    }
-
-    .scroll {
         display: none;
     }
 
-    .index-section {
+    .hero-button {
 
-        padding-top: 100px;
+        width: 75px;
+
+        height: 75px;
+
+        bottom: 18px;
+
+        font-size: 6px;
     }
 
-    .index-top {
+    .events {
 
-        margin-bottom: 45px;
+        padding-top: 90px;
     }
 
-    .index-title {
+    .events-header {
 
-        font-size: 22vw;
+        display: block;
     }
 
-    .event-strip {
+    .events-counter {
 
-        min-height: 120px;
+        margin-top: 18px;
+    }
+
+    .events-heading {
+
+        font-size: 17vw;
+    }
+
+    .event-row {
+
+        min-height: 115px;
 
         grid-template-columns:
             35px
             1fr
             35px;
+
+        gap: 10px;
     }
 
-    .event-strip-name {
+    .event-name {
 
-        font-size: 10vw;
+        font-size: 9vw;
     }
 
-    .event-strip-arrow {
+    .event-arrow {
 
         width: 32px;
 
         height: 32px;
     }
 
-    .empty-strip {
-
-        min-height: 100px;
-
-        grid-template-columns:
-            35px
-            1fr
-            35px;
-    }
-
-    .empty-name {
-
-        font-size: 8vw;
-    }
-
-    .break {
+    .visual-break {
 
         margin-top: 100px;
 
-        height: 55vh;
-
-        min-height: 400px;
+        height: 360px;
     }
 
-    .break-text-big {
-
-        font-size: 18vw;
-    }
-
-    .archive {
-
-        padding-top: 110px;
-    }
-
-    .archive-title {
+    .visual-break-title {
 
         font-size: 21vw;
     }
 
-    .archive-header {
+    .archive {
 
-        margin-bottom: 45px;
+        padding:
+            90px 0;
+    }
+
+    .archive-title {
+
+        font-size: 19vw;
     }
 
     .archive-row {
 
-        min-height: 85px;
+        min-height: 80px;
 
         grid-template-columns:
             35px
             1fr
             30px;
+
+        gap: 10px;
     }
 
     .archive-name {
@@ -1250,9 +1394,7 @@ img {
 
     .footer {
 
-        height: 90px;
-
-        margin: 0 20px;
+        height: 85px;
 
         font-size: 6px;
     }
@@ -1270,370 +1412,449 @@ img {
 <div class="page">
 
 
-    <div class="cursor-light"></div>
+    <main class="container">
 
 
-    <!-- =====================================================
-         NAV
-    ====================================================== -->
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
 
-    <header class="nav">
-
-        <a
-            href="/"
-            class="logo"
-        >
-            1Ø1
-        </a>
-
-        <div class="nav-middle">
-            EVENTØS
-        </div>
-
-        <a
-            href="/"
-            class="home"
-        >
-            ← INICÍØ
-        </a>
-
-    </header>
+        <header class="header">
 
 
-
-    <!-- =====================================================
-         HERO
-    ====================================================== -->
-
-    <section class="hero">
-
-
-        <div class="hero-image">
-
-            <img
-                src="../assets/images/evento-principal.png"
-                alt="SubmundØ Funk"
+            <a
+                href="/"
+                class="logo"
             >
 
-        </div>
+                <span class="logo-mark"></span>
+
+                1Ø1
+
+            </a>
 
 
-        <div class="hero-event-number">
+            <div class="header-title">
 
-            001 / 101
+                EVENTØS
 
-        </div>
-
-
-        <div class="hero-title">
-
-            <span class="top">
-                SUBMUNDØ
-            </span>
-
-            <span class="bottom">
-                FUNK
-            </span>
-
-        </div>
+            </div>
 
 
-        <div class="hero-meta">
+            <a
+                href="/"
+                class="home"
+            >
 
-            <span>
-                29 JULHØ 2026
-            </span>
+                <span class="home-arrow">
+                    ←
+                </span>
 
-            <span>
-                22:ØØ
-            </span>
+                INICÍØ
 
-            <span>
-                GARAGEM UNDERGRØUND
-            </span>
-
-        </div>
+            </a>
 
 
-        <div class="hero-number">
-
-            101 EXPERIENCE / 001
-
-        </div>
-
-
-        <a
-            href="/eventos/submundo-funk.html"
-            class="hero-action"
-        >
-
-            <span>
-                VER<br>
-                EVENTO
-            </span>
-
-        </a>
-
-
-        <div class="scroll">
-
-            SCROLL ↓
-
-        </div>
-
-
-    </section>
+        </header>
 
 
 
-    <!-- =====================================================
-         EVENT INDEX
-    ====================================================== -->
+        <!-- =====================================================
+             HERO
+        ====================================================== -->
 
-    <section class="index-section">
+        <section class="hero">
 
 
-        <div class="index-top">
+            <div class="hero-top">
 
-            <div>
 
-                <div class="index-label">
+                <span class="hero-top-left">
+
                     101 / EXPERIENCE
-                </div>
 
-                <h2 class="index-title">
+                </span>
+
+
+                <span class="hero-top-right">
+
+                    01 / 03
+
+                </span>
+
+
+            </div>
+
+
+
+            <div class="hero-image">
+
+                <img
+                    src="../assets/images/evento-principal.png"
+                    alt="SubmundØ Funk"
+                >
+
+            </div>
+
+
+
+            <div class="hero-title">
+
+
+                <span class="hero-title-line">
+
+                    SUBMUNDØ
+
+                </span>
+
+
+                <span class="hero-title-line">
+
+                    FUNK
+
+                </span>
+
+
+            </div>
+
+
+
+            <div class="hero-date">
+
+                29 JULHØ 2026
+                ·
+                22:ØØ
+                ·
+                GARAGEM UNDERGRØUND
+
+            </div>
+
+
+
+            <div class="hero-number">
+
+                001 / SUBMUNDØ FUNK
+
+            </div>
+
+
+
+            <a
+                href="/eventos/submundo-funk.html"
+                class="hero-button"
+            >
+
+                <span>
+
+                    VER
+                    <br>
+                    EVENTO
+
+                </span>
+
+            </a>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             EVENTS
+        ====================================================== -->
+
+        <section class="events">
+
+
+            <div class="events-header">
+
+
+                <h2 class="events-heading">
+
                     EVENTØS
+
                 </h2>
 
+
+                <div class="events-counter">
+
+                    01 — 03 / 101
+
+                </div>
+
+
             </div>
 
 
-            <div class="index-year">
-                2026
-            </div>
 
-        </div>
+            <!-- EVENTO 001 -->
 
-
-
-        <!-- EVENT 001 -->
-
-        <a
-            href="/eventos/submundo-funk.html"
-            class="event-strip"
-        >
-
-            <div class="event-strip-number">
-                001
-            </div>
-
-            <div class="event-strip-name">
-                SUBMUNDØ FUNK
-            </div>
-
-            <div class="event-strip-date">
-
-                29 JULHØ 2026
-                <br>
-                22:ØØ
-
-            </div>
-
-            <div class="event-strip-arrow">
-                ↗
-            </div>
-
-        </a>
-
-
-
-        <!-- EVENT 002 -->
-
-        <div class="empty-strip">
-
-            <div class="event-strip-number">
-                002
-            </div>
-
-            <div class="empty-name">
-                PRÓXIMØ
-            </div>
-
-            <div class="empty-date">
-                TBA
-            </div>
-
-            <div>
-                +
-            </div>
-
-        </div>
-
-
-
-        <!-- EVENT 003 -->
-
-        <div class="empty-strip">
-
-            <div class="event-strip-number">
-                003
-            </div>
-
-            <div class="empty-name">
-                TØ BE
-                ANNØUNCED
-            </div>
-
-            <div class="empty-date">
-                101
-            </div>
-
-            <div>
-                +
-            </div>
-
-        </div>
-
-
-    </section>
-
-
-
-    <!-- =====================================================
-         VISUAL BREAK
-    ====================================================== -->
-
-    <section class="break">
-
-
-        <div class="break-image">
-
-            <img
-                src="../assets/images/evento-principal.png"
-                alt=""
+            <a
+                href="/eventos/submundo-funk.html"
+                class="event-row"
             >
 
-        </div>
+
+                <div class="event-index">
+
+                    001
+
+                </div>
 
 
-        <div class="break-text">
+                <div class="event-name">
 
-            <div class="break-text-small">
-                101 / ØUTSIDE ØF THE BØX
+                    SUBMUNDØ FUNK
+
+                </div>
+
+
+                <div class="event-date">
+
+                    29 JULHØ 2026
+                    <br>
+                    22:ØØ
+
+                </div>
+
+
+                <div class="event-arrow">
+
+                    ↗
+
+                </div>
+
+
+            </a>
+
+
+
+            <!-- EVENTO 002 -->
+
+            <div
+                class="event-row future"
+            >
+
+
+                <div class="event-index">
+
+                    002
+
+                </div>
+
+
+                <div class="event-name">
+
+                    PRÓXIMØ EVENTØ
+
+                </div>
+
+
+                <div class="event-date">
+
+                    TØ BE
+                    <br>
+                    ANNØUNCED
+
+                </div>
+
+
+                <div class="event-arrow">
+
+                    +
+
+                </div>
+
+
             </div>
 
-            <div class="break-text-big">
+
+
+            <!-- EVENTO 003 -->
+
+            <div
+                class="event-row future"
+            >
+
+
+                <div class="event-index">
+
+                    003
+
+                </div>
+
+
+                <div class="event-name">
+
+                    TBA
+
+                </div>
+
+
+                <div class="event-date">
+
+                    101
+                    <br>
+                    SOON
+
+                </div>
+
+
+                <div class="event-arrow">
+
+                    +
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             VISUAL BREAK
+        ====================================================== -->
+
+        <section class="visual-break">
+
+
+            <div class="visual-break-image">
+
+                <img
+                    src="../assets/images/evento-principal.png"
+                    alt=""
+                >
+
+            </div>
+
+
+            <div class="visual-break-title">
+
+
+                <span class="visual-break-small">
+
+                    101 / ØUTSIDE ØF THE BØX
+
+                </span>
+
+
                 1Ø1
+
+
             </div>
 
-        </div>
 
-
-    </section>
+        </section>
 
 
 
-    <!-- =====================================================
-         ARCHIVE
-    ====================================================== -->
+        <!-- =====================================================
+             ARCHIVE
+        ====================================================== -->
 
-    <section class="archive">
+        <section class="archive">
 
 
-        <div class="archive-header">
+            <div class="archive-head">
 
-            <h2 class="archive-title">
-                ARQUIVØ
-            </h2>
 
-            <div class="archive-count">
-                001 EVENTØ
+                <h2 class="archive-title">
+
+                    ARQUIVØ
+
+                </h2>
+
+
+                <span class="archive-count">
+
+                    001 EVENTØ
+
+                </span>
+
+
             </div>
 
-        </div>
+
+
+            <a
+                href="/eventos/submundo-funk.html"
+                class="archive-row"
+            >
+
+
+                <span class="archive-index">
+
+                    001
+
+                </span>
+
+
+                <span class="archive-name">
+
+                    SUBMUNDØ FUNK
+
+                </span>
+
+
+                <span class="archive-date">
+
+                    29 JULHØ 2026
+
+                </span>
+
+
+                <span class="archive-arrow">
+
+                    ↗
+
+                </span>
+
+
+            </a>
+
+
+        </section>
 
 
 
-        <a
-            href="/eventos/submundo-funk.html"
-            class="archive-row"
-        >
+        <!-- =====================================================
+             FOOTER
+        ====================================================== -->
 
-            <div class="archive-index">
-                001
-            </div>
-
-            <div class="archive-name">
-                SUBMUNDØ FUNK
-            </div>
-
-            <div class="archive-date">
-                29 JULHØ 2026
-            </div>
-
-            <div class="archive-arrow">
-                ↗
-            </div>
-
-        </a>
+        <footer class="footer">
 
 
-    </section>
+            <span>
+
+                1Ø1
+
+            </span>
 
 
+            <span>
 
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
+                THE ART ØF MUSIC
 
-    <footer class="footer">
+            </span>
 
-        <span>
-            1Ø1
-        </span>
 
-        <span>
-            THE ART ØF MUSIC
-        </span>
+            <span>
 
-        <span>
-            2026
-        </span>
+                2026
 
-    </footer>
+            </span>
+
+
+        </footer>
+
+
+    </main>
 
 
 </div>
-
-
-<script>
-
-/* =========================================================
-   CURSOR LIGHT
-========================================================= */
-
-const cursor = document.querySelector(".cursor-light");
-
-if (cursor) {
-
-    document.addEventListener("mousemove", (event) => {
-
-        cursor.animate(
-            {
-                left: `${event.clientX}px`,
-                top: `${event.clientY}px`
-            },
-            {
-                duration: 700,
-                fill: "forwards"
-            }
-        );
-
-    });
-
-}
-
-</script>
 
 
 </body>
