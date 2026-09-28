@@ -12,7 +12,7 @@
         evento: "Evento 1Ø1",
         eventoSlug: "evento",
         data: "",
-        preco: 100,
+        preco: 400,
         moeda: "$",
         maxPorPessoa: 8,
         webhookUrl: ""
@@ -32,7 +32,7 @@
 
     /* =====================================================
        CRIAR MODAL
-    ===================================================== */
+       ===================================================== */
 
     function buildModal() {
 
@@ -68,7 +68,7 @@
 
 
                 <!-- =================================================
-                     STEP 1
+                     STEP 1 • QUANTIDADE
                 ================================================== -->
 
                 <div
@@ -87,8 +87,8 @@
 
 
                     <p class="pz-sub">
-                        Cada pulseira dá acesso garantido ao evento.
-                        Confirma quantas queres levar.
+                        Cada pulseira dá acesso ao evento.
+                        Escolhe abaixo a quantidade que pretendes.
                     </p>
 
 
@@ -130,14 +130,14 @@
                                 style="
                                     color:#999;
                                     font-size:12px;
-                                    letter-spacing:1px
+                                    letter-spacing:1px;
                                 "
                             >
                                 PREÇO UNITÁRIO
                             </div>
 
 
-                            <strong style="font-size:20px">
+                            <strong style="font-size:20px;">
                                 ${cfg.moeda}${cfg.preco}
                             </strong>
 
@@ -152,7 +152,7 @@
                             style="
                                 color:#999;
                                 font-size:13px;
-                                letter-spacing:2px
+                                letter-spacing:2px;
                             "
                         >
                             TOTAL A PAGAR
@@ -183,7 +183,7 @@
 
 
                 <!-- =================================================
-                     STEP 2
+                     STEP 2 • DADOS
                 ================================================== -->
 
                 <div
@@ -202,8 +202,8 @@
 
 
                     <p class="pz-sub">
-                        Usa o teu nome de personagem e o teu Discord
-                        para a equipa te encontrar rápido.
+                        Introduz os teus dados para podermos
+                        associar o pagamento ao pedido.
                     </p>
 
 
@@ -242,7 +242,7 @@
                     <div class="pz-field">
 
                         <label>
-                            CONTACTO / TELEMÓVEL (OPCIONAL)
+                            CONTACTO / TELEMÓVEL
                         </label>
 
                         <input
@@ -288,7 +288,7 @@
 
 
                 <!-- =================================================
-                     STEP 3
+                     STEP 3 • PAGAMENTO
                 ================================================== -->
 
                 <div
@@ -297,19 +297,164 @@
                 >
 
                     <span class="pz-eyebrow">
-                        PAGAMENTO INGAME
+                        PAGAMENTO
                     </span>
 
 
                     <h3>
-                        ENVIA O COMPROVATIVO
+                        FAZ A TRANSFERÊNCIA
                     </h3>
 
 
                     <p class="pz-sub">
-                        Faz a transferência ingame e anexa aqui
-                        o print (screenshot) da transação.
+                        Realiza primeiro a transferência para o
+                        <strong>IBAN 253</strong> no valor
+                        correspondente ao teu pedido.
+                        Depois, tira um print da transação e
+                        envia-o abaixo como comprovativo.
                     </p>
+
+
+                    <!-- =================================================
+                         CAIXA DE PAGAMENTO
+                    ================================================== -->
+
+                    <div
+                        style="
+                            margin:24px 0;
+                            padding:22px;
+                            border:1px solid rgba(145,70,255,.35);
+                            border-radius:18px;
+                            background:
+                                linear-gradient(
+                                    135deg,
+                                    rgba(145,70,255,.12),
+                                    rgba(255,255,255,.025)
+                                );
+                        "
+                    >
+
+                        <div
+                            style="
+                                display:flex;
+                                justify-content:space-between;
+                                align-items:center;
+                                gap:20px;
+                                margin-bottom:18px;
+                            "
+                        >
+
+                            <div>
+
+                                <div
+                                    style="
+                                        font-size:10px;
+                                        letter-spacing:2px;
+                                        color:#999;
+                                        margin-bottom:7px;
+                                    "
+                                >
+                                    IBAN
+                                </div>
+
+
+                                <strong
+                                    style="
+                                        font-size:28px;
+                                        letter-spacing:2px;
+                                    "
+                                >
+                                    253
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                style="
+                                    text-align:right;
+                                "
+                            >
+
+                                <div
+                                    style="
+                                        font-size:10px;
+                                        letter-spacing:2px;
+                                        color:#999;
+                                        margin-bottom:7px;
+                                    "
+                                >
+                                    VALOR A TRANSFERIR
+                                </div>
+
+
+                                <strong
+                                    id="pzPaymentTotal"
+                                    style="
+                                        font-size:28px;
+                                    "
+                                >
+                                    ${cfg.moeda}${cfg.preco}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            style="
+                                height:1px;
+                                background:rgba(255,255,255,.08);
+                                margin-bottom:16px;
+                            "
+                        ></div>
+
+
+                        <div
+                            style="
+                                font-size:12px;
+                                line-height:1.6;
+                                color:#aaa;
+                            "
+                        >
+
+                            <strong style="color:#fff;">
+                                IMPORTANTE:
+                            </strong>
+
+                            A transferência deve ser feita para o
+                            <strong style="color:#fff;">
+                                IBAN 253
+                            </strong>.
+
+                            Após concluir o pagamento,
+
+                            <strong style="color:#fff;">
+                                tira um print da transação
+                            </strong>
+
+                            e envia-o neste formulário.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         COMPROVATIVO
+                    ================================================== -->
+
+                    <div
+                        style="
+                            font-size:11px;
+                            letter-spacing:2px;
+                            color:#999;
+                            margin-bottom:10px;
+                        "
+                    >
+                        COMPROVATIVO DE PAGAMENTO
+                    </div>
 
 
                     <label
@@ -320,7 +465,7 @@
                         <input
                             type="file"
                             id="pzFile"
-                            accept="image/*"
+                            accept="image/png,image/jpeg,image/jpg"
                         >
 
 
@@ -330,7 +475,7 @@
 
 
                         <strong>
-                            Clica ou arrasta o print para aqui
+                            CLICA OU ARRASTA O PRINT PARA AQUI
                         </strong>
 
 
@@ -341,6 +486,10 @@
                     </label>
 
 
+                    <!-- =================================================
+                         PREVIEW
+                    ================================================== -->
+
                     <div
                         class="pz-preview"
                         id="pzPreview"
@@ -348,7 +497,7 @@
 
                         <img
                             id="pzPreviewImg"
-                            alt="Pré-visualização"
+                            alt="Pré-visualização do comprovativo"
                         >
 
 
@@ -369,6 +518,10 @@
                     </div>
 
 
+                    <!-- =================================================
+                         CONFIRMAÇÃO
+                    ================================================== -->
+
                     <label class="pz-checkbox">
 
                         <input
@@ -376,9 +529,14 @@
                             id="pzConfirm"
                         >
 
-                        Confirmo que o comprovativo enviado é
-                        verídico e corresponde a uma transferência
-                        real ingame.
+                        <span>
+
+                            Confirmo que fiz a transferência
+                            para o <strong>IBAN 263</strong>
+                            e que o comprovativo enviado
+                            corresponde a uma transferência real.
+
+                        </span>
 
                     </label>
 
@@ -387,10 +545,15 @@
                         class="pz-error"
                         id="pzErrorStep3"
                     >
-                        Anexa o comprovativo e confirma a checkbox
-                        para continuar.
+                        Faz a transferência para o IBAN 263,
+                        envia o print do pagamento e confirma
+                        a caixa acima para continuar.
                     </div>
 
+
+                    <!-- =================================================
+                         BOTÕES
+                    ================================================== -->
 
                     <div class="pz-actions">
 
@@ -431,7 +594,7 @@
 
 
                 <!-- =================================================
-                     STEP 4
+                     STEP 4 • SUCESSO
                 ================================================== -->
 
                 <div
@@ -513,7 +676,7 @@
 
     /* =====================================================
        ESCAPE HTML
-    ===================================================== */
+       ===================================================== */
 
     function escapeHtml(str) {
 
@@ -533,7 +696,7 @@
 
     /* =====================================================
        ELEMENTOS
-    ===================================================== */
+       ===================================================== */
 
     let els = {};
 
@@ -553,6 +716,9 @@
 
             modalTotal:
                 document.getElementById("pzModalTotal"),
+
+            paymentTotal:
+                document.getElementById("pzPaymentTotal"),
 
             minus:
                 document.getElementById("pzModalMinus"),
@@ -637,7 +803,7 @@
 
     /* =====================================================
        MUDAR STEP
-    ===================================================== */
+       ===================================================== */
 
     function goToStep(n) {
 
@@ -677,10 +843,14 @@
 
 
     /* =====================================================
-       QUANTIDADE
-    ===================================================== */
+       ATUALIZAR QUANTIDADE
+       ===================================================== */
 
     function updateQtyUI() {
+
+        const total =
+            state.qty * cfg.preco;
+
 
         if (els.modalQty) {
 
@@ -693,11 +863,26 @@
         if (els.modalTotal) {
 
             els.modalTotal.textContent =
-                cfg.moeda +
-                (state.qty * cfg.preco);
+                cfg.moeda + total;
 
         }
 
+
+        /*
+         * VALOR A TRANSFERIR
+         */
+
+        if (els.paymentTotal) {
+
+            els.paymentTotal.textContent =
+                cfg.moeda + total;
+
+        }
+
+
+        /*
+         * ELEMENTOS OPCIONAIS
+         */
 
         const pageQty =
             document.getElementById("pzQty");
@@ -718,8 +903,7 @@
         if (pageTotal) {
 
             pageTotal.textContent =
-                cfg.moeda +
-                (state.qty * cfg.preco);
+                cfg.moeda + total;
 
         }
 
@@ -753,7 +937,7 @@
 
     /* =====================================================
        ABRIR MODAL
-    ===================================================== */
+       ===================================================== */
 
     function openModal(presetQty) {
 
@@ -789,7 +973,7 @@
 
     /* =====================================================
        FECHAR MODAL
-    ===================================================== */
+       ===================================================== */
 
     function closeModal() {
 
@@ -821,7 +1005,7 @@
 
     /* =====================================================
        UPLOAD
-    ===================================================== */
+       ===================================================== */
 
     function handleFile(file) {
 
@@ -892,8 +1076,8 @@
 
 
     /* =====================================================
-       COMPRESSÃO
-    ===================================================== */
+       COMPRESSÃO DA IMAGEM
+       ===================================================== */
 
     function compressImage(file) {
 
@@ -929,13 +1113,11 @@
 
 
                     canvas.width =
-                        img.width *
-                        scale;
+                        img.width * scale;
 
 
                     canvas.height =
-                        img.height *
-                        scale;
+                        img.height * scale;
 
 
                     const ctx =
@@ -958,8 +1140,7 @@
                         blob => {
 
                             resolve(
-                                blob ||
-                                file
+                                blob || file
                             );
 
                         },
@@ -975,9 +1156,7 @@
 
                 img.onerror = () => {
 
-                    resolve(
-                        file
-                    );
+                    resolve(file);
 
                 };
 
@@ -990,9 +1169,7 @@
 
             reader.onerror = () => {
 
-                resolve(
-                    file
-                );
+                resolve(file);
 
             };
 
@@ -1007,8 +1184,8 @@
 
 
     /* =====================================================
-       GERAR CÓDIGO
-    ===================================================== */
+       GERAR CÓDIGO DO PEDIDO
+       ===================================================== */
 
     function generateOrderCode() {
 
@@ -1049,8 +1226,8 @@
 
 
     /* =====================================================
-       ENVIAR PARA DISCORD
-    ===================================================== */
+       ENVIAR PEDIDO PARA DISCORD
+       ===================================================== */
 
     async function sendOrder(orderCode) {
 
@@ -1061,7 +1238,7 @@
 
 
         /* -------------------------------------------------
-           WEBHOOK
+           VALIDAR WEBHOOK
         ------------------------------------------------- */
 
         if (
@@ -1079,7 +1256,7 @@
 
 
         /* -------------------------------------------------
-           COMPROVATIVO
+           VALIDAR COMPROVATIVO
         ------------------------------------------------- */
 
         if (!state.file) {
@@ -1119,8 +1296,8 @@
 
 
         /* =================================================
-           EMBED 101 • TICKETING
-        ================================================= */
+           EMBED DISCORD
+           ================================================= */
 
         const payload = {
 
@@ -1150,9 +1327,9 @@
 
                     fields: [
 
-                        /* =================================
+                        /* ---------------------------------
                            CÓDIGO
-                        ================================= */
+                        --------------------------------- */
 
                         {
 
@@ -1168,9 +1345,9 @@
                         },
 
 
-                        /* =================================
+                        /* ---------------------------------
                            COMPRADOR
-                        ================================= */
+                        --------------------------------- */
 
                         {
 
@@ -1195,9 +1372,9 @@
                         },
 
 
-                        /* =================================
+                        /* ---------------------------------
                            PEDIDO
-                        ================================= */
+                        --------------------------------- */
 
                         {
 
@@ -1226,9 +1403,35 @@
                         },
 
 
-                        /* =================================
+                        /* ---------------------------------
+                           PAGAMENTO
+                        --------------------------------- */
+
+                        {
+
+                            name:
+                                "💳  PAGAMENTO",
+
+                            value:
+                                [
+                                    "**IBAN**",
+                                    "`263`",
+                                    "",
+                                    "**Valor transferido**",
+                                    `**${total}**`,
+                                    "",
+                                    "📸 Comprovativo anexado abaixo."
+                                ].join("\n"),
+
+                            inline:
+                                false
+
+                        },
+
+
+                        /* ---------------------------------
                            ESTADO
-                        ================================= */
+                        --------------------------------- */
 
                         {
 
@@ -1249,9 +1452,9 @@
                     ],
 
 
-                    /* =====================================
+                    /* -------------------------------------
                        COMPROVATIVO
-                    ===================================== */
+                    ------------------------------------- */
 
                     image: {
 
@@ -1261,9 +1464,9 @@
                     },
 
 
-                    /* =====================================
+                    /* -------------------------------------
                        FOOTER
-                    ===================================== */
+                    ------------------------------------- */
 
                     footer: {
 
@@ -1284,7 +1487,7 @@
 
 
         /* =================================================
-           COMPRIMIR
+           COMPRIMIR COMPROVATIVO
         ================================================= */
 
         console.log(
@@ -1327,7 +1530,7 @@
 
 
         /* =================================================
-           WEBHOOK URL
+           WEBHOOK
         ================================================= */
 
         let webhookUrl;
@@ -1362,7 +1565,7 @@
 
 
         /* =================================================
-           FETCH
+           ENVIAR
         ================================================= */
 
         let response;
@@ -1481,7 +1684,7 @@
 
     /* =====================================================
        CONFETTI
-    ===================================================== */
+       ===================================================== */
 
     function fireConfetti() {
 
@@ -1682,8 +1885,8 @@
 
 
     /* =====================================================
-       VALIDAÇÃO STEP 2
-    ===================================================== */
+       VALIDAR STEP 2
+       ===================================================== */
 
     function validateStep2() {
 
@@ -1704,8 +1907,8 @@
 
 
     /* =====================================================
-       VALIDAÇÃO STEP 3
-    ===================================================== */
+       VALIDAR STEP 3
+       ===================================================== */
 
     function validateStep3() {
 
@@ -1727,12 +1930,14 @@
 
     /* =====================================================
        EVENTOS
-    ===================================================== */
+       ===================================================== */
 
     function wireEvents() {
 
 
-        /* FECHAR */
+        /* =================================================
+           FECHAR
+        ================================================= */
 
         els.close.addEventListener(
             "click",
@@ -1740,7 +1945,9 @@
         );
 
 
-        /* CLICAR FORA */
+        /* =================================================
+           CLICAR FORA
+        ================================================= */
 
         els.overlay.addEventListener(
             "click",
@@ -1759,7 +1966,9 @@
         );
 
 
-        /* ESC */
+        /* =================================================
+           ESC
+        ================================================= */
 
         document.addEventListener(
             "keydown",
@@ -1780,7 +1989,9 @@
         );
 
 
-        /* QUANTIDADE */
+        /* =================================================
+           QUANTIDADE
+        ================================================= */
 
         els.minus.addEventListener(
             "click",
@@ -1794,7 +2005,9 @@
         );
 
 
-        /* STEP 1 → STEP 2 */
+        /* =================================================
+           STEP 1 → STEP 2
+        ================================================= */
 
         els.toStep2.addEventListener(
             "click",
@@ -1806,7 +2019,9 @@
         );
 
 
-        /* STEP 2 → STEP 3 */
+        /* =================================================
+           STEP 2 → STEP 3
+        ================================================= */
 
         els.toStep3.addEventListener(
             "click",
@@ -1824,7 +2039,9 @@
         );
 
 
-        /* VOLTAR */
+        /* =================================================
+           VOLTAR
+        ================================================= */
 
         document
             .querySelectorAll(
@@ -1848,7 +2065,9 @@
             });
 
 
-        /* DRAGOVER */
+        /* =================================================
+           DRAGOVER
+        ================================================= */
 
         els.dropzone.addEventListener(
             "dragover",
@@ -1864,7 +2083,9 @@
         );
 
 
-        /* DRAG LEAVE */
+        /* =================================================
+           DRAG LEAVE
+        ================================================= */
 
         els.dropzone.addEventListener(
             "dragleave",
@@ -1878,7 +2099,9 @@
         );
 
 
-        /* DROP */
+        /* =================================================
+           DROP
+        ================================================= */
 
         els.dropzone.addEventListener(
             "drop",
@@ -1905,7 +2128,9 @@
         );
 
 
-        /* FILE */
+        /* =================================================
+           FILE
+        ================================================= */
 
         els.fileInput.addEventListener(
             "change",
@@ -1919,7 +2144,9 @@
         );
 
 
-        /* REMOVER */
+        /* =================================================
+           REMOVER COMPROVATIVO
+        ================================================= */
 
         els.previewRemove.addEventListener(
             "click",
@@ -1950,7 +2177,7 @@
 
 
         /* =================================================
-           ENVIAR
+           ENVIAR PEDIDO
         ================================================= */
 
         els.submit.addEventListener(
@@ -1995,7 +2222,9 @@
                     );
 
 
-                    /* SUCESSO */
+                    /* -------------------------------------
+                       SUCESSO
+                    ------------------------------------- */
 
                     els.orderCode.textContent =
                         orderCode;
@@ -2014,8 +2243,6 @@
                         err
                     );
 
-
-                    /* MOSTRAR ERRO REAL */
 
                     els.errorSubmit.textContent =
                         err &&
@@ -2243,7 +2470,7 @@
 
     /* =====================================================
        BOTÃO FLUTUANTE
-    ===================================================== */
+       ===================================================== */
 
     function setupFloatingButton() {
 
@@ -2322,7 +2549,7 @@
 
     /* =====================================================
        INIT
-    ===================================================== */
+       ===================================================== */
 
     function init() {
 
@@ -2358,7 +2585,7 @@
 
     /* =====================================================
        API PÚBLICA
-    ===================================================== */
+       ===================================================== */
 
     window.Pulseiras = {
 
