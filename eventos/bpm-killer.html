@@ -1132,6 +1132,362 @@
 
     </style>
 
+    <style>
+
+/* =========================================================
+   BPM KILLER — MODAL DE PULSEIRAS
+   APENAS ESTA PÁGINA
+========================================================= */
+
+/*
+   O modal é criado diretamente dentro do <body>.
+   Como .killer-page é o conteúdo desta página,
+   usamos este selector para garantir que estas regras
+   não afetam os restantes eventos.
+*/
+
+.killer-page ~ .pz-overlay {
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(120, 0, 0, .18),
+            rgba(0, 0, 0, .94) 70%
+        ) !important;
+
+    backdrop-filter: blur(8px) !important;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.killer-page ~ .pz-overlay .pz-modal {
+    max-width: 560px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #151515 0%,
+            #0b0b0b 70%,
+            #100000 100%
+        ) !important;
+
+    border: 1px solid rgba(224, 0, 0, .38) !important;
+
+    border-radius: 6px !important;
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.8),
+        0 0 0 1px rgba(255,0,0,.04),
+        0 0 50px rgba(180,0,0,.08) !important;
+
+    overflow: hidden;
+}
+
+
+/* pequena linha vermelha no topo */
+
+.killer-page ~ .pz-overlay .pz-modal::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #e00000,
+            #ff2a2a,
+            #e00000,
+            transparent
+        );
+
+    box-shadow:
+        0 0 18px rgba(224,0,0,.6);
+}
+
+
+/* =========================================================
+   BOTÃO FECHAR
+========================================================= */
+
+.killer-page ~ .pz-overlay .pz-close {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50% !important;
+
+    background: #181818 !important;
+
+    border: 1px solid rgba(255,255,255,.08) !important;
+
+    color: #aaa !important;
+
+    transition:
+        background .25s ease,
+        color .25s ease,
+        transform .25s ease,
+        border-color .25s ease;
+}
+
+.killer-page ~ .pz-overlay .pz-close:hover {
+    background: #e00000 !important;
+
+    border-color: #e00000 !important;
+
+    color: #fff !important;
+
+    transform: rotate(90deg);
+}
+
+
+/* =========================================================
+   BARRA DOS PASSOS
+========================================================= */
+
+.killer-page ~ .pz-overlay .pz-steps-track span {
+    background: rgba(255,255,255,.10) !important;
+
+    height: 2px !important;
+
+    border-radius: 0 !important;
+
+    transition:
+        background .35s ease,
+        box-shadow .35s ease;
+}
+
+.killer-page ~ .pz-overlay .pz-steps-track span.active,
+.killer-page ~ .pz-overlay .pz-steps-track span.done {
+    background: #e00000 !important;
+
+    box-shadow:
+        0 0 10px rgba(224,0,0,.55);
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+.killer-page ~ .pz-overlay .pz-eyebrow {
+    color: #e00000 !important;
+
+    letter-spacing: .32em !important;
+
+    text-shadow:
+        0 0 12px rgba(224,0,0,.3);
+}
+
+.killer-page ~ .pz-overlay .pz-step h3 {
+    color: #fff !important;
+
+    letter-spacing: -.02em;
+
+    text-transform: uppercase;
+}
+
+.killer-page ~ .pz-overlay .pz-sub {
+    color: #888 !important;
+}
+
+
+/* =========================================================
+   CAIXA DA QUANTIDADE
+========================================================= */
+
+.killer-page ~ .pz-overlay .pz-summary-row {
+    background:
+        linear-gradient(
+            135deg,
+            #181818,
+            #101010
+        ) !important;
+
+    border: 1px solid rgba(255,255,255,.09) !important;
+
+    border-radius: 4px !important;
+
+    box-shadow:
+        inset 0 0 30px rgba(0,0,0,.25);
+}
+
+
+/* =========================================================
+   BOTÕES + / -
+========================================================= */
+
+.killer-page ~ .pz-overlay .qty-control {
+    background: #111 !important;
+
+    border: 1px solid rgba(255,255,255,.08) !important;
+
+    border-radius: 999px !important;
+}
+
+.killer-page ~ .pz-overlay .qty-btn {
+    background: #1d1d1d !important;
+
+    color: #fff !important;
+
+    border-radius: 50% !important;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+.killer-page ~ .pz-overlay .qty-btn:hover {
+    background: #e00000 !important;
+
+    color: #fff !important;
+
+    transform: scale(1.06);
+}
+
+.killer-page ~ .pz-overlay .qty-value {
+    color: #fff !important;
+}
+
+
+/* =========================================================
+   PREÇO
+========================================================= */
+
+.killer-page ~ .pz-overlay .pz-summary-row strong {
+    color: #fff !important;
+}
+
+.killer-page ~ .pz-overlay .pz-total-line {
+    border-color: rgba(255,255,255,.08) !important;
+}
+
+.killer-page ~ .pz-overlay .pz-total-line strong {
+    color: #fff !important;
+
+    text-shadow:
+        0 0 18px rgba(255,255,255,.12);
+}
+
+
+/* =========================================================
+   BOTÃO PRINCIPAL
+========================================================= */
+
+.killer-page ~ .pz-overlay .pz-btn-primary {
+    background:
+        linear-gradient(
+            90deg,
+            #a00000,
+            #e00000,
+            #ff2020
+        ) !important;
+
+    border: 0 !important;
+
+    border-radius: 3px !important;
+
+    color: #fff !important;
+
+    box-shadow:
+        0 8px 30px rgba(224,0,0,.22);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        filter .25s ease;
+}
+
+.killer-page ~ .pz-overlay .pz-btn-primary:hover {
+    transform: translateY(-2px);
+
+    filter: brightness(1.12);
+
+    box-shadow:
+        0 12px 35px rgba(224,0,0,.38);
+}
+
+
+/* =========================================================
+   CAMPOS DOS PASSOS SEGUINTES
+========================================================= */
+
+.killer-page ~ .pz-overlay input,
+.killer-page ~ .pz-overlay textarea,
+.killer-page ~ .pz-overlay select {
+    background: #101010 !important;
+
+    border: 1px solid rgba(255,255,255,.10) !important;
+
+    color: #fff !important;
+
+    border-radius: 3px !important;
+}
+
+.killer-page ~ .pz-overlay input:focus,
+.killer-page ~ .pz-overlay textarea:focus,
+.killer-page ~ .pz-overlay select:focus {
+    border-color: rgba(224,0,0,.65) !important;
+
+    box-shadow:
+        0 0 0 2px rgba(224,0,0,.10),
+        0 0 20px rgba(224,0,0,.08) !important;
+
+    outline: none;
+}
+
+
+/* =========================================================
+   DROPZONE DO COMPROVATIVO
+========================================================= */
+
+.killer-page ~ .pz-overlay .pz-dropzone {
+    background: #0d0d0d !important;
+
+    border: 1px dashed rgba(224,0,0,.38) !important;
+
+    border-radius: 4px !important;
+
+    transition:
+        background .25s ease,
+        border-color .25s ease;
+}
+
+.killer-page ~ .pz-overlay .pz-dropzone:hover {
+    background: rgba(224,0,0,.05) !important;
+
+    border-color: #e00000 !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .killer-page ~ .pz-overlay {
+        padding: 14px !important;
+    }
+
+    .killer-page ~ .pz-overlay .pz-modal {
+        border-radius: 4px !important;
+
+        padding: 30px 22px !important;
+    }
+
+}
+
+</style>
+
 </head>
 
 
