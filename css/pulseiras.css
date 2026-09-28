@@ -348,11 +348,34 @@ MODAL
 
 }
 
-.pz-overlay.open{
+.pz-overlay.open {
+    display: flex !important;
+    position: fixed !important;
+    inset: 0 !important;
 
-    opacity:1;
-    visibility:visible;
+    z-index: 999999 !important;
 
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    pointer-events: auto !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: rgba(3, 3, 5, 0.82) !important;
+    backdrop-filter: blur(10px);
+}
+
+.pz-overlay.open .pz-modal {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    position: relative !important;
+    z-index: 1000000 !important;
+
+    transform: translateY(0) scale(1) !important;
 }
 
 .pz-modal{
