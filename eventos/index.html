@@ -858,110 +858,66 @@ img {
 /* =========================================================
    VISUAL BREAK
 ========================================================= */
+<section class="event-showcase">
 
-.visual-break {
+    <div class="event-showcase-bg">
+        <img
+            src="../assets/images/evento-principal.png"
+            alt="SubmundØ Funk"
+        >
+    </div>
 
-    margin-top: 150px;
+    <div class="event-showcase-overlay"></div>
 
-    height: 500px;
+    <div class="event-showcase-content">
 
-    position: relative;
+        <div class="event-showcase-number">
+            01 / EXPERIENCE
+        </div>
 
-    overflow: hidden;
+        <div class="event-showcase-main">
 
-    display: flex;
+            <div class="event-showcase-title">
+                SUBMUNDØ<br>
+                FUNK
+            </div>
 
-    align-items: center;
+            <div class="event-showcase-info">
 
-    justify-content: center;
+                <span>
+                    29 JULHØ 2026
+                </span>
 
-    border-top:
-        1px solid var(--line);
+                <span>
+                    22:ØØ
+                </span>
 
-    border-bottom:
-        1px solid var(--line);
-}
+                <span>
+                    GARAGEM UNDERGRØUND
+                </span>
 
-.visual-break-image {
+            </div>
 
-    position: absolute;
+        </div>
 
-    inset: 0;
-}
+        <a
+            href="/eventos/submundo-funk.html"
+            class="event-showcase-button"
+        >
 
-.visual-break-image img {
+            <span>
+                VER EVENTO
+            </span>
 
-    width: 100%;
+            <strong>
+                ↗
+            </strong>
 
-    height: 100%;
+        </a>
 
-    object-fit: cover;
+    </div>
 
-    filter: grayscale(100%);
-
-    opacity: .18;
-
-    transform:
-        scale(1.08);
-}
-
-.visual-break::after {
-
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-    background:
-        radial-gradient(
-            circle,
-            transparent 15%,
-            #050505 85%
-        );
-}
-
-.visual-break-title {
-
-    position: relative;
-
-    z-index: 5;
-
-    text-align: center;
-
-    font-size:
-        clamp(
-            90px,
-            15vw,
-            230px
-        );
-
-    line-height: .6;
-
-    letter-spacing:
-        -.11em;
-
-    font-weight: 900;
-
-    text-transform: uppercase;
-}
-
-.visual-break-small {
-
-    display: block;
-
-    font-size: 8px;
-
-    font-weight: 600;
-
-    color: #777;
-
-    letter-spacing: .35em;
-
-    margin-bottom: 28px;
-}
-
-
+</section>
 /* =========================================================
    ARCHIVE
 ========================================================= */
