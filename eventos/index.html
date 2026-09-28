@@ -430,24 +430,20 @@ img {
 
 .hero-title {
     position: relative;
-
     z-index: 7;
 
     width: 100%;
 
     pointer-events: none;
-
     text-align: center;
-
     user-select: none;
 
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
 
-    gap: 18px;
+    /* MAIS ESPAÇO ENTRE AS DUAS PALAVRAS */
+    gap: 55px;
 }
 
 .hero-title-line {
@@ -455,14 +451,14 @@ img {
 
     font-size:
         clamp(
-            82px,
-            11vw,
-            175px
+            75px,
+            10vw,
+            165px
         );
 
-    line-height: .72;
+    line-height: .68;
 
-    letter-spacing: -.095em;
+    letter-spacing: -.085em;
 
     font-weight: 900;
 
@@ -479,7 +475,7 @@ img {
 
 .hero-title-line:first-child {
     transform:
-        translateX(-4vw);
+        translateX(-5vw);
 }
 
 
@@ -487,7 +483,7 @@ img {
 
 .hero-title-line:last-child {
     transform:
-        translateX(4vw);
+        translateX(5vw);
 }
 
 
@@ -496,16 +492,14 @@ img {
 .hero:hover
 .hero-title-line:first-child {
     transform:
-        translateX(-5.5vw);
+        translateX(-6.5vw);
 }
 
 .hero:hover
 .hero-title-line:last-child {
     transform:
-        translateX(5.5vw);
+        translateX(6.5vw);
 }
-
-
 /* =========================================================
    EVENT DATE
 ========================================================= */
