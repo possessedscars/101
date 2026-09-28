@@ -21,7 +21,9 @@
     <link rel="stylesheet" href="css/pulseiras.css">
 
     <script>
-        // Configuração da loja de pulseiras para o evento em destaque.
+        /*
+         * CONFIGURAÇÃO DA LOJA DE PULSEIRAS
+         */
         window.PULSEIRAS_CONFIG = {
             evento: "SubmundØ Funk",
             eventoSlug: "submundo-funk",
@@ -29,544 +31,942 @@
             preco: 150,
             moeda: "$",
             maxPorPessoa: 6,
-            // Cola aqui o URL do teu Webhook do Discord:
-            // Definições do Canal > Integrações > Webhooks > Novo Webhook > Copiar URL
+
             webhookUrl: "COLOCA_AQUI_O_TEU_DISCORD_WEBHOOK_URL"
         };
     </script>
 
-        <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/logo/logo-white.svg">
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/logo/logo-white.svg">
 
 </head>
 
+
 <body>
 
-    <canvas id="bg-canvas" aria-hidden="true"></canvas>
-    
-        <!-- LOADER -->
-        
+    <canvas
+        id="bg-canvas"
+        aria-hidden="true">
+    </canvas>
+
+
+    <!-- ========================= -->
+    <!-- LOADER -->
+    <!-- ========================= -->
+
     <div id="loader">
 
-    <div class="logo-container">
-
-        <img src="assets/logo/logo-white.svg"
-             class="logo-base"
-             alt="101 Logo">
-
-        <div class="logo-reveal">
-
-            <img src="assets/logo/logo-white.svg"
-                 class="logo-fill"
-                 alt="101 Logo">
-
-        </div>
-
-    </div>
-        
-</div>     
-
-    <!-- NAVBAR -->
-
-    <header>
-
-        <div class="logo">
-
-            <img src="assets/logo/logo-white-small.png" alt="101 Logo">
-            <img src="assets/logo/logo%20outside-white.png" alt="Logo Outside White">
-
-        </div>
-
-        <nav>
-
-            <a href="/" id="homeLink">INICÍØ</a>
-
-            <a href="#about">ABØUT US</a>
-
-            <a href="/eventos/submundo-funk.html">EVENTØS</a>
-
-            <a href="#partners">PARCEIRØS</a>
-
-            <a href="#gallery">GALERIA</a>
-
-            <a href="#contact">CØNTACTØS</a>
-
-        </nav>
-
-        <a href="https://discord.gg/JVc5QCdaM"
-       target="_blank"
-       rel="noopener noreferrer"
-       class="secondary">
-        ØUR UNIVERSE 
-    </a>
-
-    </header>
-    
-
-    <!-- HERO -->
-
-<section class="hero" id="home">
-
-    <video autoplay muted loop playsinline>
-        <source src="assets/videos/hero.mp4" type="video/mp4">
-    </video>
-
-    <div class="overlay"></div>
-
-    <div class="hero-content">
-
-        <span class="hero-tag">
-            WE LIVE THE MUSIC • WE CREATE MØMENTS
-        </span>
-
-        <h1>
-            <img src="assets/logo/logo-white-small.png" alt="Logo">
-        </h1>
-
-        <p class="hero-heading fx-glitch"
-       data-text="THE ART ØF TECHNO">
-        THE ART ØF TECHNØ
-    </p>
-
-        <p class="hero-heading hero-heading-small fx-glitch"
-       data-text="ØUTSIDE ØF THE BØX">
-        ØUTSIDE ØF THE BØX
-    </p>
-
-
-        <p class="hero-text">
-             A 101 LIGA PESSOAS, PARCEIRØS E EVENTØS ATRAVÉS DE EXPERIÊNCIAS ÚNICAS, CRIADAS PARA UMA COMUNIDADE QUE VIVE CADA MØMENTØ
-        </p>
-
-        <div class="hero-buttons">
-
-    <a href="#events" class="secondary">
-        WHAT'S CØMING
-    </a>
-
-    <a href="https://discord.gg/JVc5QCdaM"
-       target="_blank"
-       rel="noopener noreferrer"
-       class="secondary">
-        ENTRA NØ UNIVERSØ 1Ø1 
-    </a>
-
-        </div>
-
-    </div>
-
-    <div class="hero-scroll">
-
-        <span></span>
-
-        Scroll
-
-    </div>
-
-</section>
-
-    <!-- ABOUT -->
-     
-<section id="about">
-
-    <div class="about-wrapper">
-
-        <div class="about-left">
-
-            <span class="section-label">
-                ABØUT US
-            </span>
-
-            <h2>
-
-                NÃØ CRIAMØS<br>
-                APENAS EVENTØS
-
-            </h2>
-
-            <h3>
-
-                CRIAMØS EXPERIÊNCIAS
-
-            </h3>
-
-        </div>
-
-        <div class="about-right">
-
-            <p>
-
-                A 101 nasceu para ligar comunidades, marcas e criadores através
-                de experiências cuidadosamente pensadas
-
-            </p>
-
-            <p>
-
-                Cada evento é desenhado para proporcionar momentos memoráveis,
-                fortalecer relações e criar oportunidades dentro da comunidade
-
-            </p>
-
-            <a href="/equipa.html" class="about-button">
-
-                CØNHECE A EQUIPA →
-
-            </a>
-
-        </div>
-
-    </div>
-
-</section>
-
-<section id="experience">
-
-    <div class="experience-video">
-
-        <video autoplay muted loop playsinline>
-
-            <source src="assets/videos/experience.mp4" type="video/mp4">
-
-        </video>
-
-        <div class="experience-overlay">
-
-            <span>101 EXPERIENCE</span>
-
-            <h2>
-                CADA EVENTØ<br>
-                CØNTA UMA HISTÓRIA
-            </h2>
-
-        </div>
-
-    </div>
-
-</section>
-
-    <!-- EVENTS -->
-
-<section id="events">
-
-    <div class="container">
-
-        <div class="section-header">
-
-            <span class="section-label">
-                EVENTØS
-            </span>
-
-            <h2>
-                EXPERIÊNCIAS EM DESTAQUE
-            </h2>
-
-        </div>
-
-        <div class="featured-event">
-
-            <img src="assets/images/evento-principal.png" alt="Evento Principal">
-
-            <div class="event-overlay">
-
-                <span>29 JULHØ 2026 • 22:ØØ
-                </span>
-                
-                <span class="event-location">
-                GARAGEM UNDERGRØUND APARTAMENTØS
-                </span>
-
-                <h3>SUBMUNDØ FUNK</h3>
-
-                <p>
-                    A 101:ØUTSIDE ØF THE BØX VAI ENTRAR NØ SUBMUNDØ FUNK E DAR-TE UMA EXPERIÊNCIA PARA FICAR PARA SEMPRE GUARDADA NA MEMÓRIA
-                </p>
-
-                <div class="featured-event-actions">
-
-                    <a href="eventos/submundo-funk.html">
-        VER EVENTO →
-    </a>
-
-                    <button type="button" class="pz-buy-btn featured-buy-btn" data-open-pulseiras>
-                        🎟️ COMPRAR PULSEIRA
-                    </button>
-
-                </div>
+        <div class="logo-container">
+
+            <img
+                src="assets/logo/logo-white.svg"
+                class="logo-base"
+                alt="101 Logo">
+
+            <div class="logo-reveal">
+
+                <img
+                    src="assets/logo/logo-white.svg"
+                    class="logo-fill"
+                    alt="101 Logo">
 
             </div>
 
         </div>
 
-        <div class="events-grid">
+    </div>
 
-            <article class="event-card">
 
-                <img src="assets/images/logo-white.png" alt="Evento">
+    <!-- ========================= -->
+    <!-- NAVBAR -->
+    <!-- ========================= -->
 
-                <div class="card-overlay">
+    <header>
 
-                    <span>----</span>
+        <div class="logo">
 
-                    <h4>PØR ANUNCIAR</h4>
+            <img
+                src="assets/logo/logo-white-small.png"
+                alt="101 Logo">
 
-                </div>
-
-            </article>
-
-            <article class="event-card">
-
-                <img src="assets/images/logo-white.png" alt="Evento">
-
-                <div class="card-overlay">
-
-                    <span>----</span>
-
-                    <h4>PØR ANUNCIAR</h4>
-
-                </div>
-
-            </article>
+            <img
+                src="assets/logo/logo%20outside-white.png"
+                alt="Logo Outside White">
 
         </div>
 
-    </div>
 
-</section>
+        <nav>
 
-    <!-- PARTNERS -->
+            <a
+                href="/"
+                id="homeLink">
+                INICÍØ
+            </a>
 
-<section id="partners">
+            <a href="#about">
+                ABØUT US
+            </a>
 
-    <div class="container">
+            <a href="/eventos/submundo-funk.html">
+                EVENTØS
+            </a>
 
-        <div class="section-header">
-
-            <span class="section-label">
+            <a href="#partners">
                 PARCEIRØS
+            </a>
+
+            <a href="#gallery">
+                GALERIA
+            </a>
+
+            <a href="#contact">
+                CØNTACTØS
+            </a>
+
+        </nav>
+
+
+        <a
+            href="https://discord.gg/JVc5QCdaM"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="secondary">
+
+            ØUR UNIVERSE
+
+        </a>
+
+    </header>
+
+
+    <!-- ========================= -->
+    <!-- HERO -->
+    <!-- ========================= -->
+
+    <section
+        class="hero"
+        id="home">
+
+        <video
+            autoplay
+            muted
+            loop
+            playsinline>
+
+            <source
+                src="assets/videos/hero.mp4"
+                type="video/mp4">
+
+        </video>
+
+
+        <div class="overlay"></div>
+
+
+        <div class="hero-content">
+
+            <span class="hero-tag">
+                WE LIVE THE MUSIC • WE CREATE MØMENTS
             </span>
 
-            <h2>
-                QUEM FAZ PARTE DA 1Ø1
-            </h2>
 
-        </div>
+            <h1>
 
-    </div>
+                <img
+                    src="assets/logo/logo-white-small.png"
+                    alt="Logo">
 
-    <div class="marquee">
+            </h1>
 
-        <div class="marquee-track">
 
-            <span>VANILLA UNICØRN</span>
-            <span>WEAZEL NEWS</span>
-            <span>SEATØN SANDS</span>
-            <span>HØRNY'S</span>
+            <p
+                class="hero-heading fx-glitch"
+                data-text="THE ART ØF TECHNO">
 
-            <span>VANILLA UNICØRN</span>
-            <span>WEAZEL NEWS</span>
-            <span>SEATØN SANDS</span>
-            <span>HØRNY'S</span>
-
-        </div>
-
-    </div>
-
-</section>
-
-    <!-- GALLERY -->
-
-<section id="gallery">
-
-    <div class="gallery-header">
-
-        <span>GALERIA</span>
-
-        <h2>
-            MØMENTØS QUE<br>
-            FICAM PARA SEMPRE
-        </h2>
-
-    </div>
-
-    <div class="gallery-grid">
-
-        <div class="gallery-item large">
-            <img src="assets/images/gallery1.png" alt="">
-        </div>
-
-        <div class="gallery-item">
-            <img src="assets/images/gallery2.png" alt="">
-        </div>
-
-        <div class="gallery-item tall">
-            <img src="assets/images/gallery3.png" alt="">
-        </div>
-
-        <div class="gallery-item">
-            <img src="assets/images/gallery4.png" alt="">
-        </div>
-
-        <div class="gallery-item wide">
-            <img src="assets/images/gallery5.png" alt="">
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ===========================
-CONTACT
-=========================== -->
-
-    
-<section id="contact">
-
-    <div class="contact-bg-text">
-
-    1Ø1
-
-</div>
-
-<div class="contact-grid"></div>
-
-    <div class="contact-container">
-
-        <div class="contact-left">
-
-            <span class="contact-label">
-                CØNTACTØ
-            </span>
-
-            <h2>
-
-                LET'S BUILD
-                <br>
-                SØMETHING
-                <br>
-                REMARKABLE
-
-            </h2>
-
-            <p>
-
-                Tens uma ideia, um evento ou uma parceria em mente?
-                Vamos criar algo memorável juntos.
+                THE ART ØF TECHNØ
 
             </p>
 
-            <div class="contact-links"></div>
+
+            <p
+                class="hero-heading hero-heading-small fx-glitch"
+                data-text="ØUTSIDE ØF THE BØX">
+
+                ØUTSIDE ØF THE BØX
+
+            </p>
+
+
+            <p class="hero-text">
+
+                A 101 LIGA PESSOAS, PARCEIRØS E EVENTØS ATRAVÉS DE
+                EXPERIÊNCIAS ÚNICAS, CRIADAS PARA UMA COMUNIDADE
+                QUE VIVE CADA MØMENTØ
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <a
+                    href="#events"
+                    class="secondary">
+
+                    WHAT'S CØMING
+
+                </a>
+
+
+                <a
+                    href="https://discord.gg/JVc5QCdaM"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="secondary">
+
+                    ENTRA NØ UNIVERSØ 1Ø1
+
+                </a>
+
+            </div>
 
         </div>
 
-        <div class="contact-right">
 
-            <form id="contact-form" class="contact-form">
+        <div class="hero-scroll">
 
-                <div class="input-group">
+            <span></span>
 
-                    <label>Nome</label>
-
-                    <input
-                        type="text"
-                        name="name"
-                        required>
-
-                </div>
-
-                <div class="input-group">
-
-                    <label>Email</label>
-
-                    <input
-                        type="email"
-                        name="email"
-                        required>
-
-                </div>
-
-                <div class="input-group">
-
-                    <label>Discord</label>
-
-                    <input
-                        type="text"
-                        name="discord">
-
-                </div>
-
-                <div class="input-group">
-
-                    <label>Assunto</label>
-
-                    <input
-                        type="text"
-                        name="subject"
-                        required>
-
-                </div>
-
-                <div class="input-group full">
-
-                    <label>Mensagem</label>
-
-                    <textarea
-                        name="message"
-                        rows="7"
-                        required></textarea>
-
-                </div>
-
-                <button
-                    id="send-btn"
-                    type="submit">
-
-                    ENVIAR MENSAGEM →
-
-                </button>
-
-            </form>
+            Scroll
 
         </div>
 
-    </div>
+    </section>
 
-</section>
 
+    <!-- ========================= -->
+    <!-- ABOUT -->
+    <!-- ========================= -->
+
+    <section id="about">
+
+        <div class="about-wrapper">
+
+            <div class="about-left">
+
+                <span class="section-label">
+                    ABØUT US
+                </span>
+
+
+                <h2>
+
+                    NÃØ CRIAMØS<br>
+                    APENAS EVENTØS
+
+                </h2>
+
+
+                <h3>
+
+                    CRIAMØS EXPERIÊNCIAS
+
+                </h3>
+
+            </div>
+
+
+            <div class="about-right">
+
+                <p>
+
+                    A 101 nasceu para ligar comunidades, marcas e criadores
+                    através de experiências cuidadosamente pensadas
+
+                </p>
+
+
+                <p>
+
+                    Cada evento é desenhado para proporcionar momentos memoráveis,
+                    fortalecer relações e criar oportunidades dentro da comunidade
+
+                </p>
+
+
+                <a
+                    href="/equipa.html"
+                    class="about-button">
+
+                    CØNHECE A EQUIPA →
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- EXPERIENCE -->
+    <!-- ========================= -->
+
+    <section id="experience">
+
+        <div class="experience-video">
+
+            <video
+                autoplay
+                muted
+                loop
+                playsinline>
+
+                <source
+                    src="assets/videos/experience.mp4"
+                    type="video/mp4">
+
+            </video>
+
+
+            <div class="experience-overlay">
+
+                <span>
+                    101 EXPERIENCE
+                </span>
+
+
+                <h2>
+
+                    CADA EVENTØ<br>
+                    CØNTA UMA HISTÓRIA
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- EVENTS -->
+    <!-- ========================= -->
+
+    <section id="events">
+
+        <div class="container">
+
+            <div class="section-header">
+
+                <span class="section-label">
+                    EVENTØS
+                </span>
+
+
+                <h2>
+                    EXPERIÊNCIAS EM DESTAQUE
+                </h2>
+
+            </div>
+
+
+            <!-- EVENTO PRINCIPAL -->
+
+            <div class="featured-event">
+
+                <img
+                    src="assets/images/evento-principal.png"
+                    alt="Evento Principal">
+
+
+                <div class="event-overlay">
+
+                    <span>
+                        29 JULHØ 2026 • 22:ØØ
+                    </span>
+
+
+                    <span class="event-location">
+
+                        GARAGEM UNDERGRØUND
+                        APARTAMENTØS
+
+                    </span>
+
+
+                    <h3>
+                        SUBMUNDØ FUNK
+                    </h3>
+
+
+                    <p>
+
+                        A 101:ØUTSIDE ØF THE BØX VAI ENTRAR NØ
+                        SUBMUNDØ FUNK E DAR-TE UMA EXPERIÊNCIA
+                        PARA FICAR PARA SEMPRE GUARDADA NA MEMÓRIA
+
+                    </p>
+
+
+                    <!-- BOTÕES DO EVENTO -->
+
+                    <div class="featured-event-actions">
+
+
+                        <a
+                            href="eventos/submundo-funk.html">
+
+                            VER EVENTO →
+
+                        </a>
+
+
+                        <button
+                            type="button"
+                            class="pz-buy-btn featured-buy-btn"
+                            data-open-pulseiras
+                            onclick="
+
+                                const overlay =
+                                    document.getElementById('pzOverlay');
+
+                                if (overlay) {
+
+                                    overlay.classList.add('open');
+
+                                    document.body.classList.add(
+                                        'pz-modal-open'
+                                    );
+
+                                    console.log(
+                                        '[101] Modal de pulseiras aberto.'
+                                    );
+
+                                } else {
+
+                                    console.error(
+                                        '[101] pzOverlay não encontrado.'
+                                    );
+
+                                }
+
+                                return false;
+
+                            ">
+
+                            🎟️ COMPRAR PULSEIRA
+
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- OUTROS EVENTOS -->
+
+            <div class="events-grid">
+
+
+                <article class="event-card">
+
+                    <img
+                        src="assets/images/logo-white.png"
+                        alt="Evento">
+
+
+                    <div class="card-overlay">
+
+                        <span>
+                            ----
+                        </span>
+
+
+                        <h4>
+                            PØR ANUNCIAR
+                        </h4>
+
+                    </div>
+
+                </article>
+
+
+                <article class="event-card">
+
+                    <img
+                        src="assets/images/logo-white.png"
+                        alt="Evento">
+
+
+                    <div class="card-overlay">
+
+                        <span>
+                            ----
+                        </span>
+
+
+                        <h4>
+                            PØR ANUNCIAR
+                        </h4>
+
+                    </div>
+
+                </article>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- PARTNERS -->
+    <!-- ========================= -->
+
+    <section id="partners">
+
+        <div class="container">
+
+            <div class="section-header">
+
+                <span class="section-label">
+                    PARCEIRØS
+                </span>
+
+
+                <h2>
+                    QUEM FAZ PARTE DA 1Ø1
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="marquee">
+
+            <div class="marquee-track">
+
+                <span>
+                    VANILLA UNICØRN
+                </span>
+
+                <span>
+                    WEAZEL NEWS
+                </span>
+
+                <span>
+                    SEATØN SANDS
+                </span>
+
+                <span>
+                    HØRNY'S
+                </span>
+
+
+                <span>
+                    VANILLA UNICØRN
+                </span>
+
+                <span>
+                    WEAZEL NEWS
+                </span>
+
+                <span>
+                    SEATØN SANDS
+                </span>
+
+                <span>
+                    HØRNY'S
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- GALLERY -->
+    <!-- ========================= -->
+
+    <section id="gallery">
+
+        <div class="gallery-header">
+
+            <span>
+                GALERIA
+            </span>
+
+
+            <h2>
+
+                MØMENTØS QUE<br>
+                FICAM PARA SEMPRE
+
+            </h2>
+
+        </div>
+
+
+        <div class="gallery-grid">
+
+
+            <div class="gallery-item large">
+
+                <img
+                    src="assets/images/gallery1.png"
+                    alt="">
+
+            </div>
+
+
+            <div class="gallery-item">
+
+                <img
+                    src="assets/images/gallery2.png"
+                    alt="">
+
+            </div>
+
+
+            <div class="gallery-item tall">
+
+                <img
+                    src="assets/images/gallery3.png"
+                    alt="">
+
+            </div>
+
+
+            <div class="gallery-item">
+
+                <img
+                    src="assets/images/gallery4.png"
+                    alt="">
+
+            </div>
+
+
+            <div class="gallery-item wide">
+
+                <img
+                    src="assets/images/gallery5.png"
+                    alt="">
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- CONTACT -->
+    <!-- ========================= -->
+
+    <section id="contact">
+
+
+        <div class="contact-bg-text">
+            1Ø1
+        </div>
+
+
+        <div class="contact-grid"></div>
+
+
+        <div class="contact-container">
+
+
+            <div class="contact-left">
+
+                <span class="contact-label">
+                    CØNTACTØ
+                </span>
+
+
+                <h2>
+
+                    LET'S BUILD
+                    <br>
+                    SØMETHING
+                    <br>
+                    REMARKABLE
+
+                </h2>
+
+
+                <p>
+
+                    Tens uma ideia, um evento ou uma parceria em mente?
+                    Vamos criar algo memorável juntos.
+
+                </p>
+
+
+                <div class="contact-links"></div>
+
+            </div>
+
+
+            <div class="contact-right">
+
+                <form
+                    id="contact-form"
+                    class="contact-form">
+
+
+                    <div class="input-group">
+
+                        <label>
+                            Nome
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            required>
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label>
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            required>
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label>
+                            Discord
+                        </label>
+
+                        <input
+                            type="text"
+                            name="discord">
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label>
+                            Assunto
+                        </label>
+
+                        <input
+                            type="text"
+                            name="subject"
+                            required>
+
+                    </div>
+
+
+                    <div class="input-group full">
+
+                        <label>
+                            Mensagem
+                        </label>
+
+                        <textarea
+                            name="message"
+                            rows="7"
+                            required></textarea>
+
+                    </div>
+
+
+                    <button
+                        id="send-btn"
+                        type="submit">
+
+                        ENVIAR MENSAGEM →
+
+                    </button>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
     <!-- FOOTER -->
+    <!-- ========================= -->
 
     <footer>
 
-    <p>
-        EST.2026 | 1Ø1© • 1Ø1 ØUTSIDE ØF THE BØX© | PUERTØ ESPERANZA | TØDØS ØS DIREITØS RESERVADØS
-    </p>
+        <p>
 
-    <div class="footer-socials">
+            EST.2026 | 1Ø1© • 1Ø1 ØUTSIDE ØF THE BØX© |
+            PUERTØ ESPERANZA |
+            TØDØS ØS DIREITØS RESERVADØS
 
-    <a href="#" onclick="return false;" aria-label="InstaPic">
-        <img src="assets/icons/instapic.svg" alt="InstaPic">
-    </a>
+        </p>
 
-    <a href="#" onclick="return false;" aria-label="Birdy">
-        <img src="assets/icons/birdy.svg" alt="Birdy">
-    </a>
 
-    <span class="social-handle">@1Ø1</span>
+        <div class="footer-socials">
 
-    </div>
+
+            <a
+                href="#"
+                onclick="return false;"
+                aria-label="InstaPic">
+
+                <img
+                    src="assets/icons/instapic.svg"
+                    alt="InstaPic">
+
+            </a>
+
+
+            <a
+                href="#"
+                onclick="return false;"
+                aria-label="Birdy">
+
+                <img
+                    src="assets/icons/birdy.svg"
+                    alt="Birdy">
+
+            </a>
+
+
+            <span class="social-handle">
+                @1Ø1
+            </span>
+
+
+        </div>
 
     </footer>
 
+
+    <!-- ========================= -->
+    <!-- SCRIPTS -->
+    <!-- ========================= -->
+
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
 
+
     <script src="js/background.js"></script>
+
     <script src="js/animations.js"></script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+
     <script src="js/app.js"></script>
+
     <script src="js/pulseiras.js"></script>
+
     <script src="js/interactions.js"></script>
 
-    </body>
-    </html>
+
+    <!-- FALLBACK DO SISTEMA DE PULSEIRAS -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const overlay =
+                    document.getElementById("pzOverlay");
+
+
+                if (!overlay) {
+
+                    console.warn(
+                        "[101] pzOverlay ainda não existe no DOM."
+                    );
+
+                    return;
+
+                }
+
+
+                console.log(
+                    "[101] Overlay das pulseiras encontrado."
+                );
+
+
+                const buttons =
+                    document.querySelectorAll(
+                        "[data-open-pulseiras]"
+                    );
+
+
+                buttons.forEach(
+                    function (button) {
+
+                        button.addEventListener(
+                            "click",
+                            function (event) {
+
+                                event.preventDefault();
+
+                                event.stopPropagation();
+
+
+                                overlay.classList.add(
+                                    "open"
+                                );
+
+
+                                document.body.classList.add(
+                                    "pz-modal-open"
+                                );
+
+
+                                console.log(
+                                    "[101] Modal de pulseiras aberto através do botão."
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>
