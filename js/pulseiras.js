@@ -296,14 +296,6 @@
 
     function openModal(presetQty) {
 
-        // O botão pode ser acionado antes do DOM do modal terminar de
-        // inicializar. Em vez de falhar silenciosamente, esperamos pelo init.
-        if (!els.overlay) {
-            window.__PULSEIRAS_PENDING_QTY = presetQty || 1;
-            console.warn("[101] Pulseiras: modal ainda não inicializado; abertura pendente.");
-            return false;
-        }
-
         if (presetQty && presetQty > 0) {
             state.qty = Math.min(presetQty, cfg.maxPorPessoa);
         }
@@ -313,13 +305,15 @@
 
         els.overlay.classList.add("open");
         document.body.style.overflow = "hidden";
-        return true;
 
     }
 
     function closeModal() {
 
         els.overlay.classList.remove("open");
+        els.overlay.style.removeProperty("opacity");
+        els.overlay.style.removeProperty("visibility");
+        els.overlay.style.removeProperty("pointer-events");
         document.body.style.overflow = "";
 
     }
@@ -662,28 +656,12 @@
         });
 
         // gatilhos na página
-        // Ligamos diretamente aos botões existentes E usamos delegação
-        // para suportar botões criados posteriormente (ex.: o flutuante).
-        const openPulseiras = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const preset = document.getElementById("pzQty");
-            openModal(preset ? Number(preset.textContent) : null);
-        };
-
         document.querySelectorAll("[data-open-pulseiras]").forEach(btn => {
-            btn.addEventListener("click", openPulseiras);
-        });
-
-        document.addEventListener("click", e => {
-            const target = e.target instanceof Element ? e.target : null;
-            const btn = target ? target.closest("[data-open-pulseiras]") : null;
-            if (!btn) return;
-            // Se o botão já recebeu o listener direto, este handler apenas
-            // evita que outros elementos comecem uma navegação inesperada.
-            if (e.defaultPrevented) return;
-            openPulseiras(e);
+            btn.addEventListener("click", e => {
+                e.preventDefault();
+                const preset = document.getElementById("pzQty");
+                openModal(preset ? Number(preset.textContent) : null);
+            });
         });
 
         // stepper opcional já presente na página
@@ -728,29 +706,11 @@
 
     function init() {
 
-        try {
-            buildModal();
-            cacheEls();
-
-            if (!els.overlay || !els.close || !els.toStep2 || !els.toStep3) {
-                throw new Error("O módulo de pulseiras não conseguiu criar o modal.");
-            }
-
-            wireEvents();
-            updateQtyUI();
-            setupFloatingButton();
-
-            document.documentElement.dataset.pulseirasReady = "true";
-
-            if (window.__PULSEIRAS_PENDING_QTY) {
-                const pendingQty = window.__PULSEIRAS_PENDING_QTY;
-                delete window.__PULSEIRAS_PENDING_QTY;
-                openModal(pendingQty);
-            }
-            console.info("[101] Sistema de pulseiras carregado.");
-        } catch (error) {
-            console.error("[101] Erro a iniciar o sistema de pulseiras:", error);
-        }
+        buildModal();
+        cacheEls();
+        wireEvents();
+        updateQtyUI();
+        setupFloatingButton();
 
     }
 
@@ -760,12 +720,9 @@
         init();
     }
 
-    // API pública. Pode ser chamada diretamente por onclick, links ou outros scripts.
+    // expõe uma API mínima caso seja preciso abrir o modal via outro script
     window.Pulseiras = {
-        open: function (qty) {
-            const preset = qty || (document.getElementById("pzQty") ? Number(document.getElementById("pzQty").textContent) : 1);
-            return openModal(preset);
-        },
+        open: openModal,
         close: closeModal
     };
 
