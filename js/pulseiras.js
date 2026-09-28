@@ -406,46 +406,119 @@
        ENVIO PARA O DISCORD (WEBHOOK)
     --------------------------------------------------- */
 
-    async function sendOrder(orderCode) {
+async function sendOrder(orderCode) {
 
-        const payload = {
-            embeds: [{
-                title: "🎟️ NOVO PEDIDO DE PULSEIRA",
-                color: 0x7C3AED,
-                fields: [
-                    { name: "Evento", value: cfg.evento, inline: true },
-                    { name: "Código", value: orderCode, inline: true },
-                    { name: "Quantidade", value: String(state.qty), inline: true },
-                    { name: "Total", value: `${cfg.moeda}${state.qty * cfg.preco}`, inline: true },
-                    { name: "Nome (IC)", value: els.nome.value.trim() || "—", inline: true },
-                    { name: "Discord", value: els.discord.value.trim() || "—", inline: true },
-                    { name: "Contacto", value: els.contacto.value.trim() || "—", inline: true }
-                ],
-                footer: { text: "1Ø1 • Sistema de Pulseiras" },
-                timestamp: new Date().toISOString()
-            }]
-        };
+    const nome = els.nome.value.trim() || "—";
+    const discord = els.discord.value.trim() || "—";
+    const contacto = els.contacto.value.trim() || "—";
 
-        const form = new FormData();
-        form.append("payload_json", JSON.stringify(payload));
+    const total = state.qty * cfg.preco;
 
-        if (state.file) {
-            const compressed = await compressImage(state.file);
-            form.append("files[0]", compressed, "comprovativo.jpg");
-        }
+    const payload = {
+        username: "1Ø1 • Ticketing",
 
-        if (!cfg.webhookUrl || cfg.webhookUrl.includes("COLOCA_AQUI")) {
-            throw new Error("Webhook não configurado");
-        }
+        embeds: [{
+            color: 0x8B5CF6,
 
-        const res = await fetch(cfg.webhookUrl, {
-            method: "POST",
-            body: form
-        });
+            author: {
+                name: "1Ø1 • TICKETING"
+            },
 
-        if (!res.ok) throw new Error("Falha no envio (" + res.status + ")");
+            title: "🎟️  NOVO PEDIDO DE PULSEIRA",
+
+            description:
+                `**${cfg.evento}**\n` +
+                `Um novo pedido foi submetido através do sistema oficial de pulseiras da 1Ø1.\n\n` +
+                `> **Código do pedido**\n` +
+                `> \`${orderCode}\``,
+
+            fields: [
+
+                {
+                    name: "👤  COMPRADOR",
+                    value:
+                        `**Nome (IC)**\n${nome}\n\n` +
+                        `**Discord**\n${discord}\n\n` +
+                        `**Contacto**\n${contacto}`,
+                    inline: true
+                },
+
+                {
+                    name: "🎫  PEDIDO",
+                    value:
+                        `**Quantidade**\n${state.qty} ${state.qty === 1 ? "pulseira" : "pulseiras"}\n\n` +
+                        `**Preço unitário**\n${cfg.moeda}${cfg.preco}\n\n` +
+                        `**TOTAL**\n**${cfg.moeda}${total}**`,
+                    inline: true
+                },
+
+                {
+                    name: "🟢  ESTADO",
+                    value:
+                        "**AGUARDA VALIDAÇÃO**\n" +
+                        "O pagamento deve ser confirmado pela equipa 1Ø1.",
+                    inline: false
+                }
+
+            ],
+
+            image: state.file
+                ? {
+                    url: "attachment://comprovativo.jpg"
+                }
+                : undefined,
+
+            footer: {
+                text: "1Ø1 • Sistema de Pulseiras"
+            },
+
+            timestamp: new Date().toISOString()
+        }]
+    };
+
+    const form = new FormData();
+
+    form.append(
+        "payload_json",
+        JSON.stringify(payload)
+    );
+
+    if (state.file) {
+
+        const compressed = await compressImage(state.file);
+
+        form.append(
+            "files[0]",
+            compressed,
+            "comprovativo.jpg"
+        );
 
     }
+
+    if (
+        !cfg.webhookUrl ||
+        cfg.webhookUrl.includes("COLOCA_AQUI")
+    ) {
+        throw new Error("Webhook não configurado");
+    }
+
+    const res = await fetch(
+        cfg.webhookUrl,
+        {
+            method: "POST",
+            body: form
+        }
+    );
+
+    if (!res.ok) {
+
+        throw new Error(
+            "Falha no envio (" + res.status + ")"
+        );
+
+    }
+
+}
 
     /* ---------------------------------------------------
        CONFETTI
