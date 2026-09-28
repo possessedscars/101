@@ -408,84 +408,195 @@
 
 async function sendOrder(orderCode) {
 
-    const nome = els.nome.value.trim() || "—";
-    const discord = els.discord.value.trim() || "—";
-    const contacto = els.contacto.value.trim() || "—";
+    const nome =
+        els.nome.value.trim() || "—";
 
-    const total = state.qty * cfg.preco;
+    const discord =
+        els.discord.value.trim() || "—";
+
+    const contacto =
+        els.contacto.value.trim() || "—";
+
+    const total =
+        state.qty * cfg.preco;
+
 
     const payload = {
-        username: "1Ø1 • Ticketing",
 
-        embeds: [{
-            color: 0x8B5CF6,
+        username: "1Ø1 • TICKETING",
 
-            author: {
-                name: "1Ø1 • TICKETING"
-            },
+        embeds: [
 
-            title: "🎟️  NOVO PEDIDO DE PULSEIRA",
+            {
 
-            description:
-                `**${cfg.evento}**\n` +
-                `Um novo pedido foi submetido através do sistema oficial de pulseiras da 1Ø1.\n\n` +
-                `> **Código do pedido**\n` +
-                `> \`${orderCode}\``,
+                color: 0x8B5CF6,
 
-            fields: [
-
-                {
-                    name: "👤  COMPRADOR",
-                    value:
-                        `**Nome (IC)**\n${nome}\n\n` +
-                        `**Discord**\n${discord}\n\n` +
-                        `**Contacto**\n${contacto}`,
-                    inline: true
+                author: {
+                    name: "1Ø1 • TICKETING"
                 },
 
-                {
-                    name: "🎫  PEDIDO",
-                    value:
-                        `**Quantidade**\n${state.qty} ${state.qty === 1 ? "pulseira" : "pulseiras"}\n\n` +
-                        `**Preço unitário**\n${cfg.moeda}${cfg.preco}\n\n` +
-                        `**TOTAL**\n**${cfg.moeda}${total}**`,
-                    inline: true
+                title:
+                    "🎟️  NOVO PEDIDO DE PULSEIRA",
+
+                description:
+`**${cfg.evento}**
+
+Um novo pedido foi submetido através do sistema oficial de pulseiras da 1Ø1.
+
+> **CÓDIGO DO PEDIDO**
+> \`${orderCode}\``,
+
+                fields: [
+
+                    {
+
+                        name: "👤  COMPRADOR",
+
+                        value:
+`**Nome (IC)**
+${nome}
+
+**Discord**
+${discord}
+
+**Contacto**
+${contacto}`,
+
+                        inline: true
+
+                    },
+
+                    {
+
+                        name: "🎫  PEDIDO",
+
+                        value:
+`**Quantidade**
+${state.qty} ${state.qty === 1 ? "pulseira" : "pulseiras"}
+
+**Preço unitário**
+${cfg.moeda}${cfg.preco}
+
+**TOTAL**
+**${cfg.moeda}${total}**`,
+
+                        inline: true
+
+                    },
+
+                    {
+
+                        name: "🟠  ESTADO",
+
+                        value:
+"**AGUARDA VALIDAÇÃO**\nO pagamento ainda precisa de ser confirmado pela equipa 1Ø1.",
+
+                        inline: false
+
+                    }
+
+                ],
+
+                image: state.file
+                    ? {
+                        url: "attachment://comprovativo.jpg"
+                    }
+                    : undefined,
+
+                footer: {
+                    text:
+                        "1Ø1 • Sistema de Pulseiras"
                 },
 
-                {
-                    name: "🟢  ESTADO",
-                    value:
-                        "**AGUARDA VALIDAÇÃO**\n" +
-                        "O pagamento deve ser confirmado pela equipa 1Ø1.",
-                    inline: false
-                }
+                timestamp:
+                    new Date().toISOString()
 
-            ],
+            }
 
-            image: state.file
-                ? {
-                    url: "attachment://comprovativo.jpg"
-                }
-                : undefined,
+        ],
 
-            footer: {
-                text: "1Ø1 • Sistema de Pulseiras"
-            },
+        components: [
 
-            timestamp: new Date().toISOString()
-        }]
+            {
+
+                type: 1,
+
+                components: [
+
+                    {
+
+                        type: 2,
+
+                        style: 3,
+
+                        label: "APROVAR",
+
+                        emoji: {
+                            name: "🟢"
+                        },
+
+                        custom_id:
+                            `pulseira_aprovar_${orderCode}`
+
+                    },
+
+                    {
+
+                        type: 2,
+
+                        style: 4,
+
+                        label: "RECUSAR",
+
+                        emoji: {
+                            name: "🔴"
+                        },
+
+                        custom_id:
+                            `pulseira_recusar_${orderCode}`
+
+                    },
+
+                    {
+
+                        type: 2,
+
+                        style: 2,
+
+                        label: "VER PEDIDO",
+
+                        emoji: {
+                            name: "👁️"
+                        },
+
+                        custom_id:
+                            `pulseira_ver_${orderCode}`
+
+                    }
+
+                ]
+
+            }
+
+        ]
+
     };
 
-    const form = new FormData();
+
+    const form =
+        new FormData();
+
 
     form.append(
         "payload_json",
         JSON.stringify(payload)
     );
 
+
     if (state.file) {
 
-        const compressed = await compressImage(state.file);
+        const compressed =
+            await compressImage(state.file);
 
         form.append(
             "files[0]",
@@ -495,25 +606,35 @@ async function sendOrder(orderCode) {
 
     }
 
+
     if (
         !cfg.webhookUrl ||
-        cfg.webhookUrl.includes("COLOCA_AQUI")
+        cfg.webhookUrl.includes(
+            "https://discord.com/api/webhooks/1554245781257584683/SiE3pfL014H1j3QfKqlxtHNsceL-PQItKuSCyScS8PZYuWfT2658u6edgeOf8HeiQS0a"
+        )
     ) {
-        throw new Error("Webhook não configurado");
-    }
-
-    const res = await fetch(
-        cfg.webhookUrl,
-        {
-            method: "POST",
-            body: form
-        }
-    );
-
-    if (!res.ok) {
 
         throw new Error(
-            "Falha no envio (" + res.status + ")"
+            "Webhook não configurado"
+        );
+
+    }
+
+
+    const response =
+        await fetch(
+            cfg.webhookUrl,
+            {
+                method: "POST",
+                body: form
+            }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Falha no envio (${response.status})`
         );
 
     }
