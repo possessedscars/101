@@ -30,7 +30,6 @@
         rel="stylesheet"
     >
 
-
     <style>
 
         /* =========================================================
@@ -43,11 +42,9 @@
             box-sizing: border-box;
         }
 
-
         html {
             scroll-behavior: smooth;
         }
-
 
         body {
             background: #050505;
@@ -57,59 +54,39 @@
             -webkit-font-smoothing: antialiased;
         }
 
-
         body::-webkit-scrollbar {
             width: 5px;
         }
-
 
         body::-webkit-scrollbar-track {
             background: #050505;
         }
 
-
         body::-webkit-scrollbar-thumb {
             background: #333;
         }
-
 
         a {
             color: inherit;
             text-decoration: none;
         }
 
-
         img {
             display: block;
             width: 100%;
         }
 
-
-        button {
-            font-family: inherit;
-        }
-
-
-        /* =========================================================
-           VARIABLES
-        ========================================================= */
-
         :root {
-
             --black: #050505;
             --white: #ffffff;
-
             --gray-1: #111111;
             --gray-2: #181818;
             --gray-3: #333333;
             --gray-4: #666666;
             --gray-5: #999999;
-
             --line: rgba(255,255,255,.13);
             --line-soft: rgba(255,255,255,.07);
-
             --container: 1500px;
-
         }
 
 
@@ -118,9 +95,7 @@
         ========================================================= */
 
         .events-page {
-
             position: relative;
-
             min-height: 100vh;
 
             background:
@@ -136,17 +111,14 @@
 
 
         /* =========================================================
-           BACKGROUND GRID
+           GRID
         ========================================================= */
 
         .background-grid {
-
             position: fixed;
-
             inset: 0;
 
             pointer-events: none;
-
             z-index: 0;
 
             opacity: .035;
@@ -178,9 +150,7 @@
         ========================================================= */
 
         .grain {
-
             position: fixed;
-
             inset: 0;
 
             z-index: 80;
@@ -195,11 +165,10 @@
 
 
         /* =========================================================
-           MAIN CONTAINER
+           CONTAINER
         ========================================================= */
 
         .events-container {
-
             width: min(
                 var(--container),
                 calc(100% - 100px)
@@ -214,11 +183,10 @@
 
 
         /* =========================================================
-           TOP NAV
+           NAV
         ========================================================= */
 
         .events-nav {
-
             height: 95px;
 
             display: flex;
@@ -230,9 +198,7 @@
             border-bottom: 1px solid var(--line);
         }
 
-
         .events-logo {
-
             display: flex;
 
             align-items: center;
@@ -248,9 +214,7 @@
             text-transform: uppercase;
         }
 
-
         .events-logo-dot {
-
             width: 7px;
             height: 7px;
 
@@ -259,9 +223,7 @@
             border-radius: 50%;
         }
 
-
         .events-nav-center {
-
             position: absolute;
 
             left: 50%;
@@ -277,9 +239,7 @@
             text-transform: uppercase;
         }
 
-
         .events-home {
-
             display: flex;
 
             align-items: center;
@@ -299,9 +259,7 @@
             transition: .3s ease;
         }
 
-
         .events-home:hover {
-
             color: #fff;
 
             transform: translateX(-5px);
@@ -309,19 +267,16 @@
 
 
         /* =========================================================
-           GIANT INTRO
+           INTRO
         ========================================================= */
 
         .intro {
-
             position: relative;
 
             padding: 100px 0 80px;
         }
 
-
         .intro-top {
-
             display: flex;
 
             align-items: center;
@@ -337,9 +292,7 @@
             text-transform: uppercase;
         }
 
-
         .intro-top::before {
-
             content: "";
 
             width: 35px;
@@ -351,9 +304,7 @@
             opacity: .7;
         }
 
-
         .intro-title {
-
             position: relative;
 
             margin-top: 25px;
@@ -373,15 +324,11 @@
             text-transform: uppercase;
         }
 
-
         .intro-title span {
-
             display: block;
         }
 
-
         .intro-title-outline {
-
             color: transparent;
 
             -webkit-text-stroke: 1px rgba(255,255,255,.25);
@@ -389,9 +336,7 @@
             margin-left: 10vw;
         }
 
-
         .intro-description {
-
             position: absolute;
 
             right: 0;
@@ -405,9 +350,7 @@
             padding-left: 25px;
         }
 
-
         .intro-description p {
-
             font-size: 10px;
 
             line-height: 1.8;
@@ -423,7 +366,6 @@
         ========================================================= */
 
         .marquee {
-
             width: 100vw;
 
             margin-left: calc(
@@ -451,19 +393,16 @@
             text-transform: uppercase;
         }
 
-
         .marquee-track {
-
             display: inline-flex;
 
             gap: 45px;
 
-            animation: marquee 25s linear infinite;
+            animation:
+                marquee 25s linear infinite;
         }
 
-
         .marquee-track span {
-
             display: inline-flex;
 
             align-items: center;
@@ -471,16 +410,13 @@
             gap: 45px;
         }
 
-
         .marquee-track span::after {
-
             content: "✦";
 
             color: #666;
 
             font-size: 8px;
         }
-
 
         @keyframes marquee {
 
@@ -496,17 +432,14 @@
 
 
         /* =========================================================
-           FEATURED SECTION
+           FEATURED
         ========================================================= */
 
         .featured-section {
-
             padding-top: 90px;
         }
 
-
         .section-meta {
-
             display: flex;
 
             justify-content: space-between;
@@ -516,9 +449,7 @@
             margin-bottom: 25px;
         }
 
-
         .section-meta-left {
-
             display: flex;
 
             flex-direction: column;
@@ -526,9 +457,7 @@
             gap: 10px;
         }
 
-
         .section-meta-label {
-
             font-size: 8px;
 
             color: #666;
@@ -538,9 +467,7 @@
             text-transform: uppercase;
         }
 
-
         .section-meta-title {
-
             font-size: 11px;
 
             font-weight: 700;
@@ -550,9 +477,7 @@
             text-transform: uppercase;
         }
 
-
         .section-meta-number {
-
             font-size: 8px;
 
             color: #555;
@@ -566,7 +491,6 @@
         ========================================================= */
 
         .featured-event {
-
             position: relative;
 
             min-height: 720px;
@@ -578,9 +502,7 @@
             overflow: hidden;
         }
 
-
         .featured-image {
-
             position: absolute;
 
             inset: 0;
@@ -588,9 +510,7 @@
             z-index: 0;
         }
 
-
         .featured-image img {
-
             width: 100%;
 
             height: 100%;
@@ -609,15 +529,12 @@
                 transform 1.2s cubic-bezier(.2,.8,.2,1);
         }
 
-
-        .featured-event:hover .featured-image img {
-
+        .featured-event:hover
+        .featured-image img {
             transform: scale(1.035);
         }
 
-
         .featured-overlay {
-
             position: absolute;
 
             inset: 0;
@@ -625,11 +542,10 @@
             z-index: 1;
 
             background:
-
                 linear-gradient(
                     90deg,
-                    rgba(0,0,0,.97) 0%,
-                    rgba(0,0,0,.87) 27%,
+                    rgba(0,0,0,.98) 0%,
+                    rgba(0,0,0,.88) 27%,
                     rgba(0,0,0,.48) 65%,
                     rgba(0,0,0,.65) 100%
                 ),
@@ -641,9 +557,7 @@
                 );
         }
 
-
         .featured-event::before {
-
             content: "SUB 808";
 
             position: absolute;
@@ -671,9 +585,7 @@
             pointer-events: none;
         }
 
-
         .featured-tag {
-
             position: absolute;
 
             top: 27px;
@@ -699,9 +611,7 @@
             text-transform: uppercase;
         }
 
-
         .featured-index {
-
             position: absolute;
 
             top: 29px;
@@ -718,8 +628,11 @@
         }
 
 
-        .featured-content {
+        /* =========================================================
+           FEATURED CONTENT
+        ========================================================= */
 
+        .featured-content {
             position: relative;
 
             z-index: 4;
@@ -732,12 +645,10 @@
 
             justify-content: flex-end;
 
-            padding: 60px;
+            padding: 55px;
         }
 
-
         .featured-date {
-
             font-size: 9px;
 
             color: #aaa;
@@ -748,39 +659,51 @@
 
             text-transform: uppercase;
 
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
 
+        /* =========================================================
+           BIG EVENT TITLE
+        ========================================================= */
+
         .featured-title {
+            width: 100%;
 
             font-size: clamp(
-                75px,
-                10vw,
-                145px
+                95px,
+                13vw,
+                195px
             );
 
-            line-height: .71;
+            line-height: .66;
 
-            letter-spacing: -.085em;
+            letter-spacing: -.095em;
 
             font-weight: 900;
 
             text-transform: uppercase;
-        }
 
+            white-space: nowrap;
+
+            color: #fff;
+        }
 
         .featured-title span {
-
             display: block;
+
+            width: max-content;
         }
 
 
-        .featured-copy {
+        /* =========================================================
+           FEATURED COPY
+        ========================================================= */
 
+        .featured-copy {
             max-width: 600px;
 
-            margin-top: 30px;
+            margin-top: 34px;
 
             color: #aaa;
 
@@ -789,12 +712,10 @@
             line-height: 1.8;
         }
 
-
         .featured-bottom {
+            width: min(900px, 100%);
 
-            width: min(850px, 100%);
-
-            margin-top: 40px;
+            margin-top: 38px;
 
             padding-top: 22px;
 
@@ -809,9 +730,7 @@
             gap: 30px;
         }
 
-
         .featured-location {
-
             font-size: 8px;
 
             color: #777;
@@ -821,9 +740,7 @@
             text-transform: uppercase;
         }
 
-
         .featured-link {
-
             display: inline-flex;
 
             align-items: center;
@@ -845,9 +762,7 @@
             transition: .3s ease;
         }
 
-
         .featured-link-arrow {
-
             font-size: 18px;
 
             line-height: 1;
@@ -855,25 +770,21 @@
             transition: .3s ease;
         }
 
-
         .featured-link:hover {
-
             opacity: .7;
         }
 
-
-        .featured-link:hover .featured-link-arrow {
-
+        .featured-link:hover
+        .featured-link-arrow {
             transform: translateX(7px);
         }
 
 
         /* =========================================================
-           EVENTS INTRO
+           UPCOMING HEADER
         ========================================================= */
 
         .events-list-header {
-
             padding: 125px 0 35px;
 
             display: flex;
@@ -883,9 +794,7 @@
             justify-content: space-between;
         }
 
-
         .events-list-header h2 {
-
             font-size: clamp(
                 55px,
                 7vw,
@@ -901,9 +810,7 @@
             text-transform: uppercase;
         }
 
-
         .events-list-header-right {
-
             width: 250px;
 
             padding-bottom: 5px;
@@ -919,11 +826,10 @@
 
 
         /* =========================================================
-           EVENT CARDS
+           EVENT GRID
         ========================================================= */
 
         .event-grid {
-
             display: grid;
 
             grid-template-columns:
@@ -932,9 +838,7 @@
             gap: 18px;
         }
 
-
         .event-card {
-
             position: relative;
 
             min-height: 560px;
@@ -946,41 +850,34 @@
             background: #090909;
 
             transition:
-                transform .5s cubic-bezier(.2,.8,.2,1),
+                transform .5s
+                cubic-bezier(.2,.8,.2,1),
+
                 border-color .3s ease;
         }
 
-
         .event-card-large {
-
             grid-column: span 7;
         }
 
-
         .event-card-small {
-
             grid-column: span 5;
         }
 
-
         .event-card:hover {
-
             transform: translateY(-8px);
 
-            border-color: rgba(255,255,255,.35);
+            border-color:
+                rgba(255,255,255,.35);
         }
 
-
         .event-card-image {
-
             position: absolute;
 
             inset: 0;
         }
 
-
         .event-card-image img {
-
             width: 100%;
 
             height: 100%;
@@ -992,21 +889,20 @@
             opacity: .72;
 
             transition:
-                transform .8s cubic-bezier(.2,.8,.2,1),
+                transform .8s
+                cubic-bezier(.2,.8,.2,1),
+
                 opacity .5s ease;
         }
 
-
-        .event-card:hover .event-card-image img {
-
+        .event-card:hover
+        .event-card-image img {
             transform: scale(1.07);
 
             opacity: .87;
         }
 
-
         .event-card-overlay {
-
             position: absolute;
 
             inset: 0;
@@ -1020,9 +916,7 @@
                 );
         }
 
-
         .event-card-status {
-
             position: absolute;
 
             top: 23px;
@@ -1031,7 +925,9 @@
 
             z-index: 3;
 
-            border: 1px solid rgba(255,255,255,.25);
+            border:
+                1px solid
+                rgba(255,255,255,.25);
 
             padding: 9px 12px;
 
@@ -1048,9 +944,7 @@
             text-transform: uppercase;
         }
 
-
         .event-card-number {
-
             position: absolute;
 
             top: 26px;
@@ -1066,9 +960,7 @@
             letter-spacing: .2em;
         }
 
-
         .event-card-content {
-
             position: absolute;
 
             z-index: 3;
@@ -1082,9 +974,7 @@
             padding: 35px;
         }
 
-
         .event-card-date {
-
             color: #aaa;
 
             font-size: 8px;
@@ -1094,9 +984,7 @@
             text-transform: uppercase;
         }
 
-
         .event-card-title {
-
             margin-top: 15px;
 
             font-size: clamp(
@@ -1114,14 +1002,14 @@
             text-transform: uppercase;
         }
 
-
         .event-card-footer {
-
             margin-top: 28px;
 
             padding-top: 19px;
 
-            border-top: 1px solid rgba(255,255,255,.16);
+            border-top:
+                1px solid
+                rgba(255,255,255,.16);
 
             display: flex;
 
@@ -1130,9 +1018,7 @@
             align-items: center;
         }
 
-
         .event-card-location {
-
             font-size: 7px;
 
             color: #777;
@@ -1144,14 +1030,14 @@
             text-transform: uppercase;
         }
 
-
         .event-card-arrow {
-
             width: 42px;
 
             height: 42px;
 
-            border: 1px solid rgba(255,255,255,.35);
+            border:
+                1px solid
+                rgba(255,255,255,.35);
 
             display: flex;
 
@@ -1164,9 +1050,8 @@
             transition: .3s ease;
         }
 
-
-        .event-card:hover .event-card-arrow {
-
+        .event-card:hover
+        .event-card-arrow {
             background: #fff;
 
             color: #000;
@@ -1174,11 +1059,10 @@
 
 
         /* =========================================================
-           EMPTY / NEXT EVENT
+           FUTURE CARD
         ========================================================= */
 
         .future-card {
-
             grid-column: span 5;
 
             min-height: 420px;
@@ -1190,7 +1074,6 @@
             overflow: hidden;
 
             background:
-
                 radial-gradient(
                     circle at center,
                     rgba(255,255,255,.035),
@@ -1198,9 +1081,7 @@
                 );
         }
 
-
         .future-card::before {
-
             content: "1Ø1";
 
             position: absolute;
@@ -1209,7 +1090,8 @@
 
             top: 50%;
 
-            transform: translate(-50%, -50%);
+            transform:
+                translate(-50%, -50%);
 
             font-size: 250px;
 
@@ -1224,9 +1106,7 @@
             white-space: nowrap;
         }
 
-
         .future-card-content {
-
             position: absolute;
 
             inset: 0;
@@ -1244,9 +1124,7 @@
             z-index: 2;
         }
 
-
         .future-label {
-
             font-size: 8px;
 
             color: #666;
@@ -1256,9 +1134,7 @@
             text-transform: uppercase;
         }
 
-
         .future-title {
-
             margin-top: 20px;
 
             font-size: 48px;
@@ -1272,9 +1148,7 @@
             text-transform: uppercase;
         }
 
-
         .future-number {
-
             position: absolute;
 
             top: 22px;
@@ -1294,13 +1168,10 @@
         ========================================================= */
 
         .archive-section {
-
             padding: 125px 0 0;
         }
 
-
         .archive-heading {
-
             display: flex;
 
             justify-content: space-between;
@@ -1310,9 +1181,7 @@
             padding-bottom: 30px;
         }
 
-
         .archive-heading h2 {
-
             font-size: clamp(
                 55px,
                 7vw,
@@ -1328,9 +1197,7 @@
             text-transform: uppercase;
         }
 
-
         .archive-year {
-
             font-size: 8px;
 
             color: #555;
@@ -1338,15 +1205,11 @@
             letter-spacing: .25em;
         }
 
-
         .archive {
-
             border-top: 1px solid var(--line);
         }
 
-
         .archive-item {
-
             display: grid;
 
             grid-template-columns:
@@ -1362,24 +1225,23 @@
 
             min-height: 90px;
 
-            border-bottom: 1px solid var(--line);
+            border-bottom:
+                1px solid
+                var(--line);
 
             transition:
                 padding .3s ease,
                 background .3s ease;
         }
 
-
         .archive-item:hover {
-
             padding-left: 18px;
 
-            background: rgba(255,255,255,.025);
+            background:
+                rgba(255,255,255,.025);
         }
 
-
         .archive-number {
-
             font-size: 8px;
 
             color: #555;
@@ -1387,9 +1249,7 @@
             letter-spacing: .2em;
         }
 
-
         .archive-name {
-
             font-size: 19px;
 
             font-weight: 800;
@@ -1399,10 +1259,8 @@
             text-transform: uppercase;
         }
 
-
         .archive-date,
         .archive-place {
-
             color: #666;
 
             font-size: 8px;
@@ -1412,9 +1270,7 @@
             text-transform: uppercase;
         }
 
-
         .archive-arrow {
-
             color: #777;
 
             text-align: right;
@@ -1428,7 +1284,6 @@
         ========================================================= */
 
         .events-footer {
-
             margin-top: 130px;
 
             padding: 28px 0;
@@ -1452,19 +1307,16 @@
 
 
         /* =========================================================
-           RESPONSIVE
+           TABLET
         ========================================================= */
 
         @media (max-width: 1000px) {
 
             .events-container {
-
                 width: calc(100% - 60px);
             }
 
-
             .intro-description {
-
                 position: static;
 
                 margin-top: 50px;
@@ -1472,29 +1324,21 @@
                 width: 300px;
             }
 
-
             .intro {
-
                 padding-bottom: 60px;
             }
-
 
             .event-card-large,
             .event-card-small,
             .future-card {
-
                 grid-column: span 12;
             }
 
-
             .future-card {
-
                 min-height: 350px;
             }
 
-
             .archive-item {
-
                 grid-template-columns:
                     60px
                     1fr
@@ -1502,99 +1346,101 @@
                     30px;
             }
 
-
             .archive-place {
-
                 display: none;
             }
 
         }
 
 
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
         @media (max-width: 650px) {
 
             .events-container {
-
                 width: calc(100% - 32px);
             }
 
-
             .events-nav {
-
                 height: 75px;
             }
 
-
             .events-nav-center {
-
                 display: none;
             }
 
-
             .intro {
-
                 padding: 65px 0 50px;
             }
 
-
             .intro-title {
-
                 font-size: 18vw;
 
                 line-height: .78;
             }
 
-
             .intro-title-outline {
-
                 margin-left: 0;
             }
 
-
             .intro-description {
-
                 width: 100%;
 
                 margin-top: 45px;
             }
 
-
             .marquee {
-
                 margin-left: -16px;
 
                 width: calc(100% + 32px);
             }
 
-
             .featured-section {
-
                 padding-top: 65px;
             }
 
-
             .featured-event {
-
                 min-height: 620px;
             }
 
-
             .featured-content {
-
                 min-height: 620px;
 
                 padding: 30px 22px;
             }
 
+            /*
+             * MOBILE:
+             * mantém o título grande,
+             * mas permite que cada palavra
+             * ocupe a largura disponível.
+             */
 
             .featured-title {
+                font-size: 16vw;
 
-                font-size: 17vw;
+                line-height: .7;
+
+                letter-spacing: -.085em;
+
+                white-space: normal;
+
+                width: 100%;
             }
 
+            .featured-title span {
+                width: 100%;
+            }
+
+            .featured-copy {
+                font-size: 9px;
+
+                margin-top: 25px;
+            }
 
             .featured-bottom {
-
                 flex-direction: column;
 
                 align-items: flex-start;
@@ -1602,44 +1448,32 @@
                 gap: 22px;
             }
 
-
             .events-list-header,
             .archive-heading {
-
                 display: block;
 
                 padding-top: 85px;
             }
 
-
             .events-list-header-right {
-
                 margin-top: 25px;
 
                 width: 100%;
             }
 
-
             .event-card {
-
                 min-height: 470px;
             }
 
-
             .event-card-content {
-
                 padding: 25px 22px;
             }
 
-
             .event-card-title {
-
                 font-size: 15vw;
             }
 
-
             .archive-item {
-
                 grid-template-columns:
                     35px
                     1fr
@@ -1648,21 +1482,15 @@
                 gap: 12px;
             }
 
-
             .archive-date {
-
                 display: none;
             }
 
-
             .archive-name {
-
                 font-size: 15px;
             }
 
-
             .events-footer {
-
                 flex-direction: column;
 
                 align-items: flex-start;
@@ -1826,7 +1654,7 @@
 
 
         <!-- =====================================================
-             FEATURED
+             FEATURED EVENT
         ====================================================== -->
 
         <section class="featured-section">
@@ -1908,16 +1736,13 @@
 
                     <h2 class="featured-title">
 
-
                         <span>
                             SUBMUNDØ
                         </span>
 
-
                         <span>
                             FUNK
                         </span>
-
 
                     </h2>
 
@@ -1972,7 +1797,7 @@
 
 
         <!-- =====================================================
-             EVENT LIST
+             UPCOMING
         ====================================================== -->
 
         <section>
@@ -2019,9 +1844,7 @@
             <div class="event-grid">
 
 
-                <!-- =================================================
-                     EVENTO 001
-                ================================================== -->
+                <!-- EVENTO 001 -->
 
                 <a
                     href="/eventos/submundo-funk.html"
@@ -2104,9 +1927,7 @@
 
 
 
-                <!-- =================================================
-                     NEXT
-                ================================================== -->
+                <!-- FUTURO EVENTO -->
 
                 <div class="future-card">
 
