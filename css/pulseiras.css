@@ -326,26 +326,30 @@ BOTÃO FLUTUANTE (aparece ao fazer scroll)
 MODAL
 ----------------------------------------------------------*/
 
-.pz-overlay{
+.pz-overlay {
+    position: fixed;
+    inset: 0;
 
-    position:fixed;
-    inset:0;
-    z-index:10000;
+    z-index: 999999;
 
-    background:rgba(3,3,5,.75);
-    backdrop-filter:blur(10px);
+    background: rgba(3, 3, 5, 0.82);
+    backdrop-filter: blur(10px);
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display: none;
 
-    padding:24px;
+    align-items: center;
+    justify-content: center;
 
-    opacity:0;
-    visibility:hidden;
+    padding: 24px;
 
-    transition:opacity .35s ease, visibility .35s ease;
+    opacity: 0;
+    visibility: hidden;
 
+    pointer-events: none;
+
+    transition:
+        opacity .35s ease,
+        visibility .35s ease;
 }
 
 .pz-overlay.open {
