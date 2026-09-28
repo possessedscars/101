@@ -14,29 +14,312 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/pulseiras.css">
 
+
+    <!-- =========================================================
+         CONFIGURAÇÃO DA LOJA DE PULSEIRAS
+    ========================================================== -->
+
     <script>
-        /*
-         * CONFIGURAÇÃO DA LOJA DE PULSEIRAS
-         */
+
         window.PULSEIRAS_CONFIG = {
+
             evento: "SubmundØ Funk",
+
             eventoSlug: "submundo-funk",
+
             data: "29 Julho 2026",
+
             preco: 400,
+
             moeda: "$",
+
             maxPorPessoa: 999,
 
-            webhookUrl: ""
+            /*
+             * COLOCA AQUI O MESMO WEBHOOK
+             * QUE JÁ ESTAVAS A USAR
+             */
+            webhookUrl: "COLOCA_AQUI_O_TEU_DISCORD_WEBHOOK"
+
         };
+
     </script>
 
-    <!-- Favicon -->
+
+    <!-- =========================================================
+         EVENT CARDS
+         BPM KILLER
+    ========================================================== -->
+
+    <style>
+
+        /* =====================================================
+           EVENTS GRID
+        ====================================================== */
+
+        .events-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 28px;
+
+        }
+
+
+        /* =====================================================
+           EVENT CARD
+        ====================================================== */
+
+        .event-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+        /* =====================================================
+           LINK DO EVENTO
+        ====================================================== */
+
+        .event-card-link {
+
+            position: absolute;
+
+            inset: 0;
+
+            display: block;
+
+            width: 100%;
+            height: 100%;
+
+            color: inherit;
+
+            text-decoration: none;
+
+            overflow: hidden;
+
+        }
+
+
+        /* =====================================================
+           IMAGEM
+        ====================================================== */
+
+        .event-card > img,
+        .event-card-link > img {
+
+            width: 100%;
+
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+            filter:
+                grayscale(100%);
+
+            transform:
+                scale(1);
+
+            transition:
+                filter .7s ease,
+                transform .8s cubic-bezier(.2,.8,.2,1);
+
+        }
+
+
+        /* =====================================================
+           HOVER — COR
+        ====================================================== */
+
+        .event-card:hover > img,
+        .event-card:hover .event-card-link > img {
+
+            filter:
+                grayscale(0%);
+
+            transform:
+                scale(1.06);
+
+        }
+
+
+        /* =====================================================
+           OVERLAY
+        ====================================================== */
+
+        .event-card::after,
+        .event-card-link::after {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(0,0,0,.03) 15%,
+                    rgba(0,0,0,.20) 48%,
+                    rgba(0,0,0,.92) 100%
+                );
+
+            transition:
+                background .6s ease;
+
+        }
+
+
+        /* =====================================================
+           HOVER — OVERLAY MAIS LEVE
+        ====================================================== */
+
+        .event-card:hover::after,
+        .event-card:hover .event-card-link::after {
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(0,0,0,.02) 15%,
+                    rgba(0,0,0,.10) 45%,
+                    rgba(0,0,0,.78) 100%
+                );
+
+        }
+
+
+        /* =====================================================
+           TEXTO DO CARD
+        ====================================================== */
+
+        .event-card .card-overlay {
+
+            position: absolute;
+
+            left: 28px;
+
+            right: 28px;
+
+            bottom: 28px;
+
+            z-index: 5;
+
+            pointer-events: none;
+
+        }
+
+
+        /* =====================================================
+           DATA
+        ====================================================== */
+
+        .event-card .card-overlay span {
+
+            display: block;
+
+            margin-bottom: 12px;
+
+            font-size: 11px;
+
+            letter-spacing: .18em;
+
+            color: #aaa;
+
+            transition:
+                color .4s ease;
+
+        }
+
+
+        /* =====================================================
+           TÍTULO
+        ====================================================== */
+
+        .event-card .card-overlay h4 {
+
+            margin: 0;
+
+            font-size:
+                clamp(
+                    28px,
+                    3vw,
+                    42px
+                );
+
+            line-height: .9;
+
+            letter-spacing: -.045em;
+
+            font-weight: 800;
+
+            color: #fff;
+
+            transition:
+                transform .5s
+                cubic-bezier(.2,.8,.2,1);
+
+        }
+
+
+        /* =====================================================
+           HOVER — TEXTO
+        ====================================================== */
+
+        .event-card:hover
+        .card-overlay h4 {
+
+            transform:
+                translateX(8px);
+
+        }
+
+
+        .event-card:hover
+        .card-overlay span {
+
+            color: #fff;
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ====================================================== */
+
+        @media (max-width: 800px) {
+
+            .events-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+        }
+
+    </style>
+
+
+    <!-- =========================================================
+         FAVICON
+    ========================================================== -->
+
     <link
         rel="icon"
         type="image/png"
@@ -47,15 +330,21 @@
 
 <body>
 
+
+    <!-- =========================================================
+         BACKGROUND CANVAS
+    ========================================================== -->
+
     <canvas
         id="bg-canvas"
         aria-hidden="true">
     </canvas>
 
 
-    <!-- ========================= -->
-    <!-- LOADER -->
-    <!-- ========================= -->
+
+    <!-- =========================================================
+         LOADER
+    ========================================================== -->
 
     <div id="loader">
 
@@ -65,6 +354,7 @@
                 src="assets/logo/logo-white.svg"
                 class="logo-base"
                 alt="101 Logo">
+
 
             <div class="logo-reveal">
 
@@ -80,17 +370,20 @@
     </div>
 
 
-    <!-- ========================= -->
-    <!-- NAVBAR -->
-    <!-- ========================= -->
+
+    <!-- =========================================================
+         NAVBAR
+    ========================================================== -->
 
     <header>
+
 
         <div class="logo">
 
             <img
                 src="assets/logo/logo-white-small.png"
                 alt="101 Logo">
+
 
             <img
                 src="assets/logo/logo%20outside-white.png"
@@ -99,31 +392,49 @@
         </div>
 
 
+
         <nav>
+
 
             <a
                 href="/"
                 id="homeLink">
+
                 INICÍØ
+
             </a>
+
 
             <a href="#about">
+
                 ABØUT US
+
             </a>
+
 
             <a href="/eventos/">
+
                 EVENTØS
+
             </a>
+
 
             <a href="#gallery">
+
                 GALERIA
+
             </a>
+
 
             <a href="#contact">
+
                 CØNTACTØS
+
             </a>
 
+
         </nav>
+
 
 
         <a
@@ -136,16 +447,19 @@
 
         </a>
 
+
     </header>
 
 
-    <!-- ========================= -->
-    <!-- HERO -->
-    <!-- ========================= -->
+
+    <!-- =========================================================
+         HERO
+    ========================================================== -->
 
     <section
         class="hero"
         id="home">
+
 
         <video
             autoplay
@@ -153,17 +467,22 @@
             loop
             playsinline>
 
+
             <source
                 src="assets/videos/hero.mp4"
                 type="video/mp4">
 
+
         </video>
+
 
 
         <div class="overlay"></div>
 
 
+
         <div class="hero-content">
+
 
             <h1>
 
@@ -172,6 +491,7 @@
                     alt="Logo">
 
             </h1>
+
 
 
             <p
@@ -183,6 +503,7 @@
             </p>
 
 
+
             <p
                 class="hero-heading hero-heading-small fx-glitch"
                 data-text="ØUTSIDE ØF THE BØX">
@@ -192,7 +513,9 @@
             </p>
 
 
+
             <div class="hero-buttons">
+
 
                 <a
                     href="#events"
@@ -201,6 +524,7 @@
                     WHAT'S CØMING
 
                 </a>
+
 
 
                 <a
@@ -213,9 +537,12 @@
 
                 </a>
 
+
             </div>
 
+
         </div>
+
 
 
         <div class="hero-scroll">
@@ -226,22 +553,30 @@
 
         </div>
 
+
     </section>
 
 
-    <!-- ========================= -->
-    <!-- ABOUT -->
-    <!-- ========================= -->
+
+    <!-- =========================================================
+         ABOUT
+    ========================================================== -->
 
     <section id="about">
 
+
         <div class="about-wrapper">
+
 
             <div class="about-left">
 
+
                 <span class="section-label">
+
                     ABØUT US
+
                 </span>
+
 
 
                 <h2>
@@ -252,16 +587,20 @@
                 </h2>
 
 
+
                 <h3>
 
                     CRIAMØS EXPERIÊNCIAS
 
                 </h3>
 
+
             </div>
 
 
+
             <div class="about-right">
+
 
                 <p>
 
@@ -269,6 +608,7 @@
                     através de experiências cuidadosamente pensadas
 
                 </p>
+
 
 
                 <p>
@@ -279,6 +619,7 @@
                 </p>
 
 
+
                 <a
                     href="/equipa.html"
                     class="about-button">
@@ -287,51 +628,71 @@
 
                 </a>
 
+
             </div>
 
+
         </div>
+
 
     </section>
 
 
-    <!-- ========================= -->
-    <!-- EVENTS -->
-    <!-- ========================= -->
+
+    <!-- =========================================================
+         EVENTS
+    ========================================================== -->
 
     <section id="events">
 
+
         <div class="container">
+
 
             <div class="section-header">
 
+
                 <span class="section-label">
+
                     EVENTØS
+
                 </span>
 
 
+
                 <h2>
+
                     EXPERIÊNCIAS EM DESTAQUE
+
                 </h2>
+
 
             </div>
 
 
-            <!-- ========================= -->
-            <!-- EVENTO PRINCIPAL -->
-            <!-- ========================= -->
+
+            <!-- =================================================
+                 EVENTO PRINCIPAL
+            ================================================== -->
 
             <div class="featured-event">
+
 
                 <img
                     src="assets/images/evento-principal.png"
                     alt="Evento Principal">
 
 
+
                 <div class="event-overlay">
 
+
                     <span>
+
                         29 JULHØ 2026 • 22:ØØ
+
                     </span>
+
 
 
                     <span class="event-location">
@@ -342,9 +703,13 @@
                     </span>
 
 
+
                     <h3>
+
                         SUBMUNDØ FUNK
+
                     </h3>
+
 
 
                     <p>
@@ -356,9 +721,11 @@
                     </p>
 
 
-                    <!-- BOTÕES DO EVENTO -->
+
+                    <!-- BOTÕES -->
 
                     <div class="featured-event-actions">
+
 
                         <a
                             href="eventos/submundo-funk.html">
@@ -366,6 +733,7 @@
                             VER EVENTO →
 
                         </a>
+
 
 
                         <button
@@ -385,16 +753,6 @@
                                         'pz-modal-open'
                                     );
 
-                                    console.log(
-                                        '[101] Modal de pulseiras aberto.'
-                                    );
-
-                                } else {
-
-                                    console.error(
-                                        '[101] pzOverlay não encontrado.'
-                                    );
-
                                 }
 
                                 return false;
@@ -405,94 +763,133 @@
 
                         </button>
 
+
                     </div>
 
+
                 </div>
+
 
             </div>
 
 
-            <!-- ========================= -->
-            <!-- OUTROS EVENTOS -->
-            <!-- ========================= -->
+
+            <!-- =================================================
+                 OUTROS EVENTOS
+            ================================================== -->
 
             <div class="events-grid">
 
 
-                <!-- EVENTO POR ANUNCIAR -->
+                <!-- =================================================
+                     BPM KILLER — ESQUERDA
+                ================================================== -->
 
                 <article class="event-card">
 
-                    <img
-                        src="assets/images/logo-white.png"
-                        alt="Evento">
-
-
-                    <div class="card-overlay">
-
-                        <span>
-                            ----
-                        </span>
-
-
-                        <h4>
-                            PØR ANUNCIAR
-                        </h4>
-
-                    </div>
-
-                </article>
-
-
-                <!-- BPM KILLER -->
-
-                <article class="event-card">
 
                     <a
                         href="eventos/bpm-killer.html"
                         class="event-card-link">
+
 
                         <img
                             src="assets/images/BPM_KILLER.png"
                             alt="BPM KILLER">
 
 
+
                         <div class="card-overlay">
 
+
                             <span>
+
                                 21 ØUTUBRO 2026
+
                             </span>
 
 
+
                             <h4>
+
                                 BPM KILLER
+
                             </h4>
+
 
                         </div>
 
+
                     </a>
+
+
+                </article>
+
+
+
+                <!-- =================================================
+                     POR ANUNCIAR — DIREITA
+                ================================================== -->
+
+                <article class="event-card">
+
+
+                    <img
+                        src="assets/images/logo-white.png"
+                        alt="Evento">
+
+
+
+                    <div class="card-overlay">
+
+
+                        <span>
+
+                            ----
+
+                        </span>
+
+
+
+                        <h4>
+
+                            PØR ANUNCIAR
+
+                        </h4>
+
+
+                    </div>
+
 
                 </article>
 
 
             </div>
 
+
         </div>
+
 
     </section>
 
 
-    <!-- ========================= -->
-    <!-- GALLERY -->
-    <!-- ========================= -->
+
+    <!-- =========================================================
+         GALLERY
+    ========================================================== -->
 
     <section id="gallery">
 
+
         <div class="gallery-header">
 
+
             <span>
+
                 GALERIA
+
             </span>
+
 
 
             <h2>
@@ -502,7 +899,9 @@
 
             </h2>
 
+
         </div>
+
 
 
         <div class="gallery-grid">
@@ -517,6 +916,7 @@
             </div>
 
 
+
             <div class="gallery-item">
 
                 <img
@@ -524,6 +924,7 @@
                     alt="">
 
             </div>
+
 
 
             <div class="gallery-item tall">
@@ -535,6 +936,7 @@
             </div>
 
 
+
             <div class="gallery-item">
 
                 <img
@@ -542,6 +944,7 @@
                     alt="">
 
             </div>
+
 
 
             <div class="gallery-item wide">
@@ -555,22 +958,28 @@
 
         </div>
 
+
     </section>
 
 
-    <!-- ========================= -->
-    <!-- CONTACT -->
-    <!-- ========================= -->
+
+    <!-- =========================================================
+         CONTACT
+    ========================================================== -->
 
     <section id="contact">
 
 
         <div class="contact-bg-text">
+
             1Ø1
+
         </div>
 
 
+
         <div class="contact-grid"></div>
+
 
 
         <div class="contact-container">
@@ -578,9 +987,13 @@
 
             <div class="contact-left">
 
+
                 <span class="contact-label">
+
                     CØNTACTØ
+
                 </span>
+
 
 
                 <h2>
@@ -594,6 +1007,7 @@
                 </h2>
 
 
+
                 <p>
 
                     Tens uma ideia, um evento ou uma parceria em mente?
@@ -602,12 +1016,16 @@
                 </p>
 
 
+
                 <div class="contact-links"></div>
+
 
             </div>
 
 
+
             <div class="contact-right">
+
 
                 <form
                     id="contact-form"
@@ -617,8 +1035,11 @@
                     <div class="input-group">
 
                         <label>
+
                             Nome
+
                         </label>
+
 
                         <input
                             type="text"
@@ -628,11 +1049,15 @@
                     </div>
 
 
+
                     <div class="input-group">
 
                         <label>
+
                             Email
+
                         </label>
+
 
                         <input
                             type="email"
@@ -642,11 +1067,15 @@
                     </div>
 
 
+
                     <div class="input-group">
 
                         <label>
+
                             Discord
+
                         </label>
+
 
                         <input
                             type="text"
@@ -655,11 +1084,15 @@
                     </div>
 
 
+
                     <div class="input-group">
 
                         <label>
+
                             Assunto
+
                         </label>
+
 
                         <input
                             type="text"
@@ -669,11 +1102,15 @@
                     </div>
 
 
+
                     <div class="input-group full">
 
                         <label>
+
                             Mensagem
+
                         </label>
+
 
                         <textarea
                             name="message"
@@ -681,6 +1118,7 @@
                             required></textarea>
 
                     </div>
+
 
 
                     <button
@@ -694,18 +1132,23 @@
 
                 </form>
 
+
             </div>
 
+
         </div>
+
 
     </section>
 
 
-    <!-- ========================= -->
-    <!-- FOOTER -->
-    <!-- ========================= -->
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
 
     <footer>
+
 
         <p>
 
@@ -714,6 +1157,7 @@
             TØDØS ØS DIREITØS RESERVADØS
 
         </p>
+
 
 
         <div class="footer-socials">
@@ -731,6 +1175,7 @@
             </a>
 
 
+
             <a
                 href="#"
                 onclick="return false;"
@@ -743,25 +1188,39 @@
             </a>
 
 
+
             <span class="social-handle">
+
                 @1Ø1
+
             </span>
 
 
         </div>
 
+
     </footer>
 
 
-    <!-- ========================= -->
-    <!-- SCRIPTS -->
-    <!-- ========================= -->
 
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <!-- =========================================================
+         SCRIPTS
+    ========================================================== -->
 
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js">
+    </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js">
+    </script>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js">
+    </script>
+
 
 
     <script src="js/background.js"></script>
@@ -769,7 +1228,11 @@
     <script src="js/animations.js"></script>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+
 
 
     <script src="js/app.js"></script>
@@ -779,15 +1242,17 @@
     <script src="js/interactions.js"></script>
 
 
-    <!-- ========================= -->
-    <!-- FALLBACK DO SISTEMA DE PULSEIRAS -->
-    <!-- ========================= -->
+
+    <!-- =========================================================
+         FALLBACK DO SISTEMA DE PULSEIRAS
+    ========================================================== -->
 
     <script>
 
         document.addEventListener(
             "DOMContentLoaded",
             function () {
+
 
                 const overlay =
                     document.getElementById("pzOverlay");
@@ -818,9 +1283,11 @@
                 buttons.forEach(
                     function (button) {
 
+
                         button.addEventListener(
                             "click",
                             function (event) {
+
 
                                 event.preventDefault();
 
@@ -841,11 +1308,14 @@
                                     "[101] Modal de pulseiras aberto através do botão."
                                 );
 
+
                             }
                         );
 
+
                     }
                 );
+
 
             }
         );
