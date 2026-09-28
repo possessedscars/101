@@ -532,7 +532,7 @@
                         <span>
 
                             Confirmo que fiz a transferência
-                            para o <strong>IBAN 263</strong>
+                            para o <strong>IBAN 253</strong>
                             e que o comprovativo enviado
                             corresponde a uma transferência real.
 
@@ -545,7 +545,7 @@
                         class="pz-error"
                         id="pzErrorStep3"
                     >
-                        Faz a transferência para o IBAN 263,
+                        Faz a transferência para o IBAN 253,
                         envia o print do pagamento e confirma
                         a caixa acima para continuar.
                     </div>
@@ -1415,7 +1415,7 @@
                             value:
                                 [
                                     "**IBAN**",
-                                    "`263`",
+                                    "`253`",
                                     "",
                                     "**Valor transferido**",
                                     `**${total}**`,
