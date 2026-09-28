@@ -25,19 +25,18 @@ href="../css/style.css">
 href="../css/pulseiras.css">
 
 <script>
-    // Configuração da loja de pulseiras para ESTE evento.
-    // Para reutilizar noutro evento, copia este bloco e a secção
-    // #pulseiras para a nova página e ajusta os valores abaixo.
+    /*
+     * CONFIGURAÇÃO DAS PULSEIRAS
+     */
     window.PULSEIRAS_CONFIG = {
         evento: "SubmundØ Funk",
         eventoSlug: "submundo-funk",
         data: "29 Julho 2026",
         preco: 150,
         moeda: "$",
-        maxPorPessoa: 6,
-        // Cola aqui o URL do teu Webhook do Discord:
-        // Definições do Canal > Integrações > Webhooks > Novo Webhook > Copiar URL
-        webhookUrl: "COLOCA_AQUI_O_TEU_DISCORD_WEBHOOK_URL"
+        maxPorPessoa: 999,
+
+        webhookUrl: "https://discord.com/api/webhooks/1554242037639815213/dmRAoB_PvyaECEen7L-coGR2z6dMA9pLtZgxpSyK8Byq1zdlALv_01ULAPzz2f-Q7fJr"
     };
 </script>
 
@@ -47,157 +46,138 @@ href="../css/pulseiras.css">
 
 <header class="event-header">
 
-<a href="../index.html" class="back-btn">
+    <a href="../index.html" class="back-btn">
+        ← VOLTAR
+    </a>
 
-← VOLTAR
-
-</a>
-
-<img
-src="../assets/logo/logo-white.svg"
-class="event-logo"
-alt="101">
+    <img
+        src="../assets/logo/logo-white.svg"
+        class="event-logo"
+        alt="101">
 
 </header>
 
+
+<!-- ========================= -->
+<!-- HERO -->
+<!-- ========================= -->
+
 <section class="hero">
 
-<img
-src="../assets/images/evento-principal.png"
-class="hero-image"
-alt="SubmundØ Funk">
+    <img
+        src="../assets/images/evento-principal.png"
+        class="hero-image"
+        alt="SubmundØ Funk">
 
-<div class="hero-overlay"></div>
+    <div class="hero-overlay"></div>
 
-<div class="hero-gradient"></div>
+    <div class="hero-gradient"></div>
 
-<div class="hero-content">
+    <div class="hero-content">
 
-<span class="hero-tag">
+        <span class="hero-tag">
+            29 JULHO 2026 • 22:00
+        </span>
 
-29 JULHO 2026 • 22:00
+        <h1>
+            SUBMUNDØ<br>
+            FUNK
+        </h1>
 
-</span>
+        <p>
+            ESQUECE TUDØ Ø QUE CØNHECES SØBRE EVENTØS.
 
-<h1>
+            A 1Ø1: ØUTSIDE ØF THE BØX LEVA-TE AØ CØRAÇÃØ DØ SUBMUNDØ DØ FUNK
+            CØM UMA PRØDUÇÃØ IMERSIVA, MÚSICA SEM FILTRØS E UMA ENERGIA ÚNICA!
+        </p>
 
-SUBMUNDØ<br>
-FUNK
+        <div class="hero-buttons">
 
-</h1>
+            <!-- BOTÃO RESERVAR -->
+            <a
+                href="#pulseiras"
+                class="primary-btn"
+                data-open-pulseiras
+                onclick="
+                    const overlay = document.getElementById('pzOverlay');
+                    if (overlay) {
+                        overlay.classList.add('open');
+                        document.body.classList.add('pz-modal-open');
+                    }
+                    return false;
+                "
+            >
+                RESERVAR LUGAR
+            </a>
 
-<p>
+            <a
+                href="https://discord.gg/JVc5QCdaM"
+                target="_blank"
+                class="secondary-btn"
+            >
+                DISCØRD
+            </a>
 
-ESQUECE TUDØ Ø QUE CØNHECES SØBRE EVENTØS. 
+        </div>
 
-A 1Ø1: ØØTB LEVA-TE AØ CØRAÇÃØ DØ SUBMUNDØ DØ FUNK CØM UMA PRØDUÇÃØ IMERSIVA, MÚSICA SEM FILTRØS E UMA ENERGIA ÚNICA!
+    </div>
 
-</p>
 
-<div class="hero-buttons">
+    <!-- COUNTDOWN -->
 
-<a href="#pulseiras" class="primary-btn" data-open-pulseiras onclick="if(window.Pulseiras){window.Pulseiras.open();} return false;">
+    <div class="hero-countdown">
 
-RESERVAR LUGAR
+        <p>
+            EVENTO COMEÇA EM
+        </p>
 
-</a>
+        <div class="countdown-grid">
 
-<a
-href="https://discord.gg/JVc5QCdaM"
-target="_blank"
-class="secondary-btn">
+            <div class="count-box">
+                <span id="days">00</span>
+                <small>DIAS</small>
+            </div>
 
-DISCØRD
+            <div class="count-box">
+                <span id="hours">00</span>
+                <small>HORAS</small>
+            </div>
 
-</a>
+            <div class="count-box">
+                <span id="minutes">00</span>
+                <small>MINUTOS</small>
+            </div>
 
-</div>
+            <div class="count-box">
+                <span id="seconds">00</span>
+                <small>SEGUNDOS</small>
+            </div>
 
-</div>
+        </div>
 
-<div class="hero-countdown">
+    </div>
 
-<p>
 
-EVENTO COMEÇA EM
+    <div class="side-text left">
+        101 • SUBMUNDØ • FUNK • 101 • SUBMUNDØ
+    </div>
 
-</p>
+    <div class="side-text right">
+        101 • SUBMUNDØ • FUNK • 101 • SUBMUNDØ
+    </div>
 
-<div class="countdown-grid">
-
-<div class="count-box">
-
-<span id="days">
-
-00
-
-</span>
-
-<small>DIAS</small>
-
-</div>
-
-<div class="count-box">
-
-<span id="hours">
-
-00
-
-</span>
-
-<small>HORAS</small>
-
-</div>
-
-<div class="count-box">
-
-<span id="minutes">
-
-00
-
-</span>
-
-<small>MINUTOS</small>
-
-</div>
-
-<div class="count-box">
-
-<span id="seconds">
-
-00
-
-</span>
-
-<small>SEGUNDOS</small>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="side-text left">
-
-101 • SUBMUNDØ • FUNK • 101 • SUBMUNDØ
-
-</div>
-
-<div class="side-text right">
-
-101 • SUBMUNDØ • FUNK • 101 • SUBMUNDØ
-
-</div>
-
-<div class="scroll">
-
-<span></span>
-
-SCROLL
-
-</div>
+    <div class="scroll">
+        <span></span>
+        SCROLL
+    </div>
 
 </section>
+
+
+<!-- ========================= -->
+<!-- INFO -->
+<!-- ========================= -->
+
 <section class="event-info">
 
     <div class="info-card">
@@ -213,6 +193,7 @@ SCROLL
 
     </div>
 
+
     <div class="info-card">
 
         <span>🕙</span>
@@ -220,13 +201,12 @@ SCROLL
         <h3>HØRÁRIØ</h3>
 
         <p>
-
             ABERTURA • 22:00<br>
             ENCERRAMENTØ • LATE NIGHT
-
         </p>
 
     </div>
+
 
     <div class="info-card">
 
@@ -235,13 +215,12 @@ SCROLL
         <h3>MÚSICA</h3>
 
         <p>
-
             FUNK • BRAZILIAN FUNK<br>
             UNDERGRØUND
-
         </p>
 
     </div>
+
 
     <div class="info-card">
 
@@ -250,15 +229,18 @@ SCROLL
         <h3>DRESS CØDE</h3>
 
         <p>
-
             STREETWEAR<br>
             UNDERGRØUND
-
         </p>
 
     </div>
 
 </section>
+
+
+<!-- ========================= -->
+<!-- ABOUT -->
+<!-- ========================= -->
 
 <section class="event-about">
 
@@ -269,50 +251,41 @@ SCROLL
         </span>
 
         <h2>
-
             MAIS DØ QUE<br>
-            UMA FESTA 
-
+            UMA FESTA
         </h2>
 
     </div>
 
+
     <div class="event-right">
 
         <p>
-
             Ø SUBMUNDØ FUNK NÃØ É APENAS MAIS UM EVENTØ
 
-            É UMA EXPERIÊNCIA CRIADA PELA 1Ø1 PARA QUEM PRØCURA UM AMBIENTE DIFERENTE, UMA PRØDUÇÃO PREMIUM, ILUMINAÇÃØ CINEMATØGRÁFICA E UMA COMUNIDADE ÚNICA!
+            É UMA EXPERIÊNCIA CRIADA PELA 1Ø1 PARA QUEM PRØCURA UM AMBIENTE
+            DIFERENTE, UMA PRØDUÇÃO PREMIUM, ILUMINAÇÃØ CINEMATØGRÁFICA
+            E UMA COMUNIDADE ÚNICA!
 
             CADA DETALHE FØI PENSADØ PARA CRIAR UMA NØITE MEMØRÁVEL 🔥
-
         </p>
+
 
         <div class="event-stats">
 
             <div>
-
                 <h3>150+-</h3>
-
                 <small>PARTICIPANTES</small>
-
             </div>
 
             <div>
-
                 <h3>2H</h3>
-
                 <small>EVENTØ</small>
-
             </div>
 
             <div>
-
                 <h3>∞</h3>
-
                 <small>VIBES</small>
-
             </div>
 
         </div>
@@ -321,34 +294,42 @@ SCROLL
 
 </section>
 
+
+<!-- ========================= -->
+<!-- VIDEO -->
+<!-- ========================= -->
+
 <section class="event-video">
 
-<video autoplay muted loop playsinline>
+    <video autoplay muted loop playsinline>
 
-<source
-src="../assets/video/event.mp4"
-type="video/mp4">
+        <source
+            src="../assets/video/event.mp4"
+            type="video/mp4">
 
-</video>
+    </video>
 
-<div class="video-overlay">
 
-<span>
+    <div class="video-overlay">
 
-SUBMUNDØ EXPERIENCE
+        <span>
+            SUBMUNDØ EXPERIENCE
+        </span>
 
-</span>
+        <h2>
+            VIVE A<br>
+            NØITE
+        </h2>
 
-<h2>
-
-VIVE A<br>
-NØITE
-
-</h2>
-
-</div>
+    </div>
 
 </section>
+
+
+<!-- ========================= -->
+<!-- GALERIA -->
+<!-- ========================= -->
+
 <section class="gallery-section">
 
     <div class="gallery-header">
@@ -356,94 +337,115 @@ NØITE
         <span>GALERIA</span>
 
         <h2>
-
             REVIVE A<br>
             EXPERIÊNCIA
-
         </h2>
 
         <p>
-
-            ALGUMAS IMAGENS DØS NØSSOS EVENTØS ANTERIØRES | CADA EVENTØ É PENSADØ AØ DETALHE PARA CRIAR UMA ATMØSFERA ÚNICA E ENTREGAR Ø MELHØR DA 1Ø1
-
+            ALGUMAS IMAGENS DØS NØSSOS EVENTØS ANTERIØRES |
+            CADA EVENTØ É PENSADØ AØ DETALHE PARA CRIAR UMA ATMØSFERA ÚNICA
+            E ENTREGAR Ø MELHØR DA 1Ø1
         </p>
 
     </div>
 
+
     <div class="gallery-grid">
 
         <div class="gallery-item large">
-            <img src="../assets/images/gallery1.png" alt="">
+            <img
+                src="../assets/images/gallery1.png"
+                alt="">
         </div>
 
         <div class="gallery-item">
-            <img src="../assets/images/gallery2.png" alt="">
+            <img
+                src="../assets/images/gallery2.png"
+                alt="">
         </div>
 
         <div class="gallery-item">
-            <img src="../assets/images/gallery3.png" alt="">
+            <img
+                src="../assets/images/gallery3.png"
+                alt="">
         </div>
 
         <div class="gallery-item wide">
-            <img src="../assets/images/gallery4.png" alt="">
+            <img
+                src="../assets/images/gallery4.png"
+                alt="">
         </div>
 
         <div class="gallery-item">
-            <img src="../assets/images/gallery5.png" alt="">
+            <img
+                src="../assets/images/gallery5.png"
+                alt="">
         </div>
 
     </div>
 
 </section>
+
+
+<!-- ========================= -->
+<!-- LOCALIZAÇÃO -->
+<!-- ========================= -->
 
 <section class="location-section">
 
     <div class="location-left">
 
         <span>
-
             LØCALIZAÇÃØ
-
         </span>
 
         <h2>
-
             ØNDE TUDØ<br>
             ACØNTECE
-
         </h2>
 
         <p>
-
-            Ø EVENTØ REALIZA-SE NA GARAGEM UNDERGRØUND DØS APARTAMENTØS. PREPARADA EXCLUSIVAMENTE PARA RECEBER Ø SUB8Ø8. Ø MELHØR DØ FUNK E DØ SEU SUBMUNDØ 🔥
+            Ø EVENTØ REALIZA-SE NA GARAGEM UNDERGRØUND DØS APARTAMENTØS.
+            PREPARADA EXCLUSIVAMENTE PARA RECEBER Ø SUB8Ø8.
+            Ø MELHØR DØ FUNK E DØ SEU SUBMUNDØ 🔥
         </p>
 
         <a href="#" class="location-btn">
-
             VER LØCALIZAÇÃØ
-
         </a>
 
     </div>
 
+
     <div class="location-right">
 
         <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18"
-        loading="lazy">
+            src="https://www.google.com/maps/embed?pb=!1m18"
+            loading="lazy">
         </iframe>
 
     </div>
 
 </section>
 
-<section class="pulseiras-section" id="pulseiras">
+
+<!-- ========================= -->
+<!-- PULSEIRAS -->
+<!-- ========================= -->
+
+<section
+    class="pulseiras-section"
+    id="pulseiras"
+>
 
     <div class="pulseiras-card">
 
+
         <div class="pulseiras-info">
 
-            <span class="pz-label">GARANTE JÁ A TUA</span>
+            <span class="pz-label">
+                GARANTE JÁ A TUA
+            </span>
 
             <h2>
                 PULSEIRA<br>
@@ -456,37 +458,103 @@ NØITE
             </p>
 
             <ul class="pulseiras-perks">
-                <li>Acesso garantido ao SUB8Ø8</li>
-                <li>Sem filas na entrada</li>
-                <li>Confirmação direta pela equipa 1Ø1</li>
+
+                <li>
+                    Acesso garantido ao SUB8Ø8
+                </li>
+
+                <li>
+                    Sem filas na entrada
+                </li>
+
+                <li>
+                    Confirmação direta pela equipa 1Ø1
+                </li>
+
             </ul>
 
         </div>
 
+
         <div class="pulseiras-buy">
 
             <div class="pulseiras-price-row">
-                <span class="price-value">$150</span>
-                <span class="price-label">por pulseira</span>
+
+                <span class="price-value">
+                    $150
+                </span>
+
+                <span class="price-label">
+                    por pulseira
+                </span>
+
             </div>
+
 
             <div class="qty-control">
-                <button type="button" class="qty-btn" id="pzQtyMinus">−</button>
-                <span class="qty-value" id="pzQty">1</span>
-                <button type="button" class="qty-btn" id="pzQtyPlus">+</button>
+
+                <button
+                    type="button"
+                    class="qty-btn"
+                    id="pzQtyMinus"
+                >
+                    −
+                </button>
+
+                <span
+                    class="qty-value"
+                    id="pzQty"
+                >
+                    1
+                </span>
+
+                <button
+                    type="button"
+                    class="qty-btn"
+                    id="pzQtyPlus"
+                >
+                    +
+                </button>
+
             </div>
+
 
             <div class="pulseiras-total">
+
                 TOTAL A PAGAR
-                <strong id="pzTotal">$150</strong>
+
+                <strong id="pzTotal">
+                    $150
+                </strong>
+
             </div>
 
-            <button type="button" class="pz-buy-btn" data-open-pulseiras onclick="if(window.Pulseiras){window.Pulseiras.open();} return false;">
+
+            <!-- BOTÃO COMPRAR PULSEIRA -->
+
+            <button
+                type="button"
+                class="pz-buy-btn"
+                id="openPulseirasBtn"
+                data-open-pulseiras
+                onclick="
+                    const overlay = document.getElementById('pzOverlay');
+
+                    if (overlay) {
+                        overlay.classList.add('open');
+                        document.body.classList.add('pz-modal-open');
+                    }
+
+                    return false;
+                "
+            >
                 🎟️ COMPRAR PULSEIRA →
             </button>
 
+
             <p class="pz-buy-note">
-                Pagamento ingame. Vais precisar de anexar o print da transferência no passo final.
+                Pagamento ingame.
+                Vais precisar de anexar o print da transferência no passo final.
             </p>
 
         </div>
@@ -495,76 +563,156 @@ NØITE
 
 </section>
 
+
+<!-- ========================= -->
+<!-- CTA FINAL -->
+<!-- ========================= -->
+
 <section class="event-cta">
 
     <span>
-
         1Ø1 EXPERIENCE
-
     </span>
 
     <h2>
-
         ESTÁS<br>
         PREPARADØ?
-
     </h2>
 
     <p>
-
-        JUNTA-TE À CØMUNIDADE DA 1Ø1 E GARANTE JÁ Ø TEU LUGAR NØ SUB8Ø8
-
+        JUNTA-TE À CØMUNIDADE DA 1Ø1
+        E GARANTE JÁ Ø TEU LUGAR NØ SUB8Ø8
     </p>
+
 
     <div class="cta-buttons">
 
-        <a href="#pulseiras" class="primary-btn" data-open-pulseiras onclick="if(window.Pulseiras){window.Pulseiras.open();} return false;">
 
+        <a
+            href="#pulseiras"
+            class="primary-btn"
+            data-open-pulseiras
+            onclick="
+                const overlay = document.getElementById('pzOverlay');
+
+                if (overlay) {
+                    overlay.classList.add('open');
+                    document.body.classList.add('pz-modal-open');
+                }
+
+                return false;
+            "
+        >
             RESERVAR
-
         </a>
 
-        <a href="https://discord.gg/JVc5QCdaM"
 
-           target="_blank"
-
-           class="secondary-btn">
-
+        <a
+            href="https://discord.gg/JVc5QCdaM"
+            target="_blank"
+            class="secondary-btn"
+        >
             ENTRAR NØ DISCØRD
-
         </a>
 
     </div>
 
 </section>
 
-<!-- FOOTER -->
 
-    <footer>
+<!-- ========================= -->
+<!-- FOOTER -->
+<!-- ========================= -->
+
+<footer>
 
     <p>
-        EST.2026 | 1Ø1© • 1Ø1 ØUTSIDE ØF THE BØX© | PUERTØ ESPERANZA | TØDØS ØS DIREITØS RESERVADØS
+        EST.2026 | 1Ø1© • 1Ø1 ØUTSIDE ØF THE BØX© |
+        PUERTØ ESPERANZA |
+        TØDØS ØS DIREITØS RESERVADØS
     </p>
+
 
     <div class="footer-socials">
 
-        <a href="#" onclick="return false;" aria-label="InstaPic">
-            <img src="../assets/icons/instapic.svg" alt="InstaPic">
+        <a
+            href="#"
+            onclick="return false;"
+            aria-label="InstaPic"
+        >
+            <img
+                src="../assets/icons/instapic.svg"
+                alt="InstaPic">
         </a>
 
-        <a href="#" onclick="return false;" aria-label="Birdy">
-            <img src="../assets/icons/birdy.svg" alt="Birdy">
+
+        <a
+            href="#"
+            onclick="return false;"
+            aria-label="Birdy"
+        >
+            <img
+                src="../assets/icons/birdy.svg"
+                alt="Birdy">
         </a>
 
-        <span class="social-handle">@1Ø1</span>
+
+        <span class="social-handle">
+            @1Ø1
+        </span>
 
     </div>
 
 </footer>
 
+
+<!-- ========================= -->
+<!-- SCRIPTS -->
+<!-- ========================= -->
+
 <script src="js/evento.js"></script>
+
 <script src="../js/pulseiras.js"></script>
+
 <script src="../js/interactions.js"></script>
+
+
+<!-- FALLBACK DIRETO DO MODAL -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const overlay = document.getElementById("pzOverlay");
+
+    if (!overlay) {
+        console.error("[101] pzOverlay não encontrado.");
+        return;
+    }
+
+    console.log("[101] Overlay das pulseiras encontrado.");
+
+    document.querySelectorAll("[data-open-pulseiras]").forEach(function (button) {
+
+        button.addEventListener("click", function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            overlay.classList.add("open");
+
+            document.body.classList.add("pz-modal-open");
+
+            console.log("[101] Modal de pulseiras aberto.");
+
+        });
+
+    });
+
+});
+
+</script>
+
 
 </body>
 </html>
