@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>1Ø1 • BPM KILLER</title>
+
+    <meta
+        name="description"
+        content="BPM KILLER — 21 ØUTUBRO 2026 • 1Ø1">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css">
+
+    <link
+        rel="stylesheet"
+        href="../css/pulseiras.css">
+
+    <link
+        rel="icon"
+        type="image/svg+xml"
+        href="../assets/logo/logo-white.svg">
+
+
+    <style>
+
+        /* =====================================================
+           BPM KILLER
+           HALLOWEEN EVENT PAGE
+        ====================================================== */
+
+        :root {
+            --killer-red: #e00000;
+            --killer-red-dark: #650000;
+            --killer-black: #030303;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            background: #030303;
+            overflow-x: hidden;
+        }
+
+
+        /* =====================================================
+           NOISE
+        ====================================================== */
+
+        .killer-page {
+            position: relative;
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at 50% 20%,
+                    rgba(130, 0, 0, .16),
+                    transparent 38%
+                ),
+                #030303;
+        }
+
+
+        .killer-page::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 20;
+            pointer-events: none;
+            opacity: .055;
+
+            background-image:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+
+            mix-blend-mode: screen;
+        }
+
+
+        /* =====================================================
+           TOP BAR
+        ====================================================== */
+
+        .killer-topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+
+            height: 76px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 5%;
+
+            border-bottom: 1px solid rgba(255,255,255,.08);
+
+            background: rgba(3,3,3,.62);
+
+            backdrop-filter: blur(18px);
+        }
+
+
+        .killer-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+
+            color: #fff;
+
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .2em;
+
+            text-transform: uppercase;
+
+            transition:
+                color .3s ease,
+                transform .3s ease;
+        }
+
+
+        .killer-back:hover {
+            color: #ff2b2b;
+            transform: translateX(-4px);
+        }
+
+
+        .killer-brand {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .35em;
+
+            color: rgba(255,255,255,.7);
+        }
+
+
+        .killer-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            font-size: 9px;
+            letter-spacing: .22em;
+            color: #999;
+        }
+
+
+        .killer-status-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: var(--killer-red);
+
+            box-shadow:
+                0 0 12px rgba(224,0,0,.8);
+        }
+
+
+        /* =====================================================
+           HERO
+        ====================================================== */
+
+        .killer-hero {
+            position: relative;
+
+            min-height: 100vh;
+
+            display: flex;
+            align-items: flex-end;
+
+            overflow: hidden;
+
+            isolation: isolate;
+        }
+
+
+        .killer-hero video {
+            position: absolute;
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            filter:
+                grayscale(100%)
+                brightness(.34)
+                contrast(1.15);
+
+            transform: scale(1.02);
+
+            z-index: -3;
+        }
+
+
+        .killer-hero::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            z-index: -2;
+
+            background:
+                radial-gradient(
+                    circle at 70% 35%,
+                    rgba(170,0,0,.34),
+                    transparent 34%
+                ),
+                linear-gradient(
+                    180deg,
+                    rgba(0,0,0,.28) 0%,
+                    rgba(0,0,0,.12) 40%,
+                    rgba(0,0,0,.96) 100%
+                );
+        }
+
+
+        .killer-hero::after {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            z-index: -1;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0,0,0,.86) 0%,
+                    rgba(0,0,0,.28) 50%,
+                    rgba(0,0,0,.55) 100%
+                );
+        }
+
+
+        .killer-hero-content {
+            width: 100%;
+            max-width: 1500px;
+
+            margin: 0 auto;
+
+            padding:
+                150px 7% 90px;
+
+            position: relative;
+        }
+
+
+        .killer-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            margin-bottom: 22px;
+
+            color: #bdbdbd;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            letter-spacing: .3em;
+
+            text-transform: uppercase;
+        }
+
+
+        .killer-eyebrow::before {
+            content: "";
+
+            width: 38px;
+            height: 1px;
+
+            background: var(--killer-red);
+        }
+
+
+        .killer-title {
+            margin: 0;
+
+            font-size: clamp(72px, 12vw, 190px);
+
+            line-height: .78;
+
+            font-weight: 900;
+
+            letter-spacing: -.075em;
+
+            text-transform: uppercase;
+
+            color: #fff;
+
+            text-shadow:
+                0 0 40px rgba(0,0,0,.8);
+        }
+
+
+        .killer-title span {
+            display: block;
+        }
+
+
+        .killer-title .red {
+            color: #fff;
+            -webkit-text-stroke: 1px rgba(255,255,255,.3);
+        }
+
+
+        .killer-meta {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 12px;
+
+            margin-top: 42px;
+        }
+
+
+        .killer-meta-item {
+            padding: 13px 18px;
+
+            border: 1px solid rgba(255,255,255,.14);
+
+            background: rgba(0,0,0,.35);
+
+            backdrop-filter: blur(10px);
+
+            color: #d0d0d0;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            letter-spacing: .2em;
+
+            text-transform: uppercase;
+        }
+
+
+        .killer-meta-item strong {
+            color: #fff;
+        }
+
+
+        .killer-scroll {
+            position: absolute;
+
+            right: 7%;
+            bottom: 92px;
+
+            writing-mode: vertical-rl;
+
+            color: #777;
+
+            font-size: 9px;
+            letter-spacing: .3em;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =====================================================
+           INTRO
+        ====================================================== */
+
+        .killer-intro {
+            position: relative;
+
+            padding: 150px 8%;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(110,0,0,.13),
+                    transparent 42%
+                ),
+                #050505;
+
+            border-top: 1px solid rgba(255,255,255,.06);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+
+        .killer-intro-inner {
+            max-width: 1250px;
+
+            margin: 0 auto;
+
+            display: grid;
+
+            grid-template-columns: .7fr 1.3fr;
+
+            gap: 100px;
+
+            align-items: start;
+        }
+
+
+        .killer-section-label {
+            color: #777;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            letter-spacing: .35em;
+
+            text-transform: uppercase;
+        }
+
+
+        .killer-intro h2 {
+            margin: 0;
+
+            max-width: 850px;
+
+            font-size: clamp(48px, 7vw, 100px);
+
+            line-height: .88;
+
+            letter-spacing: -.06em;
+
+            font-weight: 900;
+
+            text-transform: uppercase;
+        }
+
+
+        .killer-intro h2 span {
+            color: #666;
+        }
+
+
+        .killer-intro-copy {
+            margin-top: 40px;
+
+            max-width: 650px;
+
+            color: #999;
+
+            font-size: 18px;
+
+            line-height: 1.9;
+        }
+
+
+        .killer-intro-copy strong {
+            color: #fff;
+        }
+
+
+        /* =====================================================
+           VISUAL
+        ====================================================== */
+
+        .killer-visual {
+            position: relative;
+
+            padding: 0 8% 150px;
+
+            background: #050505;
+        }
+
+
+        .killer-visual-frame {
+            position: relative;
+
+            max-width: 1500px;
+
+            height: min(78vh, 850px);
+
+            margin: 0 auto;
+
+            overflow: hidden;
+
+            border-radius: 2px;
+
+            background: #090909;
+
+            border:
+                1px solid rgba(255,255,255,.08);
+        }
+
+
+        .killer-visual-frame img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            filter:
+                grayscale(100%)
+                brightness(.58)
+                contrast(1.1);
+
+            transition:
+                filter 1s ease,
+                transform 1s cubic-bezier(.2,.8,.2,1);
+        }
+
+
+        .killer-visual-frame:hover img {
+            filter:
+                grayscale(0%)
+                brightness(.72)
+                contrast(1.08);
+
+            transform: scale(1.035);
+        }
+
+
+        .killer-visual-frame::after {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    transparent 45%,
+                    rgba(0,0,0,.92) 100%
+                );
+
+            pointer-events: none;
+        }
+
+
+        .killer-visual-caption {
+            position: absolute;
+
+            left: 40px;
+            bottom: 36px;
+
+            z-index: 2;
+        }
+
+
+        .killer-visual-caption span {
+            display: block;
+
+            margin-bottom: 10px;
+
+            color: #aaa;
+
+            font-size: 9px;
+            letter-spacing: .3em;
+        }
+
+
+        .killer-visual-caption strong {
+            display: block;
+
+            color: #fff;
+
+            font-size: clamp(28px, 4vw, 60px);
+
+            line-height: .9;
+
+            letter-spacing: -.05em;
+        }
+
+
+        /* =====================================================
+           INFO
+        ====================================================== */
+
+        .killer-info {
+            padding: 140px 8%;
+
+            background: #030303;
+        }
+
+
+        .killer-info-grid {
+            max-width: 1250px;
+
+            margin: 0 auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            border-top:
+                1px solid rgba(255,255,255,.1);
+
+            border-bottom:
+                1px solid rgba(255,255,255,.1);
+        }
+
+
+        .killer-info-item {
+            padding: 42px 34px;
+
+            min-height: 170px;
+
+            border-right:
+                1px solid rgba(255,255,255,.1);
+        }
+
+
+        .killer-info-item:last-child {
+            border-right: none;
+        }
+
+
+        .killer-info-item span {
+            display: block;
+
+            margin-bottom: 18px;
+
+            color: #666;
+
+            font-size: 9px;
+
+            letter-spacing: .3em;
+
+            text-transform: uppercase;
+        }
+
+
+        .killer-info-item strong {
+            display: block;
+
+            color: #fff;
+
+            font-size: 24px;
+
+            line-height: 1.1;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =====================================================
+           CTA
+        ====================================================== */
+
+        .killer-cta {
+            position: relative;
+
+            padding: 180px 8%;
+
+            text-align: center;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(130,0,0,.24),
+                    transparent 48%
+                ),
+                #050505;
+
+            border-top:
+                1px solid rgba(255,255,255,.06);
+        }
+
+
+        .killer-cta-bg {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%,-50%);
+
+            font-size: 28vw;
+
+            line-height: .7;
+
+            font-weight: 900;
+
+            letter-spacing: -.08em;
+
+            color: rgba(255,255,255,.018);
+
+            pointer-events: none;
+        }
+
+
+        .killer-cta-content {
+            position: relative;
+
+            z-index: 2;
+
+            max-width: 900px;
+
+            margin: 0 auto;
+        }
+
+
+        .killer-cta-label {
+            display: block;
+
+            margin-bottom: 28px;
+
+            color: #777;
+
+            font-size: 10px;
+
+            letter-spacing: .35em;
+
+            text-transform: uppercase;
+        }
+
+
+        .killer-cta h2 {
+            margin: 0;
+
+            font-size: clamp(60px, 9vw, 130px);
+
+            line-height: .8;
+
+            letter-spacing: -.07em;
+
+            font-weight: 900;
+
+            text-transform: uppercase;
+        }
+
+
+        .killer-cta p {
+            max-width: 550px;
+
+            margin: 35px auto 0;
+
+            color: #888;
+
+            line-height: 1.8;
+        }
+
+
+        .killer-cta-button {
+            display: inline-flex;
+
+            margin-top: 42px;
+
+            padding: 18px 34px;
+
+            background: #fff;
+
+            color: #000;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: .15em;
+
+            text-transform: uppercase;
+
+            transition:
+                transform .3s ease,
+                background .3s ease,
+                color .3s ease;
+        }
+
+
+        .killer-cta-button:hover {
+            background: var(--killer-red);
+
+            color: #fff;
+
+            transform:
+                translateY(-4px);
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ====================================================== */
+
+        .killer-footer {
+            padding: 32px 7%;
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 20px;
+
+            border-top:
+                1px solid rgba(255,255,255,.08);
+
+            background: #030303;
+        }
+
+
+        .killer-footer span {
+            color: #555;
+
+            font-size: 9px;
+
+            letter-spacing: .2em;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 900px) {
+
+            .killer-status {
+                display: none;
+            }
+
+            .killer-hero-content {
+                padding:
+                    130px 7% 70px;
+            }
+
+            .killer-scroll {
+                display: none;
+            }
+
+            .killer-intro-inner {
+                grid-template-columns: 1fr;
+
+                gap: 45px;
+            }
+
+            .killer-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .killer-info-item {
+                border-right: none;
+
+                border-bottom:
+                    1px solid rgba(255,255,255,.1);
+            }
+
+            .killer-info-item:last-child {
+                border-bottom: none;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .killer-topbar {
+                height: 66px;
+
+                padding: 0 6%;
+            }
+
+            .killer-brand {
+                font-size: 10px;
+            }
+
+            .killer-hero {
+                min-height: 90vh;
+            }
+
+            .killer-hero-content {
+                padding:
+                    120px 6% 55px;
+            }
+
+            .killer-title {
+                font-size:
+                    clamp(62px, 18vw, 110px);
+            }
+
+            .killer-meta {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .killer-intro,
+            .killer-info {
+                padding:
+                    100px 7%;
+            }
+
+            .killer-visual {
+                padding:
+                    0 5% 100px;
+            }
+
+            .killer-visual-frame {
+                height: 65vh;
+            }
+
+            .killer-visual-caption {
+                left: 24px;
+                bottom: 24px;
+            }
+
+            .killer-cta {
+                padding:
+                    130px 7%;
+            }
+
+            .killer-footer {
+                padding:
+                    28px 6%;
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="killer-page">
+
+
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
+
+        <div class="killer-topbar">
+
+            <a
+                href="../eventos/"
+                class="killer-back">
+
+                ← EVENTØS
+
+            </a>
+
+
+            <span class="killer-brand">
+                1Ø1
+            </span>
+
+
+            <div class="killer-status">
+
+                <span class="killer-status-dot"></span>
+
+                HALLOWEEN 2026
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="killer-hero">
+
+
+            <video
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="auto">
+
+                <source
+                    src="../assets/videos/HALLOW.mp4"
+                    type="video/mp4">
+
+            </video>
+
+
+            <div class="killer-hero-content">
+
+
+                <div class="killer-eyebrow">
+
+                    1Ø1 • HALLOWEEN EVENT
+
+                </div>
+
+
+                <h1 class="killer-title">
+
+                    <span>
+                        BPM
+                    </span>
+
+                    <span class="red">
+                        KILLER
+                    </span>
+
+                </h1>
+
+
+                <div class="killer-meta">
+
+
+                    <div class="killer-meta-item">
+
+                        <strong>
+                            21
+                        </strong>
+                        ØUTUBRO 2026
+
+                    </div>
+
+
+                    <div class="killer-meta-item">
+
+                        HALLOWEEN
+
+                    </div>
+
+
+                    <div class="killer-meta-item">
+
+                        1Ø1
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            <div class="killer-scroll">
+
+                SCROLL TO ENTER
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             INTRO
+        ================================================== -->
+
+        <section class="killer-intro">
+
+
+            <div class="killer-intro-inner">
+
+
+                <div>
+
+                    <span class="killer-section-label">
+
+                        THE NIGHT
+
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <h2>
+
+                        NÃØ É UMA
+                        <span>NOITE NORMAL.</span>
+
+                    </h2>
+
+
+                    <p class="killer-intro-copy">
+
+                        No dia <strong>21 ØUTUBRO 2026</strong>,
+                        a 101 transforma a noite de Halloween numa experiência
+                        onde o ritmo, a escuridão e o desconhecido se encontram.
+
+                        <br><br>
+
+                        <strong>
+                            BPM KILLER.
+                        </strong>
+
+                        Uma noite construída para não passar despercebida.
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             VISUAL
+        ================================================== -->
+
+        <section class="killer-visual">
+
+
+            <div class="killer-visual-frame">
+
+
+                <img
+                    src="../assets/images/BPM_KILLER.png"
+                    alt="BPM KILLER">
+
+
+                <div class="killer-visual-caption">
+
+
+                    <span>
+                        1Ø1 PRESENTS
+                    </span>
+
+
+                    <strong>
+                        BPM KILLER
+                    </strong>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             EVENT INFO
+        ================================================== -->
+
+        <section class="killer-info">
+
+
+            <div class="killer-info-grid">
+
+
+                <div class="killer-info-item">
+
+                    <span>
+                        DATA
+                    </span>
+
+                    <strong>
+                        21 ØUTUBRO<br>
+                        2026
+                    </strong>
+
+                </div>
+
+
+                <div class="killer-info-item">
+
+                    <span>
+                        TEMA
+                    </span>
+
+                    <strong>
+                        HALLOWEEN
+                    </strong>
+
+                </div>
+
+
+                <div class="killer-info-item">
+
+                    <span>
+                        EVENTO
+                    </span>
+
+                    <strong>
+                        BPM KILLER
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             CTA
+        ================================================== -->
+
+        <section class="killer-cta">
+
+
+            <div class="killer-cta-bg">
+                KILLER
+            </div>
+
+
+            <div class="killer-cta-content">
+
+
+                <span class="killer-cta-label">
+
+                    ARE YOU READY?
+
+                </span>
+
+
+                <h2>
+
+                    ENTER<br>
+                    THE NIGHT
+
+                </h2>
+
+
+                <p>
+
+                    Mais informações sobre o evento serão reveladas
+                    pela 101. Fica atento.
+
+                </p>
+
+
+                <a
+                    href="../eventos/"
+                    class="killer-cta-button">
+
+                    VOLTAR AOS EVENTØS
+
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="killer-footer">
+
+
+            <span>
+                EST. 2026 • 1Ø1
+            </span>
+
+
+            <span>
+                BPM KILLER • 21 ØUTUBRO 2026
+            </span>
+
+
+        </footer>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         SCRIPTS
+    ====================================================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const video =
+                    document.querySelector(
+                        ".killer-hero video"
+                    );
+
+                if (video) {
+
+                    video.play().catch(
+                        function () {
+                            // Autoplay pode ser bloqueado pelo browser.
+                        }
+                    );
+
+                }
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>
