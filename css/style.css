@@ -1275,14 +1275,17 @@ EVENTOS V2
 
     filter:grayscale(100%);
 
-    transition:.8s;
+    transition:
+        filter .8s ease,
+        transform .8s cubic-bezier(.2,.8,.2,1);
 
 }
 
 .featured-event:hover img{
 
     transform:scale(1.05);
-    filter: grayscale(0%);
+
+    filter:grayscale(0%);
 
 }
 
@@ -1317,8 +1320,11 @@ EVENTOS V2
 }
 
 .event-location{
-    display: block;
-    margin-top: 8px;
+
+    display:block;
+
+    margin-top:8px;
+
 }
 
 .event-overlay h3{
@@ -1353,11 +1359,16 @@ EVENTOS V2
 
 }
 
+
+/* ======================================================
+   OUTROS EVENTOS
+   ====================================================== */
+
 .events-grid{
 
     display:grid;
 
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:repeat(2,minmax(0,1fr));
 
     gap:30px;
 
@@ -1373,32 +1384,116 @@ EVENTOS V2
 
     border-radius:22px;
 
+    background:#080808;
+
 }
 
-.event-card img{
+.event-card-link{
+
+    position:absolute;
+
+    inset:0;
+
+    display:block;
 
     width:100%;
+
+    height:100%;
+
+    overflow:hidden;
+
+    color:inherit;
+
+    text-decoration:none;
+
+}
+
+.event-card > img,
+.event-card-link > img{
+
+    width:100%;
+
     height:100%;
 
     object-fit:cover;
 
+    display:block;
+
     filter:grayscale(100%);
 
-    transition:.7s;
+    transform:scale(1);
+
+    transition:
+        filter .7s ease,
+        transform .8s cubic-bezier(.2,.8,.2,1);
 
 }
 
-.event-card:hover img{
 
-    transform:scale(1.08);
+/* PASSAR O RATO → IMAGEM A CORES */
+
+.event-card:hover > img,
+.event-card:hover .event-card-link > img{
+
+    filter:grayscale(0%);
+
+    transform:scale(1.06);
 
 }
+
+
+/* ESCURECIMENTO DA IMAGEM */
+
+.event-card::after,
+.event-card-link::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,.02) 10%,
+            rgba(0,0,0,.16) 45%,
+            rgba(0,0,0,.92) 100%
+        );
+
+    transition:
+        background .6s ease;
+
+}
+
+
+/* HOVER → DEIXA A IMAGEM MAIS VISÍVEL */
+
+.event-card:hover::after,
+.event-card:hover .event-card-link::after{
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,.02) 10%,
+            rgba(0,0,0,.08) 45%,
+            rgba(0,0,0,.78) 100%
+        );
+
+}
+
+
+/* TEXTO DO CARD */
 
 .card-overlay{
 
     position:absolute;
 
     inset:0;
+
+    z-index:5;
 
     display:flex;
 
@@ -1408,11 +1503,19 @@ EVENTOS V2
 
     padding:35px;
 
-    background:linear-gradient(to top,
-        rgba(0,0,0,.85),
-        transparent);
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(0,0,0,.82),
+            transparent
+        );
 
 }
+
+
+/* DATA */
 
 .card-overlay span{
 
@@ -1422,11 +1525,64 @@ EVENTOS V2
 
     letter-spacing:2px;
 
+    font-size:11px;
+
+    transition:
+        color .4s ease;
+
 }
+
+
+/* TÍTULO */
 
 .card-overlay h4{
 
+    margin:0;
+
     font-size:34px;
+
+    line-height:.95;
+
+    letter-spacing:-.04em;
+
+    color:#fff;
+
+    transition:
+        transform .5s cubic-bezier(.2,.8,.2,1);
+
+}
+
+
+/* HOVER → TEXTO DESLOCA-SE LIGEIRAMENTE */
+
+.event-card:hover .card-overlay h4{
+
+    transform:translateX(8px);
+
+}
+
+.event-card:hover .card-overlay span{
+
+    color:#fff;
+
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width:800px){
+
+    .events-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .event-card{
+
+        height:360px;
+
+    }
 
 }
 /*======================================================
