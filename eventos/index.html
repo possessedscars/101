@@ -429,7 +429,6 @@ img {
 ========================================================= */
 
 .hero-title {
-
     position: relative;
 
     z-index: 7;
@@ -441,23 +440,29 @@ img {
     text-align: center;
 
     user-select: none;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 18px;
 }
 
 .hero-title-line {
-
     display: block;
 
     font-size:
         clamp(
-            85px,
-            12vw,
-            185px
+            82px,
+            11vw,
+            175px
         );
 
-    line-height: .66;
+    line-height: .72;
 
-    letter-spacing:
-        -.105em;
+    letter-spacing: -.095em;
 
     font-weight: 900;
 
@@ -466,34 +471,38 @@ img {
     white-space: nowrap;
 
     transition:
-        transform .8s
-        cubic-bezier(.2,.8,.2,1);
+        transform .8s cubic-bezier(.2,.8,.2,1);
 }
+
+
+/* SUBMUNDØ */
 
 .hero-title-line:first-child {
-
     transform:
-        translateX(-5vw);
+        translateX(-4vw);
 }
+
+
+/* FUNK */
 
 .hero-title-line:last-child {
-
     transform:
-        translateX(7vw);
+        translateX(4vw);
 }
+
+
+/* HOVER */
 
 .hero:hover
 .hero-title-line:first-child {
-
     transform:
-        translateX(-6.5vw);
+        translateX(-5.5vw);
 }
 
 .hero:hover
 .hero-title-line:last-child {
-
     transform:
-        translateX(8.5vw);
+        translateX(5.5vw);
 }
 
 
