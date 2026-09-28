@@ -408,237 +408,175 @@
 
 async function sendOrder(orderCode) {
 
-    const nome =
-        els.nome.value.trim() || "—";
+    if (!cfg.webhookUrl || cfg.webhookUrl.includes("COLOCA_AQUI")) {
+        throw new Error("O webhook do Discord não está configurado.");
+    }
 
-    const discord =
-        els.discord.value.trim() || "—";
-
-    const contacto =
-        els.contacto.value.trim() || "—";
-
-    const total =
-        state.qty * cfg.preco;
-
+    if (!state.file) {
+        throw new Error("Nenhum comprovativo foi selecionado.");
+    }
 
     const payload = {
+        username: "1Ø1 • PULSEIRAS",
 
-        username: "1Ø1 • TICKETING",
+        embeds: [{
+            title: "🎟️ NOVO PEDIDO DE PULSEIRA",
 
-        embeds: [
+            color: 0x7C3AED,
 
-            {
-
-                color: 0x8B5CF6,
-
-                author: {
-                    name: "1Ø1 • TICKETING"
+            fields: [
+                {
+                    name: "EVENTO",
+                    value: cfg.evento,
+                    inline: true
                 },
-
-                title:
-                    "🎟️  NOVO PEDIDO DE PULSEIRA",
-
-                description:
-`**${cfg.evento}**
-
-Um novo pedido foi submetido através do sistema oficial de pulseiras da 1Ø1.
-
-> **CÓDIGO DO PEDIDO**
-> \`${orderCode}\``,
-
-                fields: [
-
-                    {
-
-                        name: "👤  COMPRADOR",
-
-                        value:
-`**Nome (IC)**
-${nome}
-
-**Discord**
-${discord}
-
-**Contacto**
-${contacto}`,
-
-                        inline: true
-
-                    },
-
-                    {
-
-                        name: "🎫  PEDIDO",
-
-                        value:
-`**Quantidade**
-${state.qty} ${state.qty === 1 ? "pulseira" : "pulseiras"}
-
-**Preço unitário**
-${cfg.moeda}${cfg.preco}
-
-**TOTAL**
-**${cfg.moeda}${total}**`,
-
-                        inline: true
-
-                    },
-
-                    {
-
-                        name: "🟠  ESTADO",
-
-                        value:
-"**AGUARDA VALIDAÇÃO**\nO pagamento ainda precisa de ser confirmado pela equipa 1Ø1.",
-
-                        inline: false
-
-                    }
-
-                ],
-
-                image: state.file
-                    ? {
-                        url: "attachment://comprovativo.jpg"
-                    }
-                    : undefined,
-
-                footer: {
-                    text:
-                        "1Ø1 • Sistema de Pulseiras"
+                {
+                    name: "CÓDIGO",
+                    value: orderCode,
+                    inline: true
                 },
+                {
+                    name: "QUANTIDADE",
+                    value: String(state.qty),
+                    inline: true
+                },
+                {
+                    name: "TOTAL",
+                    value: `${cfg.moeda}${state.qty * cfg.preco}`,
+                    inline: true
+                },
+                {
+                    name: "NOME (IC)",
+                    value: els.nome.value.trim() || "—",
+                    inline: true
+                },
+                {
+                    name: "DISCORD",
+                    value: els.discord.value.trim() || "—",
+                    inline: true
+                },
+                {
+                    name: "CONTACTO",
+                    value: els.contacto.value.trim() || "—",
+                    inline: true
+                }
+            ],
 
-                timestamp:
-                    new Date().toISOString()
+            footer: {
+                text: "1Ø1 • Sistema de Pulseiras"
+            },
 
-            }
-
-        ],
-
-        components: [
-
-            {
-
-                type: 1,
-
-                components: [
-
-                    {
-
-                        type: 2,
-
-                        style: 3,
-
-                        label: "APROVAR",
-
-                        emoji: {
-                            name: "🟢"
-                        },
-
-                        custom_id:
-                            `pulseira_aprovar_${orderCode}`
-
-                    },
-
-                    {
-
-                        type: 2,
-
-                        style: 4,
-
-                        label: "RECUSAR",
-
-                        emoji: {
-                            name: "🔴"
-                        },
-
-                        custom_id:
-                            `pulseira_recusar_${orderCode}`
-
-                    },
-
-                    {
-
-                        type: 2,
-
-                        style: 2,
-
-                        label: "VER PEDIDO",
-
-                        emoji: {
-                            name: "👁️"
-                        },
-
-                        custom_id:
-                            `pulseira_ver_${orderCode}`
-
-                    }
-
-                ]
-
-            }
-
-        ]
-
+            timestamp: new Date().toISOString()
+        }]
     };
 
 
-    const form =
-        new FormData();
+    /* =====================================================
+       COMPRIMIR IMAGEM
+    ===================================================== */
 
+    const compressed = await compressImage(state.file);
+
+
+    /* =====================================================
+       FORM DATA
+    ===================================================== */
+
+    const form = new FormData();
 
     form.append(
         "payload_json",
         JSON.stringify(payload)
     );
 
-
-    if (state.file) {
-
-        const compressed =
-            await compressImage(state.file);
-
-        form.append(
-            "files[0]",
-            compressed,
-            "comprovativo.jpg"
-        );
-
-    }
+    form.append(
+        "files[0]",
+        compressed,
+        "comprovativo.jpg"
+    );
 
 
-    if (
-        !cfg.webhookUrl ||
-        cfg.webhookUrl.includes(
-            "https://discord.com/api/webhooks/1554245781257584683/SiE3pfL014H1j3QfKqlxtHNsceL-PQItKuSCyScS8PZYuWfT2658u6edgeOf8HeiQS0a"
-        )
-    ) {
+    /* =====================================================
+       WEBHOOK
+    ===================================================== */
 
-        throw new Error(
-            "Webhook não configurado"
-        );
+    const webhookUrl = new URL(cfg.webhookUrl);
 
-    }
+    webhookUrl.searchParams.set("wait", "true");
 
 
-    const response =
-        await fetch(
-            cfg.webhookUrl,
+    let response;
+
+    try {
+
+        response = await fetch(
+            webhookUrl.toString(),
             {
                 method: "POST",
                 body: form
             }
         );
 
+    } catch (networkError) {
+
+        console.error(
+            "[101] Erro de rede:",
+            networkError
+        );
+
+        throw new Error(
+            "Não foi possível contactar o Discord. Verifica a ligação ou o webhook."
+        );
+    }
+
+
+    /* =====================================================
+       RESPOSTA DO DISCORD
+    ===================================================== */
+
+    const responseText =
+        await response.text();
+
 
     if (!response.ok) {
 
-        throw new Error(
-            `Falha no envio (${response.status})`
+        console.error(
+            "[101] Discord rejeitou o pedido:",
+            response.status,
+            responseText
         );
 
+        let details = "";
+
+        try {
+
+            const json =
+                JSON.parse(responseText);
+
+            details =
+                json.message ||
+                json.error ||
+                "";
+
+        } catch {
+
+            details = responseText;
+        }
+
+
+        throw new Error(
+            `Discord recusou o pedido (${response.status})${details ? ": " + details : ""}`
+        );
     }
 
+
+    console.log(
+        "[101] Pedido enviado com sucesso:",
+        response.status
+    );
+
+
+    return true;
 }
 
     /* ---------------------------------------------------
