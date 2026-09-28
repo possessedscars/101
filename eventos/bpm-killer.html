@@ -23,6 +23,18 @@
         rel="stylesheet"
         href="../css/style.css">
 
+    <script>
+        window.PULSEIRAS_CONFIG = {
+            evento: "BPM KILLER",
+            eventoSlug: "bpm-killer",
+            data: "21 Outubro 2026",
+            preco: 400,
+            moeda: "$",
+            maxPorPessoa: 999,
+            webhookUrl: "https://discord.com/api/webhooks/1554245781257584683/SiE3pfL014H1j3QfKqlxtHNsceL-PQItKuSCyScS8PZYuWfT2658u6edgeOf8HeiQS0a"
+        };
+    </script>
+
     <link
         rel="stylesheet"
         href="../css/pulseiras.css">
@@ -822,6 +834,219 @@
         }
 
 
+
+        /* =====================================================
+           HALLOWEEN OVERLAY / DECORAÇÃO
+        ====================================================== */
+
+        .killer-page::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 19;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(255,60,0,.10), transparent 18%),
+                radial-gradient(circle at 90% 70%, rgba(120,0,0,.16), transparent 25%);
+            mix-blend-mode: screen;
+        }
+
+        .halloween-vignette {
+            position: fixed;
+            inset: 0;
+            z-index: 18;
+            pointer-events: none;
+            box-shadow: inset 0 0 180px 70px rgba(0,0,0,.92);
+        }
+
+        .killer-blood {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 16px;
+            z-index: 5;
+            pointer-events: none;
+            background: #650000;
+            clip-path: polygon(0 0,100% 0,100% 35%,98% 35%,97% 100%,95% 38%,91% 38%,90% 78%,88% 38%,82% 38%,81% 100%,79% 40%,72% 40%,71% 68%,69% 40%,62% 40%,61% 100%,59% 40%,51% 40%,50% 72%,48% 40%,40% 40%,39% 100%,37% 40%,30% 40%,29% 65%,27% 40%,20% 40%,19% 100%,17% 40%,10% 40%,9% 70%,7% 40%,0 40%);
+            box-shadow: 0 5px 18px rgba(100,0,0,.5);
+        }
+
+        .killer-web {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            opacity: .28;
+            pointer-events: none;
+            z-index: 2;
+            background:
+                repeating-conic-gradient(from 0deg, transparent 0 14deg, rgba(255,255,255,.45) 14.5deg 15deg, transparent 15.5deg 30deg),
+                repeating-radial-gradient(circle, transparent 0 25px, rgba(255,255,255,.35) 26px 27px, transparent 28px 40px);
+            mask-image: radial-gradient(circle, #000 0 62%, transparent 72%);
+        }
+
+        .killer-web.left { left: -70px; top: 110px; transform: rotate(-18deg); }
+        .killer-web.right { right: -75px; top: 85px; transform: rotate(22deg) scale(.9); }
+
+        .killer-bat {
+            position: absolute;
+            z-index: 4;
+            pointer-events: none;
+            color: rgba(0,0,0,.85);
+            font-size: 34px;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,.7));
+            animation: batFloat 5s ease-in-out infinite;
+        }
+        .killer-bat.one { right: 12%; top: 24%; animation-delay: -1s; }
+        .killer-bat.two { left: 8%; top: 36%; font-size: 24px; animation-delay: -3s; }
+        .killer-bat.three { right: 24%; top: 14%; font-size: 18px; animation-delay: -2s; }
+
+        @keyframes batFloat {
+            0%,100% { transform: translate3d(0,0,0) rotate(-5deg); }
+            50% { transform: translate3d(-18px,12px,0) rotate(5deg); }
+        }
+
+        .killer-halloween-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-top: 1px solid rgba(224,0,0,.22);
+            border-bottom: 1px solid rgba(224,0,0,.22);
+            background: #080000;
+        }
+
+        .killer-halloween-strip span {
+            padding: 12px;
+            text-align: center;
+            color: #777;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            border-right: 1px solid rgba(255,255,255,.05);
+        }
+
+        .killer-ticket-section {
+            position: relative;
+            padding: 130px 7%;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 20%, rgba(150,0,0,.22), transparent 35%),
+                linear-gradient(180deg, #090000, #030303 75%);
+            border-top: 1px solid rgba(224,0,0,.16);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .killer-ticket-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 1150px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 70px;
+            align-items: center;
+        }
+
+        .killer-ticket-label {
+            color: #d00000;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .35em;
+            text-transform: uppercase;
+        }
+
+        .killer-ticket-section h2 {
+            margin: 18px 0 25px;
+            font-size: clamp(48px, 7vw, 100px);
+            line-height: .82;
+            letter-spacing: -.07em;
+            text-transform: uppercase;
+        }
+
+        .killer-ticket-section p {
+            max-width: 580px;
+            color: #8d8d8d;
+            line-height: 1.8;
+        }
+
+        .killer-ticket-card {
+            position: relative;
+            padding: 36px;
+            background: rgba(10,5,5,.86);
+            border: 1px solid rgba(224,0,0,.38);
+            box-shadow: 0 0 70px rgba(120,0,0,.16), inset 0 0 35px rgba(120,0,0,.06);
+        }
+
+        .killer-ticket-card::before,
+        .killer-ticket-card::after {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #650000;
+        }
+        .killer-ticket-card::before { left: 10px; top: 10px; border-right: 0; border-bottom: 0; }
+        .killer-ticket-card::after { right: 10px; bottom: 10px; border-left: 0; border-top: 0; }
+
+        .killer-ticket-price {
+            margin: 12px 0 8px;
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: -.04em;
+        }
+
+        .killer-ticket-note {
+            color: #666;
+            font-size: 10px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+        }
+
+        .killer-ticket-button {
+            width: 100%;
+            margin-top: 28px;
+            padding: 17px 22px;
+            border: 0;
+            cursor: pointer;
+            background: #e00000;
+            color: #fff;
+            font: inherit;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
+            box-shadow: 0 12px 35px rgba(224,0,0,.18);
+        }
+
+        .killer-ticket-button:hover {
+            transform: translateY(-3px);
+            background: #ff1515;
+            box-shadow: 0 18px 45px rgba(224,0,0,.28);
+        }
+
+        .killer-warning {
+            margin-top: 18px;
+            color: #666;
+            font-size: 9px;
+            line-height: 1.7;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 900px) {
+            .killer-ticket-inner { grid-template-columns: 1fr; gap: 45px; }
+            .killer-halloween-strip { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .killer-web { width: 170px; height: 170px; }
+            .killer-bat { display: none; }
+            .killer-ticket-section { padding: 95px 6%; }
+            .killer-ticket-card { padding: 26px; }
+            .killer-halloween-strip span { font-size: 8px; padding: 10px 5px; }
+        }
+
         /* =====================================================
            RESPONSIVE
         ====================================================== */
@@ -943,6 +1168,14 @@
 
     <div class="killer-page">
 
+        <div class="halloween-vignette"></div>
+        <div class="killer-blood"></div>
+        <div class="killer-web left"></div>
+        <div class="killer-web right"></div>
+        <div class="killer-bat one">🦇</div>
+        <div class="killer-bat two">🦇</div>
+        <div class="killer-bat three">🦇</div>
+
 
         <!-- =================================================
              TOP BAR
@@ -1062,6 +1295,12 @@
 
         </section>
 
+        <div class="killer-halloween-strip">
+            <span>☠ 1Ø1 HALLOWEEN</span>
+            <span>☾ 21 ØUTUBRO</span>
+            <span>🕷 BPM KILLER</span>
+            <span>☠ ENTER IF YOU DARE</span>
+        </div>
 
 
         <!-- =================================================
@@ -1217,6 +1456,62 @@
 
 
         <!-- =================================================
+             PULSEIRAS
+        ================================================== -->
+
+        <section class="killer-ticket-section" id="pulseiras">
+
+            <div class="killer-ticket-inner">
+
+                <div>
+                    <span class="killer-ticket-label">
+                        THE TICKET
+                    </span>
+
+                    <h2>
+                        ENTRA.<br>
+                        SE TIVERES<br>
+                        CORAGEM.
+                    </h2>
+
+                    <p>
+                        Garante a tua pulseira para o <strong>BPM KILLER</strong>.
+                        O pedido é feito aqui e o comprovativo é enviado no próprio processo de compra.
+                    </p>
+                </div>
+
+                <div class="killer-ticket-card">
+                    <span class="killer-ticket-note">
+                        BPM KILLER • 21 ØUTUBRO 2026
+                    </span>
+
+                    <div class="killer-ticket-price">
+                        $400
+                    </div>
+
+                    <div class="killer-ticket-note">
+                        POR PULSEIRA
+                    </div>
+
+                    <button
+                        type="button"
+                        class="killer-ticket-button"
+                        data-open-pulseiras>
+                        🎟 COMPRAR PULSEIRA →
+                    </button>
+
+                    <div class="killer-warning">
+                        Pagamento e comprovativo tratados através do sistema oficial 1Ø1.
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
              CTA
         ================================================== -->
 
@@ -1322,6 +1617,8 @@
         );
 
     </script>
+
+    <script src="../js/pulseiras.js"></script>
 
 
 </body>
