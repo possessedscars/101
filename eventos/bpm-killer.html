@@ -1393,7 +1393,7 @@
 
     border: 0 !important;
 
-    border-radius: 3px !important;
+    border-radius: 999px !important;
 
     color: #fff !important;
 
@@ -1484,6 +1484,87 @@
         padding: 30px 22px !important;
     }
 
+}
+
+
+
+/* =========================================================
+   BPM KILLER — PAGAMENTO / SEM ROXO
+   Override exclusivo desta página
+========================================================= */
+
+.killer-page ~ .pz-overlay .pz-payment,
+.killer-page ~ .pz-overlay .pz-payment-box,
+.killer-page ~ .pz-overlay .pz-payment-card,
+.killer-page ~ .pz-overlay .pz-transfer-box,
+.killer-page ~ .pz-overlay .pz-transfer-card,
+.killer-page ~ .pz-overlay .pz-iban-box,
+.killer-page ~ .pz-overlay .pz-bank-box,
+.killer-page ~ .pz-overlay .pz-payment-info,
+.killer-page ~ .pz-overlay .pz-transfer-info {
+    background: #101010 !important;
+    border-color: rgba(224,0,0,.38) !important;
+    color: #fff !important;
+    box-shadow: inset 0 0 30px rgba(120,0,0,.05) !important;
+}
+
+/* Mesmo que o elemento venha com estilos inline roxos */
+.killer-page ~ .pz-overlay [style*="#7C3AED"],
+.killer-page ~ .pz-overlay [style*="#7c3aed"],
+.killer-page ~ .pz-overlay [style*="#A855F7"],
+.killer-page ~ .pz-overlay [style*="#a855f7"],
+.killer-page ~ .pz-overlay [style*="rgb(124, 58, 237)"],
+.killer-page ~ .pz-overlay [style*="rgb(168, 85, 247)"] {
+    border-color: rgba(224,0,0,.38) !important;
+    background-color: #101010 !important;
+    color: #fff !important;
+}
+
+.killer-page ~ .pz-overlay .pz-payment * ,
+.killer-page ~ .pz-overlay .pz-payment-box * ,
+.killer-page ~ .pz-overlay .pz-payment-card * ,
+.killer-page ~ .pz-overlay .pz-transfer-box * ,
+.killer-page ~ .pz-overlay .pz-transfer-card * ,
+.killer-page ~ .pz-overlay .pz-iban-box * ,
+.killer-page ~ .pz-overlay .pz-bank-box * ,
+.killer-page ~ .pz-overlay .pz-payment-info * ,
+.killer-page ~ .pz-overlay .pz-transfer-info * {
+    color: inherit;
+}
+
+.killer-page ~ .pz-overlay .pz-payment strong,
+.killer-page ~ .pz-overlay .pz-payment-box strong,
+.killer-page ~ .pz-overlay .pz-payment-card strong,
+.killer-page ~ .pz-overlay .pz-transfer-box strong,
+.killer-page ~ .pz-overlay .pz-transfer-card strong,
+.killer-page ~ .pz-overlay .pz-iban-box strong,
+.killer-page ~ .pz-overlay .pz-bank-box strong {
+    color: #fff !important;
+}
+
+/* Qualquer botão principal do modal */
+.killer-page ~ .pz-overlay .pz-btn-primary,
+.killer-page ~ .pz-overlay button[id*="Submit"],
+.killer-page ~ .pz-overlay button[id*="submit"] {
+    background: linear-gradient(90deg,#a00000,#e00000,#ff2020) !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    color: #fff !important;
+    box-shadow: 0 8px 30px rgba(224,0,0,.22) !important;
+}
+
+.killer-page ~ .pz-overlay .pz-btn-primary:hover,
+.killer-page ~ .pz-overlay button[id*="Submit"]:hover,
+.killer-page ~ .pz-overlay button[id*="submit"]:hover {
+    filter: brightness(1.12);
+    box-shadow: 0 12px 35px rgba(224,0,0,.38) !important;
+}
+
+/* Remove qualquer accent roxo de links, labels ou destaques */
+.killer-page ~ .pz-overlay a,
+.killer-page ~ .pz-overlay .accent,
+.killer-page ~ .pz-overlay .pz-accent {
+    color: #e00000 !important;
 }
 
 </style>
