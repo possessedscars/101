@@ -89,16 +89,7 @@
 
         .killer-page::before {
             content: "";
-            position: fixed;
-            inset: 0;
-            z-index: 20;
-            pointer-events: none;
-            opacity: .055;
-
-            background-image:
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
-
-            mix-blend-mode: screen;
+            display: none;
         }
 
 
@@ -125,7 +116,7 @@
 
             background: rgba(3,3,3,.62);
 
-            backdrop-filter: blur(18px);
+            /* blur removido para performance */
         }
 
 
@@ -214,10 +205,7 @@
 
             object-fit: cover;
 
-            filter:
-                grayscale(100%)
-                brightness(.34)
-                contrast(1.15);
+            filter: brightness(.38) contrast(1.08);
 
             transform: scale(1.02);
 
@@ -355,7 +343,7 @@
 
             background: rgba(0,0,0,.35);
 
-            backdrop-filter: blur(10px);
+            /* blur removido para performance */
 
             color: #d0d0d0;
 
@@ -518,10 +506,7 @@
 
             object-fit: cover;
 
-            filter:
-                grayscale(100%)
-                brightness(.58)
-                contrast(1.1);
+            filter: brightness(.62) contrast(1.06);
 
             transition:
                 filter 1s ease,
@@ -530,10 +515,7 @@
 
 
         .killer-visual-frame:hover img {
-            filter:
-                grayscale(0%)
-                brightness(.72)
-                contrast(1.08);
+            filter: brightness(.72) contrast(1.05);
 
             transform: scale(1.035);
         }
@@ -840,24 +822,14 @@
         ====================================================== */
 
         .killer-page::after {
-            content: "";
-            position: fixed;
-            inset: 0;
-            z-index: 19;
-            pointer-events: none;
-            background:
-                radial-gradient(circle at 10% 20%, rgba(255,60,0,.10), transparent 18%),
-                radial-gradient(circle at 90% 70%, rgba(120,0,0,.16), transparent 25%);
-            mix-blend-mode: screen;
+            content: none;
         }
 
+
         .halloween-vignette {
-            position: fixed;
-            inset: 0;
-            z-index: 18;
-            pointer-events: none;
-            box-shadow: inset 0 0 180px 70px rgba(0,0,0,.92);
+            display: none;
         }
+
 
         .killer-blood {
             position: absolute;
@@ -1221,10 +1193,12 @@
                 muted
                 loop
                 playsinline
-                preload="auto">
+                preload="metadata"
+                poster="../assets/images/BPM_KILLER.png"
+                disablepictureinpicture>
 
                 <source
-                    src="../assets/videos/HALLOW.mp4"
+                    src="../assets/images/HALLOW.mp4"
                     type="video/mp4">
 
             </video>
@@ -1594,27 +1568,17 @@
 
     <script>
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
+        document.addEventListener("DOMContentLoaded", function () {
+            const video = document.querySelector(".killer-hero video");
+            if (!video) return;
 
-                const video =
-                    document.querySelector(
-                        ".killer-hero video"
-                    );
+            video.muted = true;
+            video.setAttribute("muted", "");
 
-                if (video) {
-
-                    video.play().catch(
-                        function () {
-                            // Autoplay pode ser bloqueado pelo browser.
-                        }
-                    );
-
-                }
-
-            }
-        );
+            const start = () => video.play().catch(() => {});
+            if (video.readyState >= 2) start();
+            else video.addEventListener("loadeddata", start, { once: true });
+        });
 
     </script>
 
