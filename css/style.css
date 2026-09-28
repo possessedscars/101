@@ -1239,124 +1239,85 @@ EVENTOS V2
 ======================================================*/
 
 #events{
-
     background:#0a0a0a;
-
 }
 
 .section-header{
-
     margin-bottom:70px;
-
 }
 
+
+/* ======================================================
+   EVENTO PRINCIPAL
+   ====================================================== */
+
 .featured-event{
-
     position:relative;
-
     width:100%;
-
     height:720px;
-
     border-radius:28px;
-
     overflow:hidden;
-
     margin-bottom:35px;
-
 }
 
 .featured-event img{
-
     width:100%;
     height:100%;
-
     object-fit:cover;
-
     filter:grayscale(100%);
-
     transition:
         filter .8s ease,
         transform .8s cubic-bezier(.2,.8,.2,1);
-
 }
 
 .featured-event:hover img{
-
     transform:scale(1.05);
-
     filter:grayscale(0%);
-
 }
 
 .event-overlay{
-
     position:absolute;
-
     inset:0;
-
     display:flex;
-
     flex-direction:column;
-
     justify-content:flex-end;
-
     padding:70px;
-
-    background:linear-gradient(to top,
-        rgba(0,0,0,.92),
-        rgba(0,0,0,.15));
-
+    background:
+        linear-gradient(
+            to top,
+            rgba(0,0,0,.92),
+            rgba(0,0,0,.15)
+        );
 }
 
 .event-overlay span{
-
     color:#bdbdbd;
-
     letter-spacing:3px;
-
     margin-bottom:15px;
-
 }
 
 .event-location{
-
     display:block;
-
     margin-top:8px;
-
 }
 
 .event-overlay h3{
-
     font-size:64px;
-
     margin-bottom:20px;
-
 }
 
 .event-overlay p{
-
     max-width:600px;
-
     margin-bottom:35px;
-
 }
 
 .event-overlay a{
-
     width:fit-content;
-
     padding:18px 36px;
-
     background:white;
-
     color:black;
-
     border-radius:999px;
-
     font-weight:600;
-
 }
 
 
@@ -1365,226 +1326,159 @@ EVENTOS V2
    ====================================================== */
 
 .events-grid{
-
     display:grid;
-
-    grid-template-columns:repeat(2,minmax(0,1fr));
-
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
     gap:30px;
-
 }
+
+
+/* ======================================================
+   CARD
+   ====================================================== */
 
 .event-card{
-
     position:relative;
-
     height:420px;
-
     overflow:hidden;
-
     border-radius:22px;
-
     background:#080808;
-
 }
+
+
+/* ======================================================
+   LINK
+   ====================================================== */
 
 .event-card-link{
-
     position:absolute;
-
     inset:0;
-
     display:block;
-
     width:100%;
-
     height:100%;
-
     overflow:hidden;
-
     color:inherit;
-
     text-decoration:none;
-
 }
+
+
+/* ======================================================
+   IMAGEM
+   ====================================================== */
 
 .event-card > img,
 .event-card-link > img{
-
+    position:absolute;
+    inset:0;
     width:100%;
-
     height:100%;
-
     object-fit:cover;
-
     display:block;
-
     filter:grayscale(100%);
-
     transform:scale(1);
-
     transition:
         filter .7s ease,
         transform .8s cubic-bezier(.2,.8,.2,1);
-
 }
 
 
-/* PASSAR O RATO → IMAGEM A CORES */
+/* ======================================================
+   HOVER → IMAGEM A CORES
+   ====================================================== */
 
 .event-card:hover > img,
 .event-card:hover .event-card-link > img{
-
     filter:grayscale(0%);
-
     transform:scale(1.06);
-
 }
 
 
-/* ESCURECIMENTO DA IMAGEM */
-
-.event-card::after,
-.event-card-link::after{
-
-    content:"";
-
-    position:absolute;
-
-    inset:0;
-
-    pointer-events:none;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(0,0,0,.02) 10%,
-            rgba(0,0,0,.16) 45%,
-            rgba(0,0,0,.92) 100%
-        );
-
-    transition:
-        background .6s ease;
-
-}
-
-
-/* HOVER → DEIXA A IMAGEM MAIS VISÍVEL */
-
-.event-card:hover::after,
-.event-card:hover .event-card-link::after{
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(0,0,0,.02) 10%,
-            rgba(0,0,0,.08) 45%,
-            rgba(0,0,0,.78) 100%
-        );
-
-}
-
-
-/* TEXTO DO CARD */
+/* ======================================================
+   TEXTO / GRADIENTE
+   ====================================================== */
 
 .card-overlay{
-
     position:absolute;
-
     inset:0;
-
     z-index:5;
-
     display:flex;
-
     flex-direction:column;
-
     justify-content:flex-end;
-
     padding:35px;
-
     pointer-events:none;
-
     background:
         linear-gradient(
             to top,
-            rgba(0,0,0,.82),
-            transparent
+            rgba(0,0,0,.90) 0%,
+            rgba(0,0,0,.35) 35%,
+            rgba(0,0,0,0) 70%
         );
-
 }
 
 
-/* DATA */
+/* ======================================================
+   DATA
+   ====================================================== */
 
 .card-overlay span{
-
+    display:block;
     color:#c7c7c7;
-
     margin-bottom:10px;
-
     letter-spacing:2px;
-
     font-size:11px;
-
     transition:
         color .4s ease;
-
 }
 
 
-/* TÍTULO */
+/* ======================================================
+   TÍTULO
+   ====================================================== */
 
 .card-overlay h4{
-
     margin:0;
-
     font-size:34px;
-
     line-height:.95;
-
     letter-spacing:-.04em;
-
     color:#fff;
-
     transition:
-        transform .5s cubic-bezier(.2,.8,.2,1);
-
+        transform .5s
+        cubic-bezier(.2,.8,.2,1);
 }
 
 
-/* HOVER → TEXTO DESLOCA-SE LIGEIRAMENTE */
+/* ======================================================
+   HOVER → TEXTO
+   ====================================================== */
 
-.event-card:hover .card-overlay h4{
-
-    transform:translateX(8px);
-
+.event-card:hover
+.card-overlay h4{
+    transform:
+        translateX(8px);
 }
 
-.event-card:hover .card-overlay span{
-
+.event-card:hover
+.card-overlay span{
     color:#fff;
-
 }
 
 
-/* RESPONSIVE */
+/* ======================================================
+   MOBILE
+   ====================================================== */
 
 @media(max-width:800px){
 
     .events-grid{
-
         grid-template-columns:1fr;
-
     }
 
     .event-card{
-
         height:360px;
-
     }
 
 }
+
 /*======================================================
 PARTNERS
 ======================================================*/
