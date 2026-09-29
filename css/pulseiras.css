@@ -1,3 +1,49 @@
+
+/* ==========================================================
+   101 • INFERNUM — TEMA VERMELHO + PERFORMANCE
+========================================================== */
+
+:root{
+    --pz-accent:#ff2020;
+    --pz-accent-2:#b80000;
+    --pz-primary-glow:rgba(255,32,32,.22);
+}
+
+/* evitar filtros/efeitos pesados no modal */
+.pz-overlay{
+    -webkit-backdrop-filter:none !important;
+    backdrop-filter:none !important;
+}
+
+.pz-overlay.open{
+    -webkit-backdrop-filter:none !important;
+    backdrop-filter:none !important;
+}
+
+/* vermelho nos estados ativos */
+.pz-eyebrow,
+.pz-order-code button{
+    color:#ff6b6b;
+}
+
+.pz-dropzone:hover,
+.pz-dropzone.drag{
+    border-color:#ff2020;
+    background:rgba(255,32,32,.07);
+}
+
+.pz-btn-primary,
+.pz-buy-btn,
+.featured-buy-btn{
+    background:linear-gradient(135deg,#ff2020,#b80000) !important;
+}
+
+.pz-btn-primary:hover:not(:disabled),
+.pz-buy-btn:hover,
+.featured-buy-btn:hover{
+    box-shadow:0 10px 24px rgba(255,32,32,.20);
+}
+
 /*==========================================================
 101 • SISTEMA DE PULSEIRAS
 Estilos reutilizáveis para a loja de pulseiras e o modal
@@ -63,7 +109,7 @@ SECÇÃO NA PÁGINA DO EVENTO
 
 .pulseiras-info span.pz-label{
 
-    color:#d1b8ff;
+    color:#ff6b6b;
     letter-spacing:5px;
     font-size:12px;
     font-weight:600;
@@ -117,7 +163,7 @@ SECÇÃO NA PÁGINA DO EVENTO
     height:22px;
     border-radius:50%;
     background:rgba(209, 49, 49, 0.25);
-    color:#d1b8ff;
+    color:#ff6b6b;
     font-size:12px;
     flex-shrink:0;
 
@@ -253,14 +299,14 @@ SECÇÃO NA PÁGINA DO EVENTO
     justify-content:center;
     gap:10px;
 
-    transition:.35s;
+    transition:.18s ease;
 
 }
 
 .pz-buy-btn:hover{
 
     transform:translateY(-4px);
-    box-shadow:0 20px 45px rgba(124,58,237,.45);
+    box-shadow:0 20px 45px rgba(255,32,32,.30);
 
 }
 
@@ -333,7 +379,7 @@ MODAL
     z-index: 999999;
 
     background: rgba(3, 3, 5, 0.82);
-    backdrop-filter: blur(10px);
+    /* blur removido para reduzir o lag */
 
     display: none;
 
@@ -347,9 +393,7 @@ MODAL
 
     pointer-events: none;
 
-    transition:
-        opacity .35s ease,
-        visibility .35s ease;
+    transition: opacity .18s ease, visibility .18s ease;
 }
 
 .pz-overlay.open {
@@ -368,7 +412,7 @@ MODAL
     justify-content: center !important;
 
     background: rgba(3, 3, 5, 0.82) !important;
-    backdrop-filter: blur(10px);
+    /* blur removido para reduzir o lag */
 }
 
 .pz-overlay.open .pz-modal {
@@ -384,6 +428,8 @@ MODAL
 
 .pz-modal{
 
+    will-change:transform;
+
     position:relative;
     width:100%;
     max-width:560px;
@@ -397,7 +443,7 @@ MODAL
     padding:48px;
 
     transform:translateY(40px) scale(.96);
-    transition:transform .4s cubic-bezier(.19,1,.22,1);
+    transition:transform .22s ease;
 
 }
 
@@ -477,7 +523,7 @@ MODAL
 
 .pz-eyebrow{
 
-    color:#d1b8ff;
+    color:#ff6b6b;
     letter-spacing:4px;
     font-size:11px;
     font-weight:700;
@@ -504,7 +550,7 @@ MODAL
 .pz-step{
 
     display:none;
-    animation:pzFadeIn .45s ease;
+    animation:pzFadeIn .18s ease;
 
 }
 
@@ -629,7 +675,7 @@ MODAL
 .pz-dropzone:hover,
 .pz-dropzone.drag{
     border-color:var(--pz-accent);
-    background:rgba(124,58,237,.08);
+    background:rgba(255,32,32,.07);
 }
 
 .pz-dropzone input{
@@ -662,7 +708,7 @@ MODAL
 .pz-dropzone.drag{
 
     border-color:var(--pz-accent);
-    background:rgba(124,58,237,.08);
+    background:rgba(255,32,32,.07);
 
 }
 
@@ -788,7 +834,7 @@ MODAL
     justify-content:center;
     gap:8px;
 
-    transition:.3s;
+    transition:.18s ease;
 
 }
 
@@ -817,7 +863,7 @@ MODAL
 .pz-btn-primary:hover:not(:disabled){
 
     transform:translateY(-3px);
-    box-shadow:0 15px 35px rgba(124,58,237,.45);
+    box-shadow:0 15px 35px rgba(255,32,32,.30);
 
 }
 
@@ -908,7 +954,7 @@ MODAL
 
     background:none;
     border:none;
-    color:#d1b8ff;
+    color:#ff6b6b;
     font-size:12px;
     letter-spacing:1px;
 
