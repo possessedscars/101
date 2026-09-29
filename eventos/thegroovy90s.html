@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>1Ø1 • SUBMUNDØ FUNK</title>
+<title>1Ø1 • THE GROOVY 90'S</title>
 <link rel="icon" href="../assets/images/logo-white.png">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -58,30 +58,30 @@ h2{font-size:clamp(55px,8vw,120px);line-height:.78;letter-spacing:-.09em;text-tr
 <div class="page">
 <header class="wrap nav">
 <a href="/" class="logo"><span></span>1Ø1</a>
-<div class="nav-center">EVENTØ 001 / 04</div>
+<div class="nav-center">EVENTØ 003 / 04</div>
 <a href="/eventos/" class="back">← VØLTAR AOS EVENTØS</a>
 </header>
 
 <section class="hero">
-<div class="wrap hero-top"><span>101 / EXPERIENCE</span><span>001 / REALIZADO</span></div>
-<div class="hero-media"><img src="../assets/images/SUB808.png" alt="SUBMUNDØ FUNK"></div>
-<div class="hero-title"><span>SUBMUNDØ</span><span>FUNK</span></div>
-<div class="wrap hero-bottom"><span>29 JULHØ 2026 · 22:ØØ</span><span>ØUTSIDE ØF THE BØX</span></div>
+<div class="wrap hero-top"><span>101 / EXPERIENCE</span><span>003 / REALIZADO</span></div>
+<div class="hero-media"><img src="../assets/images/90.png" alt="THE GROOVY 90'S"></div>
+<div class="hero-title"><span>THE GROOVY</span><span>90'S</span></div>
+<div class="wrap hero-bottom"><span>EVENTO REALIZADO</span><span>ØUTSIDE ØF THE BØX</span></div>
 <div class="hero-status">REALIZADO</div>
 </section>
 
 <section class="wrap intro">
 <div class="intro-grid">
 <div>
-<div class="eyebrow">001 / EVENTØ</div>
-<h2>SUBMUNDØ FUNK</h2>
-<p class="description">A 101 entrou no SUBMUNDØ FUNK para criar uma experiência pensada para ficar guardada na memória. Um dos primeiros capítulos da história da 101.</p>
+<div class="eyebrow">003 / EVENTØ</div>
+<h2>THE GROOVY 90'S</h2>
+<p class="description">THE GROOVY 90'S foi uma das experiências realizadas pela 101. Aqui ficará o arquivo visual desta edição.</p>
 </div>
 <div class="meta">
 <div class="meta-row"><b>Estado</b><span>REALIZADO</span></div>
-<div class="meta-row"><b>Data</b><span>29 JULHØ 2026 · 22:ØØ</span></div>
+<div class="meta-row"><b>Data</b><span>REALIZADO</span></div>
 <div class="meta-row"><b>101</b><span>Øutside Øf The BØx</span></div>
-<div class="meta-row"><b>Arquivo</b><span>001 / 04</span></div>
+<div class="meta-row"><b>Arquivo</b><span>003 / 04</span></div>
 </div>
 </div>
 </section>
@@ -92,7 +92,43 @@ h2{font-size:clamp(55px,8vw,120px);line-height:.78;letter-spacing:-.09em;text-tr
 <div><div class="eyebrow">MØMENTØS</div><h3>GALERIA</h3></div>
 <p>Momentos capturados durante a experiência 1Ø1.</p>
 </div>
-<div class='empty-gallery'>GALERIA EM BREVE</div>
+<div class="gallery-grid" id="groovyGallery"></div>
+<script>
+(function(){
+    const gallery = document.getElementById("groovyGallery");
+    const extensions = ["", ".jpg", ".jpeg", ".png", ".webp", ".avif", ".jfif"];
+
+    for (let n = 1; n <= 7; n++) {
+        const item = document.createElement("div");
+        item.className = "gallery-item";
+
+        const img = document.createElement("img");
+        img.alt = "THE GROOVY 90'S — foto " + n;
+
+        let attempt = 0;
+
+        function tryImage() {
+            img.src = "../assets/images/thegroovy90's/" + n + extensions[attempt];
+        }
+
+        img.onload = function() {
+            gallery.appendChild(item);
+        };
+
+        img.onerror = function() {
+            attempt++;
+            if (attempt < extensions.length) {
+                tryImage();
+            } else {
+                console.warn("101 — Foto não encontrada:", n);
+            }
+        };
+
+        item.appendChild(img);
+        tryImage();
+    }
+})();
+</script>
 </div>
 </section>
 
