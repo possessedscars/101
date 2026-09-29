@@ -415,12 +415,12 @@ if (
                         style="
                             margin:24px 0;
                             padding:22px;
-                            border:1px solid rgba(145,70,255,.35);
+                            border:1px solid rgba(255,32,32,.35);
                             border-radius:18px;
                             background:
                                 linear-gradient(
                                     135deg,
-                                    rgba(145,70,255,.12),
+                                    rgba(255,32,32,.10),
                                     rgba(255,255,255,.025)
                                 );
                         "
@@ -1086,7 +1086,35 @@ if (
        ABRIR / FECHAR
     ===================================================== */
 
-    function openModal(presetQty) {
+    
+    /* ---------------------------------------------------
+       PERFORMANCE — PAUSAR VÍDEOS ENQUANTO O MODAL ESTÁ ABERTO
+       Evita que o vídeo do hero continue a consumir GPU/CPU
+       por trás do modal.
+    --------------------------------------------------- */
+
+    let pausedBackgroundVideos = [];
+
+    function pauseBackgroundMedia() {
+        pausedBackgroundVideos = [];
+
+        document.querySelectorAll("video").forEach(video => {
+            if (!video.paused) {
+                pausedBackgroundVideos.push(video);
+                video.pause();
+            }
+        });
+    }
+
+    function resumeBackgroundMedia() {
+        pausedBackgroundVideos.forEach(video => {
+            video.play().catch(() => {});
+        });
+
+        pausedBackgroundVideos = [];
+    }
+
+function openModal(presetQty) {
 
         if (
             presetQty &&
@@ -1119,6 +1147,8 @@ if (
 
 
     function closeModal() {
+
+        resumeBackgroundMedia();
 
         els.overlay.classList.remove(
             "open"
