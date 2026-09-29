@@ -41,7 +41,7 @@ SECÇÃO NA PÁGINA DO EVENTO
     gap:60px;
 
     background:
-        radial-gradient(circle at 15% 15%, rgba(124,58,237,.22), transparent 55%),
+        radial-gradient(circle at 15% 15%, rgba(209, 49, 49, 0.22), transparent 55%),
         linear-gradient(155deg,#141416,#0b0b0d 70%);
 
     border:1px solid var(--pz-border);
@@ -57,7 +57,7 @@ SECÇÃO NA PÁGINA DO EVENTO
     position:absolute;
     inset:0;
     pointer-events:none;
-    background:radial-gradient(circle at 90% 100%, rgba(168,85,247,.18), transparent 50%);
+    background:radial-gradient(circle at 90% 100%, rgba(209, 49, 49, 0.18), transparent 50%);
 
 }
 
@@ -116,7 +116,7 @@ SECÇÃO NA PÁGINA DO EVENTO
     width:22px;
     height:22px;
     border-radius:50%;
-    background:rgba(124,58,237,.25);
+    background:rgba(209, 49, 49, 0.25);
     color:#d1b8ff;
     font-size:12px;
     flex-shrink:0;
@@ -318,7 +318,7 @@ BOTÃO FLUTUANTE (aparece ao fazer scroll)
 
 .pz-floating-btn:hover{
 
-    box-shadow:0 15px 45px rgba(124,58,237,.6);
+    box-shadow:0 15px 45px rgba(209, 49, 49, 0.6);
 
 }
 
