@@ -33,7 +33,7 @@
 
     const MAX_IMG_MB = 8;
 
-    const PAYMENT_IBAN = "253";
+    const PAYMENT_IBAN = "ALT4263227";
 
 
     const state = {
@@ -281,13 +281,12 @@
                     <div class="pz-field">
 
                         <label>
-                            CONTACTO / TELEMÓVEL (OPCIONAL)
+                            CONTACTO / TELEMÓVEL
                         </label>
 
                         <input
                             type="text"
                             id="pzContacto"
-                            placeholder="Opcional"
                             autocomplete="off"
                         >
 
