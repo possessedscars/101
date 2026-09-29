@@ -11,24 +11,64 @@
     /* =====================================================
        CONFIGURAÇÃO
     ===================================================== */
+function getAutomaticEventName() {
 
-    const cfg = Object.assign({
+    // 1. Tenta usar o título da página
+    const title = document.title || "";
 
-        evento: "Evento 1Ø1",
+    if (title.includes("•")) {
 
-        eventoSlug: "evento",
+        const titleEvent = title
+            .split("•")
+            .slice(1)
+            .join("•")
+            .trim();
 
-        data: "",
+        if (titleEvent) {
+            return titleEvent;
+        }
 
-        preco: 100,
+    }
 
-        moeda: "$",
+    // 2. Tenta encontrar um título principal na página
+    const heading = document.querySelector(
+        "h1[data-event-name], .event-title, .hero-title, h1"
+    );
 
-        maxPorPessoa: 8,
+    if (heading) {
 
-        webhookUrl: ""
+        const headingText = heading.textContent
+            .replace(/\s+/g, " ")
+            .trim();
 
-    }, window.PULSEIRAS_CONFIG || {});
+        if (headingText) {
+            return headingText;
+        }
+
+    }
+
+    // 3. Usa o slug da configuração
+    if (cfg.eventoSlug) {
+
+        return cfg.eventoSlug
+            .replace(/[-_]+/g, " ")
+            .toUpperCase();
+
+    }
+
+    // 4. Último fallback
+    return "EVENTO 1Ø1";
+}
+
+
+if (
+    !window.PULSEIRAS_CONFIG?.evento ||
+    window.PULSEIRAS_CONFIG.evento.trim() === ""
+) {
+
+    cfg.evento = getAutomaticEventName();
+
+}
 
 
     const MAX_IMG_MB = 8;
