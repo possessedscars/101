@@ -11,7 +11,23 @@
     /* =====================================================
        CONFIGURAÇÃO
     ===================================================== */
-function getAutomaticEventName() {
+/* =====================================================
+   CONFIGURAÇÃO GLOBAL
+===================================================== */
+
+    const cfg = Object.assign({
+        evento: "Evento 1Ø1",
+        eventoSlug: "evento",
+        data: "",
+        preco: 100,
+        moeda: "$",
+        maxPorPessoa: 8,
+        webhookUrl: ""
+    }, window.PULSEIRAS_CONFIG || {});
+
+
+
+    function getAutomaticEventName() {
 
     // 1. Tenta usar o título da página
     const title = document.title || "";
