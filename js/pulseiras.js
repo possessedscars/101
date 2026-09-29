@@ -1193,6 +1193,12 @@ function openModal(presetQty) {
             "show"
         );
 
+        if (els.dropzone) {
+            els.dropzone.classList.remove(
+                "pz-file-selected"
+            );
+        }
+
     }
 
 
@@ -1258,6 +1264,12 @@ function openModal(presetQty) {
         els.preview.classList.add(
             "show"
         );
+
+        if (els.dropzone) {
+            els.dropzone.classList.add(
+                "pz-file-selected"
+            );
+        }
 
     }
 
