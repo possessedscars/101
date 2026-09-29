@@ -1122,3 +1122,58 @@ RESPONSIVO
         scroll-behavior:auto !important;
     }
 }
+
+
+/* =========================================================
+   UPLOAD COMPACTO — quando o comprovativo é selecionado
+   O preview substitui a caixa de upload em vez de ficar
+   por baixo dela, evitando aumentar desnecessariamente
+   a altura do modal.
+========================================================= */
+
+.pz-dropzone.pz-file-selected{
+    display:none !important;
+}
+
+.pz-preview{
+    min-height:0 !important;
+}
+
+.pz-preview img{
+    width:54px !important;
+    height:54px !important;
+}
+
+.pz-preview{
+    gap:12px !important;
+    padding:10px 12px !important;
+    margin-top:10px !important;
+}
+
+.pz-preview .pz-preview-name{
+    font-size:12px !important;
+    line-height:1.25 !important;
+}
+
+.pz-preview .pz-preview-remove{
+    white-space:nowrap !important;
+    padding:4px 0 !important;
+}
+
+@media (max-width: 600px){
+    .pz-modal{
+        max-height:92vh !important;
+        padding:34px 22px !important;
+        border-radius:24px !important;
+    }
+
+    .pz-preview img{
+        width:48px !important;
+        height:48px !important;
+    }
+
+    .pz-preview{
+        padding:9px 10px !important;
+        gap:10px !important;
+    }
+}
