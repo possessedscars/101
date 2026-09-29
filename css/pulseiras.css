@@ -1,49 +1,3 @@
-
-/* ==========================================================
-   101 • INFERNUM — TEMA VERMELHO + PERFORMANCE
-========================================================== */
-
-:root{
-    --pz-accent:#ff2020;
-    --pz-accent-2:#b80000;
-    --pz-primary-glow:rgba(255,32,32,.22);
-}
-
-/* evitar filtros/efeitos pesados no modal */
-.pz-overlay{
-    -webkit-backdrop-filter:none !important;
-    backdrop-filter:none !important;
-}
-
-.pz-overlay.open{
-    -webkit-backdrop-filter:none !important;
-    backdrop-filter:none !important;
-}
-
-/* vermelho nos estados ativos */
-.pz-eyebrow,
-.pz-order-code button{
-    color:#ff6b6b;
-}
-
-.pz-dropzone:hover,
-.pz-dropzone.drag{
-    border-color:#ff2020;
-    background:rgba(255,32,32,.07);
-}
-
-.pz-btn-primary,
-.pz-buy-btn,
-.featured-buy-btn{
-    background:linear-gradient(135deg,#ff2020,#b80000) !important;
-}
-
-.pz-btn-primary:hover:not(:disabled),
-.pz-buy-btn:hover,
-.featured-buy-btn:hover{
-    box-shadow:0 10px 24px rgba(255,32,32,.20);
-}
-
 /*==========================================================
 101 • SISTEMA DE PULSEIRAS
 Estilos reutilizáveis para a loja de pulseiras e o modal
@@ -299,14 +253,14 @@ SECÇÃO NA PÁGINA DO EVENTO
     justify-content:center;
     gap:10px;
 
-    transition:.18s ease;
+    transition:.35s;
 
 }
 
 .pz-buy-btn:hover{
 
     transform:translateY(-4px);
-    box-shadow:0 20px 45px rgba(255,32,32,.30);
+    box-shadow:0 20px 45px rgba(255,32,32,.20);
 
 }
 
@@ -379,7 +333,7 @@ MODAL
     z-index: 999999;
 
     background: rgba(3, 3, 5, 0.82);
-    /* blur removido para reduzir o lag */
+    backdrop-filter:none;
 
     display: none;
 
@@ -393,7 +347,9 @@ MODAL
 
     pointer-events: none;
 
-    transition: opacity .18s ease, visibility .18s ease;
+    transition:
+        opacity .35s ease,
+        visibility .35s ease;
 }
 
 .pz-overlay.open {
@@ -412,7 +368,7 @@ MODAL
     justify-content: center !important;
 
     background: rgba(3, 3, 5, 0.82) !important;
-    /* blur removido para reduzir o lag */
+    backdrop-filter:none;
 }
 
 .pz-overlay.open .pz-modal {
@@ -428,8 +384,6 @@ MODAL
 
 .pz-modal{
 
-    will-change:transform;
-
     position:relative;
     width:100%;
     max-width:560px;
@@ -443,7 +397,7 @@ MODAL
     padding:48px;
 
     transform:translateY(40px) scale(.96);
-    transition:transform .22s ease;
+    transition:transform .4s cubic-bezier(.19,1,.22,1);
 
 }
 
@@ -550,7 +504,7 @@ MODAL
 .pz-step{
 
     display:none;
-    animation:pzFadeIn .18s ease;
+    animation:pzFadeIn .45s ease;
 
 }
 
@@ -675,7 +629,7 @@ MODAL
 .pz-dropzone:hover,
 .pz-dropzone.drag{
     border-color:var(--pz-accent);
-    background:rgba(255,32,32,.07);
+    background:rgba(255,32,32,.06);
 }
 
 .pz-dropzone input{
@@ -708,7 +662,7 @@ MODAL
 .pz-dropzone.drag{
 
     border-color:var(--pz-accent);
-    background:rgba(255,32,32,.07);
+    background:rgba(255,32,32,.06);
 
 }
 
@@ -834,7 +788,7 @@ MODAL
     justify-content:center;
     gap:8px;
 
-    transition:.18s ease;
+    transition:.3s;
 
 }
 
@@ -863,7 +817,7 @@ MODAL
 .pz-btn-primary:hover:not(:disabled){
 
     transform:translateY(-3px);
-    box-shadow:0 15px 35px rgba(255,32,32,.30);
+    box-shadow:0 15px 35px rgba(255,32,32,.20);
 
 }
 
@@ -1051,4 +1005,120 @@ RESPONSIVO
 
     }
 
+}
+
+
+/* ==========================================================
+   101 • INFERNUM — RED / PERFORMANCE OVERRIDE
+   Este bloco deve ficar NO FIM do pulseiras.css.
+========================================================== */
+
+:root{
+    --pz-accent:#ff2020 !important;
+    --pz-accent-2:#b80000 !important;
+}
+
+/* RED — every purchase CTA */
+.pz-buy-btn,
+.pz-btn-primary,
+.featured-buy-btn{
+    background:#e00000 !important;
+    background-image:none !important;
+    color:#fff !important;
+    box-shadow:none !important;
+}
+
+.pz-buy-btn:hover,
+.pz-btn-primary:hover:not(:disabled),
+.featured-buy-btn:hover{
+    background:#ff1515 !important;
+    transform:none !important;
+    box-shadow:none !important;
+}
+
+/* RED — steps / active states */
+.pz-steps-track span::after{
+    background:#e00000 !important;
+}
+
+.pz-eyebrow,
+.pulseiras-info span.pz-label,
+.pz-order-code button{
+    color:#ff6b6b !important;
+}
+
+.qty-btn:hover{
+    background:#e00000 !important;
+    transform:none !important;
+}
+
+.pz-dropzone:hover,
+.pz-dropzone.drag{
+    border-color:#e00000 !important;
+    background:rgba(224,0,0,.05) !important;
+}
+
+/* MODAL — no blur, no heavy shadows, no scale animation */
+.pz-overlay,
+.pz-overlay.open{
+    background:rgba(0,0,0,.88) !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    transition:none !important;
+}
+
+.pz-modal{
+    background:#111113 !important;
+    border:1px solid rgba(255,255,255,.10) !important;
+    box-shadow:none !important;
+    transform:none !important;
+    transition:none !important;
+    will-change:auto !important;
+    contain:layout paint style;
+}
+
+.pz-overlay.open .pz-modal{
+    transform:none !important;
+}
+
+/* Remove expensive animations while the modal is in use */
+.pz-step{
+    animation:none !important;
+}
+
+.pz-success-icon{
+    animation:none !important;
+}
+
+/* Keep hover effects cheap */
+.pz-close,
+.pz-btn,
+.qty-btn,
+.pz-dropzone{
+    transition:none !important;
+}
+
+/* Stop any accidental glow from old rules */
+.pz-modal::before,
+.pz-modal::after{
+    filter:none !important;
+    box-shadow:none !important;
+}
+
+/* Payment card generated inline by pulseiras.js */
+.pz-modal .pz-modal{
+    border-color:rgba(224,0,0,.35) !important;
+    background:#171010 !important;
+    color:#fff !important;
+}
+
+/* Accessibility / reduced motion */
+@media (prefers-reduced-motion: reduce){
+    *,
+    *::before,
+    *::after{
+        animation:none !important;
+        transition:none !important;
+        scroll-behavior:auto !important;
+    }
 }
