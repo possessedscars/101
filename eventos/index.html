@@ -875,12 +875,6 @@ img {
 .event-row-upcoming .event-arrow {
     border-color: rgba(255,255,255,.45);
 }
-
-
-/* =========================================================
-   VISUAL BREAK
-========================================================= */
-
 /* =========================================================
    FOOTER
 ========================================================= */
@@ -1195,6 +1189,51 @@ img {
 
 }
 
+
+/* =========================================================
+   EVENT POSTER HOVER
+========================================================= */
+
+.event-poster-preview {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 310px;
+    height: 440px;
+    padding: 5px;
+    background: #050505;
+    border: 1px solid rgba(255,255,255,.22);
+    box-shadow: 0 28px 80px rgba(0,0,0,.65);
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(.96);
+    transform-origin: top left;
+    transition:
+        opacity .22s ease,
+        transform .28s cubic-bezier(.2,.8,.2,1),
+        visibility .22s ease;
+}
+
+.event-poster-preview.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.event-poster-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 900px) {
+    .event-poster-preview {
+        display: none;
+    }
+}
+
 </style>
 
 </head>
@@ -1379,6 +1418,7 @@ img {
             <a
                 href="/eventos/submundo-funk.html"
                 class="event-row"
+                data-poster="../assets/images/SUB808.png"
             >
 
                 <div class="event-index">
@@ -1407,6 +1447,7 @@ img {
                 href="#"
                 class="event-row"
                 data-event="ressonance"
+                data-poster="../assets/images/RESONANCE.png"
             >
 
                 <div class="event-index">
@@ -1435,6 +1476,7 @@ img {
                 href="#"
                 class="event-row"
                 data-event="the-groovy-90s"
+                data-poster="../assets/images/90.png"
             >
 
                 <div class="event-index">
@@ -1462,6 +1504,7 @@ img {
             <a
                 href="/eventos/infernum.html"
                 class="event-row event-row-upcoming"
+                data-poster="../assets/images/INFERNUM.png"
             >
 
                 <div class="event-index">
@@ -1486,6 +1529,10 @@ img {
 
 
         </section>
+
+<!-- =====================================================
+             ARCHIVE
+        ====================================================== -->
 
 <!-- =====================================================
              FOOTER
@@ -1523,6 +1570,57 @@ img {
 
 </div>
 
+
+
+    <!-- EVENT POSTER HOVER -->
+    <div class="event-poster-preview" id="eventPosterPreview" aria-hidden="true">
+        <img id="eventPosterPreviewImg" src="" alt="">
+    </div>
+
+    <script>
+    (function () {
+        const rows = document.querySelectorAll(".event-row[data-poster]");
+        const preview = document.getElementById("eventPosterPreview");
+        const previewImg = document.getElementById("eventPosterPreviewImg");
+
+        if (!rows.length || !preview || !previewImg) return;
+
+        rows.forEach(row => {
+            row.addEventListener("mouseenter", () => {
+                previewImg.src = row.dataset.poster;
+                previewImg.alt = row.querySelector(".event-name")?.textContent.trim() || "Poster do evento";
+                preview.classList.add("is-visible");
+                preview.setAttribute("aria-hidden", "false");
+            });
+
+            row.addEventListener("mousemove", event => {
+                const offsetX = 28;
+                const offsetY = 28;
+                const width = preview.offsetWidth || 310;
+                const height = preview.offsetHeight || 440;
+
+                let x = event.clientX + offsetX;
+                let y = event.clientY + offsetY;
+
+                if (x + width > window.innerWidth - 18) {
+                    x = event.clientX - width - offsetX;
+                }
+
+                if (y + height > window.innerHeight - 18) {
+                    y = event.clientY - height - offsetY;
+                }
+
+                preview.style.left = x + "px";
+                preview.style.top = y + "px";
+            });
+
+            row.addEventListener("mouseleave", () => {
+                preview.classList.remove("is-visible");
+                preview.setAttribute("aria-hidden", "true");
+            });
+        });
+    })();
+    </script>
 
 </body>
 
