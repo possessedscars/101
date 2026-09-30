@@ -1,9 +1,8 @@
-const {
-    sessionCookie,
-    json
-} = require("./_session.cjs");
+import {
+    sessionCookie
+} from "./_session.mjs";
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
 
     if (req.method !== "POST") {
         return res.status(405).json({
@@ -37,7 +36,8 @@ module.exports = async function handler(req, res) {
             );
 
             return res.status(500).json({
-                error: "Autenticação do administrador não configurada."
+                error:
+                    "Autenticação do administrador não configurada."
             });
         }
 
@@ -48,11 +48,13 @@ module.exports = async function handler(req, res) {
         ) {
 
             return res.status(401).json({
-                error: "Email ou palavra-passe incorretos."
+                error:
+                    "Email ou palavra-passe incorretos."
             });
         }
 
-        const cookie = sessionCookie(email);
+        const cookie =
+            sessionCookie(email);
 
         res.setHeader(
             "Set-Cookie",
@@ -77,4 +79,4 @@ module.exports = async function handler(req, res) {
                 "Não foi possível iniciar sessão."
         });
     }
-};
+}
