@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>101 • Admin</title>
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <link rel="icon" href="/assets/logo/favicon.png">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <main class="admin-shell">
+    <section class="login-card" id="loginCard">
+      <div class="brand-mark">1Ø1</div>
+      <div class="eyebrow">PRIVATE AREA</div>
+      <h1>ADMIN PANEL</h1>
+      <p>Inicia sessão para aceder à gestão da 101.</p>
+      <form id="loginForm" autocomplete="on">
+        <label>EMAIL</label>
+        <input id="email" name="email" type="email" autocomplete="username" required placeholder="admin@101.pt">
+        <label>PASSWORD</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+        <button type="submit">ENTRAR <span>→</span></button>
+        <div class="error" id="loginError"></div>
+      </form>
+      <div class="login-foot">101 / THE ART ØF MUSIC</div>
+    </section>
+  </main>
+  <script src="/admin/admin.js" defer></script>
+</body>
+</html>
