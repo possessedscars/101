@@ -1,10 +1,13 @@
 import { list, get } from "@vercel/blob";
-import { json, readSession } from "../auth/_session.mjs";
+import {
+    json,
+    readSession
+} from "./_session.mjs";
 
 
-// ==========================================================
-// LER CONTEÚDO DE UM BLOB PRIVADO
-// ==========================================================
+/* =========================================================
+   LER JSON PRIVADO DO BLOB
+========================================================= */
 
 async function readBlobJson(pathname) {
 
@@ -25,70 +28,58 @@ async function readBlobJson(pathname) {
         ).text();
 
     return JSON.parse(text);
-
 }
 
 
-// ==========================================================
-// HANDLER
-// ==========================================================
+/* =========================================================
+   ADMIN OVERVIEW
+========================================================= */
 
-export default async function handler(
-    request,
-    response
-) {
+export default async function handler(request) {
 
-    // ======================================================
-    // AUTENTICAÇÃO
-    // ======================================================
+    try {
 
-    const session =
-        readSession(request);
+        /* -------------------------------------------------
+           AUTENTICAÇÃO
+        ------------------------------------------------- */
 
-    if (!session) {
+        const session =
+            readSession(request);
 
-        return response
-            ? response.status(401).json({
-                error: "Não autenticado."
-            })
-            : json(
+        if (!session) {
+
+            return json(
                 {
                     error: "Não autenticado."
                 },
                 401
             );
+        }
 
-    }
-
-
-    try {
 
         console.log(
             "[101] ADMIN OVERVIEW - INICIO"
         );
 
 
-        // ==================================================
-        // LISTAR PEDIDOS
-        // ==================================================
+        /* -------------------------------------------------
+           LISTAR PEDIDOS
+        ------------------------------------------------- */
 
         const blobs = [];
 
-        let cursor = undefined;
+        let cursor;
+
 
         do {
 
             const result =
                 await list({
-
                     prefix: "orders/",
-
                     limit: 100,
-
                     ...(cursor
                         ? { cursor }
                         : {})
-
                 });
 
 
@@ -98,28 +89,27 @@ export default async function handler(
 
 
             cursor =
-                result.cursor || undefined;
+                result.cursor ||
+                undefined;
 
 
         } while (cursor);
 
 
         console.log(
-            "[101] BLOBs ENCONTRADOS:",
+            "[101] PEDIDOS ENCONTRADOS:",
             blobs.length
         );
 
 
-        // ==================================================
-        // LER PEDIDOS
-        // ==================================================
+        /* -------------------------------------------------
+           LER PEDIDOS
+        ------------------------------------------------- */
 
         const orders = [];
 
-        for (
-            const blob
-            of blobs
-        ) {
+
+        for (const blob of blobs) {
 
             try {
 
@@ -130,17 +120,14 @@ export default async function handler(
 
 
                 if (order) {
-
-                    orders.push(
-                        order
-                    );
-
+                    orders.push(order);
                 }
+
 
             } catch (error) {
 
                 console.error(
-                    "[101] Erro ao ler pedido:",
+                    "[101] ERRO AO LER:",
                     blob.pathname,
                     error
                 );
@@ -150,33 +137,25 @@ export default async function handler(
         }
 
 
-        // ==================================================
-        // MAIS RECENTES PRIMEIRO
-        // ==================================================
+        /* -------------------------------------------------
+           ORDENAR POR DATA
+        ------------------------------------------------- */
 
         orders.sort(
-            (
-                a,
-                b
-            ) => {
-
-                return (
-                    new Date(
-                        b.criadoEm || 0
-                    ).getTime()
-                    -
-                    new Date(
-                        a.criadoEm || 0
-                    ).getTime()
-                );
-
-            }
+            (a, b) =>
+                new Date(
+                    b.criadoEm || 0
+                ).getTime()
+                -
+                new Date(
+                    a.criadoEm || 0
+                ).getTime()
         );
 
 
-        // ==================================================
-        // ESTATÍSTICAS
-        // ==================================================
+        /* -------------------------------------------------
+           ESTATÍSTICAS
+        ------------------------------------------------- */
 
         const totalPedidos =
             orders.length;
@@ -184,24 +163,16 @@ export default async function handler(
 
         const totalPulseiras =
             orders.reduce(
-                (
-                    total,
-                    order
-                ) => {
-
-                    return (
-                        total +
-                        Number(
-                            order.quantidade || 0
-                        )
-                    );
-
-                },
+                (total, order) =>
+                    total +
+                    Number(
+                        order.quantidade || 0
+                    ),
                 0
             );
 
 
-        const totalConfirmados =
+        const totalPagos =
             orders.filter(
                 order => {
 
@@ -214,12 +185,14 @@ export default async function handler(
 
 
                     return [
-                        "confirmado",
-                        "confirmada",
                         "pago",
                         "paga",
-                        "paid",
-                        "confirmed"
+                        "pagos",
+                        "pagas",
+                        "confirmado",
+                        "confirmada",
+                        "confirmed",
+                        "paid"
                     ].includes(
                         estado
                     );
@@ -228,46 +201,40 @@ export default async function handler(
             ).length;
 
 
-        // ==================================================
-        // EVENTOS
-        // ==================================================
+        /* -------------------------------------------------
+           EVENTOS
+        ------------------------------------------------- */
 
         const eventMap =
             new Map();
 
 
-        for (
-            const order
-            of orders
-        ) {
+        for (const order of orders) {
 
             const slug =
-                (
+                String(
                     order.eventoSlug ||
                     order.evento ||
                     "evento"
                 )
-                    .toString()
-                    .toLowerCase();
+                    .toLowerCase()
+                    .trim();
 
 
-            const nome =
+            const eventName =
                 order.evento ||
                 order.eventoSlug ||
                 "Evento 1Ø1";
 
 
-            if (
-                !eventMap.has(slug)
-            ) {
+            if (!eventMap.has(slug)) {
 
                 eventMap.set(
                     slug,
                     {
-                        slug,
-                        nome,
-                        pedidos: 0,
-                        pulseiras: 0
+                        name: eventName,
+                        orders: 0,
+                        bracelets: 0
                     }
                 );
 
@@ -275,15 +242,13 @@ export default async function handler(
 
 
             const event =
-                eventMap.get(
-                    slug
-                );
+                eventMap.get(slug);
 
 
-            event.pedidos += 1;
+            event.orders += 1;
 
 
-            event.pulseiras +=
+            event.bracelets +=
                 Number(
                     order.quantidade || 0
                 );
@@ -297,240 +262,186 @@ export default async function handler(
             );
 
 
-        // ==================================================
-        // PARTICIPANTES
-        // ==================================================
+        /* -------------------------------------------------
+           PEDIDOS PARA O FRONTEND
+        ------------------------------------------------- */
+
+        const recentOrders =
+            orders
+                .slice(0, 20)
+                .map(order => {
+
+                    const estado =
+                        String(
+                            order.estado ||
+                            "pendente"
+                        )
+                            .toLowerCase()
+                            .trim();
+
+
+                    let status =
+                        "PENDENTE";
+
+
+                    if (
+                        [
+                            "pago",
+                            "paga",
+                            "pagos",
+                            "pagas",
+                            "confirmado",
+                            "confirmada",
+                            "confirmed",
+                            "paid"
+                        ].includes(
+                            estado
+                        )
+                    ) {
+
+                        status = "PAGO";
+
+                    }
+
+
+                    return {
+
+                        number:
+                            order.orderCode ||
+                            "",
+
+                        event:
+                            order.evento ||
+                            order.eventoSlug ||
+                            "Evento 1Ø1",
+
+                        customer:
+                            order.nome ||
+                            "",
+
+                        bracelets:
+                            Number(
+                                order.quantidade ||
+                                0
+                            ),
+
+                        status
+
+                    };
+
+                });
+
+
+        /* -------------------------------------------------
+           PARTICIPANTES
+        ------------------------------------------------- */
 
         const participants = [];
 
 
-        for (
-            const order
-            of orders
-        ) {
+        for (const order of orders) {
 
             const names =
                 Array.isArray(
                     order.participantes
                 )
                     ? order.participantes
-                    : [
-                        order.nome
-                    ];
+                    : [order.nome];
 
 
-            names.forEach(
-                (
-                    participante,
-                    index
-                ) => {
+            for (
+                const participante
+                of names
+            ) {
 
-                    if (
-                        !participante ||
-                        !String(
-                            participante
-                        ).trim()
-                    ) {
-                        return;
-                    }
-
-
-                    participants.push({
-
-                        nome:
-                            String(
-                                participante
-                            ).trim(),
-
-                        pedido:
-                            order.orderCode,
-
-                        evento:
-                            order.evento ||
-                            order.eventoSlug ||
-                            "Evento 1Ø1",
-
-                        discord:
-                            order.discord ||
-                            "",
-
-                        contacto:
-                            order.contacto ||
-                            "",
-
-                        indice:
-                            index + 1
-
-                    });
-
+                if (
+                    !participante ||
+                    !String(
+                        participante
+                    ).trim()
+                ) {
+                    continue;
                 }
-            );
+
+
+                participants.push({
+
+                    name:
+                        String(
+                            participante
+                        ).trim(),
+
+                    order:
+                        order.orderCode ||
+                        "",
+
+                    event:
+                        order.evento ||
+                        order.eventoSlug ||
+                        "Evento 1Ø1",
+
+                    discord:
+                        order.discord ||
+                        "",
+
+                    contact:
+                        order.contacto ||
+                        ""
+
+                });
+
+            }
 
         }
 
 
-        // ==================================================
-        // PEDIDOS PARA O DASHBOARD
-        // ==================================================
-
-        const recentOrders =
-            orders
-                .slice(
-                    0,
-                    20
-                )
-                .map(
-                    order => ({
-
-                        orderCode:
-                            order.orderCode,
-
-                        evento:
-                            order.evento ||
-                            order.eventoSlug ||
-                            "Evento 1Ø1",
-
-                        eventoSlug:
-                            order.eventoSlug ||
-                            "",
-
-                        cliente:
-                            order.nome ||
-                            "",
-
-                        nome:
-                            order.nome ||
-                            "",
-
-                        quantidade:
-                            Number(
-                                order.quantidade || 0
-                            ),
-
-                        pulseiras:
-                            Number(
-                                order.quantidade || 0
-                            ),
-
-                        total:
-                            Number(
-                                order.total || 0
-                            ),
-
-                        precoUnitario:
-                            Number(
-                                order.precoUnitario || 0
-                            ),
-
-                        moeda:
-                            order.moeda ||
-                            "€",
-
-                        estado:
-                            order.estado ||
-                            "pendente",
-
-                        participantes:
-                            Array.isArray(
-                                order.participantes
-                            )
-                                ? order.participantes
-                                : [],
-
-                        discord:
-                            order.discord ||
-                            "",
-
-                        contacto:
-                            order.contacto ||
-                            "",
-
-                        criadoEm:
-                            order.criadoEm ||
-                            null
-
-                    })
-                );
-
-
-        // ==================================================
-        // RESPOSTA
-        // ==================================================
+        /* -------------------------------------------------
+           LOG
+        ------------------------------------------------- */
 
         console.log(
-            "[101] ADMIN OVERVIEW OK:",
+            "[101] OVERVIEW OK:",
             {
-                pedidos:
-                    totalPedidos,
-
-                pulseiras:
-                    totalPulseiras,
-
-                confirmados:
-                    totalConfirmados,
-
-                eventos:
-                    events.length,
-
+                pedidos: totalPedidos,
+                pulseiras: totalPulseiras,
+                pagos: totalPagos,
+                eventos: events.length,
                 participantes:
                     participants.length
             }
         );
 
 
-        return response
-            ? response.status(200).json({
+        /* -------------------------------------------------
+           RESPOSTA
+        ------------------------------------------------- */
 
-                stats: {
+        return json({
 
-                    orders:
-                        totalPedidos,
-
-                    bracelets:
-                        totalPulseiras,
-
-                    paid:
-                        totalConfirmados,
-
-                    events:
-                        events.length
-
-                },
+            stats: {
 
                 orders:
-                    recentOrders,
+                    totalPedidos,
 
-                events,
+                bracelets:
+                    totalPulseiras,
 
-                participants
+                paid:
+                    totalPagos,
 
-            })
-            : json({
+                events:
+                    events.length
 
-                stats: {
+            },
 
-                    orders:
-                        totalPedidos,
+            orders:
+                recentOrders,
 
-                    bracelets:
-                        totalPulseiras,
+            events,
 
-                    paid:
-                        totalConfirmados,
+            participants
 
-                    events:
-                        events.length
-
-                },
-
-                orders:
-                    recentOrders,
-
-                events,
-
-                participants
-
-            });
+        });
 
 
     } catch (error) {
@@ -539,21 +450,6 @@ export default async function handler(
             "[101] ERRO ADMIN OVERVIEW:",
             error
         );
-
-
-        if (response) {
-
-            return response
-                .status(500)
-                .json({
-
-                    error:
-                        error?.message ||
-                        "Não foi possível carregar o painel."
-
-                });
-
-        }
 
 
         return json(
