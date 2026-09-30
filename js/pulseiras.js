@@ -397,6 +397,62 @@
 
             </div>
 
+            <div
+    id="pzParticipantsWrap"
+    style="
+        display:none;
+        margin-top:22px;
+        padding:18px;
+        border:1px solid rgba(255,255,255,.10);
+        border-radius:16px;
+        background:rgba(255,255,255,.025);
+    "
+>
+
+    <div
+        style="
+            margin-bottom:15px;
+        "
+    >
+
+        <div
+            style="
+                font-size:11px;
+                letter-spacing:2px;
+                color:#999;
+                margin-bottom:6px;
+            "
+        >
+            PARTICIPANTES
+        </div>
+
+        <strong
+            style="
+                font-size:15px;
+            "
+        >
+            QUEM VAI AO EVENTO?
+        </strong>
+
+        <div
+            style="
+                color:#888;
+                font-size:12px;
+                margin-top:6px;
+                line-height:1.5;
+            "
+        >
+            Indica o nome da personagem de cada pessoa
+            que vai utilizar uma das pulseiras.
+        </div>
+
+    </div>
+
+
+    <div id="pzParticipantsFields"></div>
+
+</div>
+
 
             <div
                 class="pz-error"
@@ -821,7 +877,13 @@ function cacheEls() {
             document.getElementById("pzDiscord"),
 
         contacto:
-            document.getElementById("pzContacto"),
+             document.getElementById("pzContacto"),
+
+        participantsWrap:
+            document.getElementById("pzParticipantsWrap"),
+
+        participantsFields:
+            document.getElementById("pzParticipantsFields"),
 
         errorStep2:
             document.getElementById("pzErrorStep2"),
@@ -989,14 +1051,97 @@ function cacheEls() {
 
         if (t) {
 
-            t.textContent =
-                cfg.moeda +
-                total;
+         t.textContent =
+             cfg.moeda +
+        total;
+}
+
+renderParticipantFields();
+
+}
+
+    function renderParticipantFields() {
+
+    if (
+        !els.participantsWrap ||
+        !els.participantsFields
+    ) {
+        return;
+    }
+
+    if (state.qty <= 1) {
+
+        els.participantsWrap.style.display = "none";
+        els.participantsFields.innerHTML = "";
+
+        return;
+    }
+
+    const existing =
+        Array.from(
+            els.participantsFields.querySelectorAll(
+                ".pz-participant-input"
+            )
+        ).map(
+            input => input.value
+        );
+
+    els.participantsWrap.style.display = "block";
+    els.participantsFields.innerHTML = "";
+
+    for (let i = 0; i < state.qty; i++) {
+
+        const field =
+            document.createElement("div");
+
+        field.className = "pz-field";
+
+        field.style.marginBottom =
+            i === state.qty - 1
+                ? "0"
+                : "12px";
+
+        field.innerHTML = `
+            <label>
+                PULSEIRA ${i + 1}
+            </label>
+
+            <input
+                type="text"
+                class="pz-participant-input"
+                data-participant-index="${i}"
+                placeholder="Nome da personagem"
+                autocomplete="off"
+            >
+        `;
+
+        els.participantsFields.appendChild(field);
+
+        const input =
+            field.querySelector(
+                ".pz-participant-input"
+            );
+
+        /*
+         * A primeira pulseira pertence
+         * automaticamente ao comprador.
+         */
+        if (i === 0) {
+
+            input.value =
+                els.nome
+                    ? els.nome.value.trim()
+                    : "";
+
+        } else if (existing[i]) {
+
+            input.value =
+                existing[i];
 
         }
 
     }
-
+}
 
     function changeQty(delta) {
 
@@ -1385,6 +1530,30 @@ function generateOrderCode() {
             els.nome.value.trim() ||
             "—";
 
+            let participantNames = [];
+
+if (state.qty > 1) {
+
+    participantNames =
+        Array.from(
+            els.participantsFields.querySelectorAll(
+                ".pz-participant-input"
+            )
+        )
+        .map(
+            input =>
+                input.value.trim()
+        )
+        .filter(Boolean);
+
+} else {
+
+    participantNames = [
+        nome
+    ];
+
+}
+
         const discord =
             els.discord.value.trim() ||
             "—";
@@ -1457,6 +1626,22 @@ function generateOrderCode() {
                                 true
 
                         },
+
+                        {
+    name:
+        "👥  PARTICIPANTES",
+
+    value:
+        participantNames
+            .map(
+                (name, index) =>
+                    `**${index + 1}.** ${name}`
+            )
+            .join("\n"),
+
+    inline:
+        false
+},
 
 
                         {
@@ -1674,20 +1859,78 @@ function generateOrderCode() {
        VALIDAÇÃO
        ========================================================== */
 
-    function validateStep2() {
+function validateStep2() {
 
-        const valid =
-            els.nome.value.trim().length > 1 &&
-            els.discord.value.trim().length > 1;
+    const nome =
+        els.nome.value.trim();
 
-        els.errorStep2.classList.toggle(
-            "show",
-            !valid
+    const discord =
+        els.discord.value.trim();
+
+
+    if (
+        nome.length <= 1 ||
+        discord.length <= 1
+    ) {
+
+        els.errorStep2.textContent =
+            "Preenche o nome e o Discord para continuar.";
+
+        els.errorStep2.classList.add(
+            "show"
         );
 
-        return valid;
-
+        return false;
     }
+
+
+    /*
+     * Se houver mais do que uma pulseira,
+     * todos os participantes têm de ter nome.
+     */
+
+    if (state.qty > 1) {
+
+        const inputs =
+            Array.from(
+                els.participantsFields.querySelectorAll(
+                    ".pz-participant-input"
+                )
+            );
+
+        const names =
+            inputs.map(
+                input =>
+                    input.value.trim()
+            );
+
+        const allFilled =
+            names.length === state.qty &&
+            names.every(
+                name =>
+                    name.length > 1
+            );
+
+        if (!allFilled) {
+
+            els.errorStep2.textContent =
+                "Preenche o nome de todas as pessoas que vão ao evento.";
+
+            els.errorStep2.classList.add(
+                "show"
+            );
+
+            return false;
+        }
+    }
+
+
+    els.errorStep2.classList.remove(
+        "show"
+    );
+
+    return true;
+}
 
 
     function validateStep3() {
@@ -1870,6 +2113,29 @@ function detectEventForButton(button) {
                 goToStep(2)
         );
 
+
+        els.nome.addEventListener(
+    "input",
+    () => {
+
+        if (state.qty <= 1) {
+            return;
+        }
+
+        const firstParticipant =
+            els.participantsFields?.querySelector(
+                '.pz-participant-input[data-participant-index="0"]'
+            );
+
+        if (firstParticipant) {
+
+            firstParticipant.value =
+                els.nome.value;
+
+        }
+
+    }
+);
 
         /* STEP 2 */
 
