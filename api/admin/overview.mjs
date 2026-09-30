@@ -169,30 +169,36 @@ export default async function handler(req, res) {
 
                 orders.push({
 
-                    number:
-                        order.orderCode || "—",
+    number:
+        order.orderCode || "—",
 
-                    event:
-                        eventName,
+    event:
+        eventName,
 
-                    customer:
-                        order.nome || "—",
+    customer:
+        order.nome || "—",
 
-                    bracelets:
-                        quantity,
+    discord:
+        order.discord || "",
 
-                    total:
-                        Number(
-                            order.total || 0
-                        ),
+    bracelets:
+        quantity,
 
-                    status:
-                        String(
-                            order.estado ||
-                            "pendente"
-                        ).toUpperCase()
+    total:
+        Number(order.total || 0),
 
-                });
+    currency:
+        order.moeda || "€",
+
+    status:
+        String(
+            order.estado || "pendente"
+        ).toUpperCase(),
+
+    createdAt:
+        order.criadoEm || null
+
+});
 
 
                 // =================================================
