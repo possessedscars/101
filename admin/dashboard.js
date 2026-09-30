@@ -493,30 +493,53 @@
     // LOGOUT
     // =========================================================
 
+const logoutBtn = document.getElementById("logoutBtn");
+
 logoutBtn?.addEventListener("click", async () => {
+
+    logoutBtn.disabled = true;
+    logoutBtn.textContent = "A SAIR...";
 
     try {
 
-        await fetch(
+        const response = await fetch(
             "/api/auth/logout",
             {
                 method: "POST",
-                credentials: "same-origin"
+                credentials: "include",
+                cache: "no-store",
+                headers: {
+                    "Cache-Control": "no-cache"
+                }
             }
+        );
+
+        console.log(
+            "[101] LOGOUT STATUS:",
+            response.status
+        );
+
+        const data = await response.json().catch(() => null);
+
+        console.log(
+            "[101] LOGOUT RESPONSE:",
+            data
         );
 
     } catch (error) {
 
         console.error(
-            "[101] LOGOUT:",
+            "[101] LOGOUT ERROR:",
             error
         );
 
-    } finally {
-
-        location.replace("/admin/");
-
     }
+
+    // Pequeno atraso para garantir que o browser processou o Set-Cookie
+    setTimeout(() => {
+        window.location.href =
+            "/admin/?logout=1";
+    }, 150);
 
 });
     // =========================================================
