@@ -1377,51 +1377,27 @@ function openModal(presetQty) {
        CÓDIGO
     ===================================================== */
 
-    function generateOrderCode() {
+function generateOrderCode() {
+    const eventName = (
+        cfg.eventoSlug ||
+        cfg.evento ||
+        "evento"
+    )
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .toUpperCase();
 
-            const prefix = "PULS";
-            (
-                cfg.eventoSlug ||
-                "101"
-            )
-                .replace(
-                    /[^a-z0-9]/gi,
-                    ""
-                )
-                .slice(
-                    0,
-                    4
-                )
-                .toUpperCase() ||
-            "101";
+    const prefix = eventName.slice(0, 3);
 
+    const random =
+        Math.random()
+            .toString(36)
+            .slice(2, 8)
+            .toUpperCase();
 
-        const random =
-            Math.random()
-                .toString(36)
-                .slice(
-                    2,
-                    6
-                )
-                .toUpperCase();
-
-
-        const time =
-            Date.now()
-                .toString(36)
-                .slice(
-                    -4
-                )
-                .toUpperCase();
-
-
-        return (
-            `101-${prefix}-${random}${time}`
-        );
-
-    }
-
-
+    return `101-${prefix}-${random}`;
+}
     /* =====================================================
        ENVIO PARA DISCORD
     ===================================================== */
