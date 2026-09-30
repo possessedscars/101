@@ -1,4 +1,4 @@
-import { clearSession } from "./_session.mjs";
+import { clearSessionCookie } from "./_session.mjs";
 
 export default function handler(req, res) {
 
@@ -11,7 +11,27 @@ export default function handler(req, res) {
 
     try {
 
-        clearSession(req, res);
+        res.setHeader(
+            "Set-Cookie",
+            [
+                clearSessionCookie()
+            ]
+        );
+
+        res.setHeader(
+            "Cache-Control",
+            "no-store, no-cache, must-revalidate, proxy-revalidate"
+        );
+
+        res.setHeader(
+            "Pragma",
+            "no-cache"
+        );
+
+        res.setHeader(
+            "Expires",
+            "0"
+        );
 
         return res.status(200).json({
             ok: true
@@ -28,5 +48,7 @@ export default function handler(req, res) {
             ok: false,
             error: "Não foi possível terminar a sessão."
         });
+
     }
+
 }
