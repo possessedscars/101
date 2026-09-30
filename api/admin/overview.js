@@ -1,4 +1,4 @@
-import { json, readSession } from "../_session.mjs";
+import { json, readSession } from "../auth/_session.mjs";
 
 export default function handler(request) {
 
