@@ -9,25 +9,20 @@ import {
 } from "../auth/_session.mjs";
 
 
-export default async function handler(
-    req,
-    res
-) {
+export default async function handler(req, res) {
 
     console.log(
         "[101] UPDATE ORDER - INICIO"
     );
 
 
-    if (
-        req.method !== "POST"
-    ) {
+    if (req.method !== "POST") {
 
         return res.status(405).json({
             ok: false,
-            error:
-                "Método não permitido."
+            error: "Método não permitido."
         });
+
     }
 
 
@@ -49,11 +44,10 @@ export default async function handler(
 
             return res.status(401).json({
                 ok: false,
-                error:
-                    "Não autenticado."
+                error: "Não autenticado."
             });
-        }
 
+        }
 
 
         // =====================================================
@@ -72,9 +66,8 @@ export default async function handler(
         } = body || {};
 
 
-
         // =====================================================
-        // VALIDATION
+        // VALIDAR ESTADO
         // =====================================================
 
         const allowedStatuses = [
@@ -92,16 +85,13 @@ export default async function handler(
                 .toLowerCase();
 
 
-        if (
-            !orderCode ||
-            !normalizedStatus
-        ) {
+        if (!orderCode) {
 
             return res.status(400).json({
                 ok: false,
-                error:
-                    "Dados incompletos."
+                error: "Pedido não indicado."
             });
+
         }
 
 
@@ -113,36 +103,31 @@ export default async function handler(
 
             return res.status(400).json({
                 ok: false,
-                error:
-                    "Estado inválido."
+                error: "Estado inválido."
             });
+
         }
 
 
-
         // =====================================================
-        // FIND ORDER
+        // LOCALIZAR BLOB
         // =====================================================
-
-        const result =
-            await list({
-                prefix:
-                    "orders/",
-
-                access:
-                    "private"
-            });
-
 
         const pathname =
             `orders/${orderCode}.json`;
 
 
+        const result =
+            await list({
+                prefix: "orders/",
+                access: "private"
+            });
+
+
         const blob =
             result.blobs.find(
                 item =>
-                    item.pathname ===
-                    pathname
+                    item.pathname === pathname
             );
 
 
@@ -150,23 +135,22 @@ export default async function handler(
 
             return res.status(404).json({
                 ok: false,
-                error:
-                    "Pedido não encontrado."
+                error: "Pedido não encontrado."
             });
+
         }
 
 
-
         // =====================================================
-        // READ BLOB
+        // LER BLOB
         // =====================================================
 
         const current =
             await get(
                 pathname,
                 {
-                    access:
-                        "private"
+                    access: "private",
+                    useCache: false
                 }
             );
 
@@ -178,9 +162,9 @@ export default async function handler(
 
             return res.status(404).json({
                 ok: false,
-                error:
-                    "Pedido não encontrado."
+                error: "Pedido não encontrado."
             });
+
         }
 
 
@@ -205,7 +189,6 @@ export default async function handler(
 
 
             if (done) {
-
                 break;
             }
 
@@ -214,16 +197,15 @@ export default async function handler(
                 decoder.decode(
                     value,
                     {
-                        stream:
-                            true
+                        stream: true
                     }
                 );
+
         }
 
 
         text +=
             decoder.decode();
-
 
 
         // =====================================================
@@ -234,9 +216,8 @@ export default async function handler(
             JSON.parse(text);
 
 
-
         // =====================================================
-        // UPDATE
+        // ATUALIZAR
         // =====================================================
 
         order.estado =
@@ -244,13 +225,11 @@ export default async function handler(
 
 
         order.atualizadoEm =
-            new Date()
-                .toISOString();
-
+            new Date().toISOString();
 
 
         // =====================================================
-        // SAVE
+        // GUARDAR NOVAMENTE
         // =====================================================
 
         await put(
@@ -263,11 +242,15 @@ export default async function handler(
             ),
 
             {
-                access:
-                    "private",
+                access: "private",
 
-                addRandomSuffix:
-                    false
+                // IMPORTANTE:
+                // estamos a substituir
+                // o pedido existente
+                allowOverwrite: true,
+
+                // não criar outro nome
+                addRandomSuffix: false
             }
         );
 
@@ -284,11 +267,13 @@ export default async function handler(
             ok: true,
 
             order: {
+
                 orderCode:
                     order.orderCode,
 
                 estado:
                     order.estado
+
             }
 
         });
@@ -311,5 +296,7 @@ export default async function handler(
                 "Não foi possível atualizar o pedido."
 
         });
+
     }
+
 }
