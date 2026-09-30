@@ -1,39 +1,67 @@
 (async function () {
 
-    async function api(path, options = {}) {
+    "use strict";
 
-        const response = await fetch(
-            path,
-            {
-                ...options,
-                credentials: "same-origin"
-            }
-        );
 
-        if (response.status === 401) {
+    // =========================================================
+    // API
+    // =========================================================
 
-            location.replace("/admin/");
+    async function api(
+        path,
+        options = {}
+    ) {
+
+        const response =
+            await fetch(
+                path,
+                {
+                    ...options,
+                    credentials:
+                        "same-origin"
+                }
+            );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            location.replace(
+                "/admin/"
+            );
 
             throw new Error(
                 "Sessão expirada."
             );
         }
 
+
         const data =
             await response
                 .json()
-                .catch(() => ({}));
+                .catch(
+                    () => ({})
+                );
+
 
         if (!response.ok) {
 
             throw new Error(
-                data.error || "Erro."
+                data.error ||
+                "Erro."
             );
         }
+
 
         return data;
     }
 
+
+
+    // =========================================================
+    // HELPERS
+    // =========================================================
 
     function esc(value) {
 
@@ -42,74 +70,120 @@
         ).replace(
             /[&<>'"]/g,
             char => ({
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                "'": "&#39;",
-                '"': "&quot;"
+                "&":
+                    "&amp;",
+
+                "<":
+                    "&lt;",
+
+                ">":
+                    "&gt;",
+
+                "'":
+                    "&#39;",
+
+                '"':
+                    "&quot;"
             }[char])
         );
     }
 
 
+
     function money(order) {
 
         const currency =
-            order.currency || "€";
+            order.currency ||
+            "€";
+
 
         const total =
-            Number(order.total || 0);
+            Number(
+                order.total || 0
+            );
 
-        return `${esc(currency)}${total.toFixed(2)}`;
+
+        return (
+            `${esc(currency)}${total.toFixed(2)}`
+        );
     }
 
 
-    function statusClass(status) {
+
+    function statusClass(
+        status
+    ) {
 
         const value =
             String(
                 status || ""
-            ).toUpperCase();
+            )
+                .toUpperCase();
+
 
         return [
             "PAGO",
             "CONFIRMADO",
             "PAGO / CONFIRMADO"
         ].includes(value)
+
             ? "paid"
+
             : "pending";
     }
 
 
-    function formatDate(value) {
+
+    function formatDate(
+        value
+    ) {
 
         if (!value) {
+
             return "—";
         }
 
+
         const date =
             new Date(value);
+
 
         if (
             Number.isNaN(
                 date.getTime()
             )
         ) {
+
             return "—";
         }
+
 
         return new Intl.DateTimeFormat(
             "pt-PT",
             {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit"
+                day:
+                    "2-digit",
+
+                month:
+                    "2-digit",
+
+                year:
+                    "numeric",
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit"
             }
         ).format(date);
     }
 
+
+
+    // =========================================================
+    // DOM
+    // =========================================================
 
     const email =
         document.getElementById(
@@ -117,31 +191,141 @@
         );
 
 
-    try {
-
-        const me =
-            await api(
-                "/api/auth/me"
-            );
-
-        email.textContent =
-            me.email || "Admin";
-
-    } catch {
-        return;
-    }
+    const ordersBody =
+        document.getElementById(
+            "ordersBody"
+        );
 
 
-    let allOrders = [];
+    const searchInput =
+        document.getElementById(
+            "searchInput"
+        );
+
+
+    const statusFilter =
+        document.getElementById(
+            "statusFilter"
+        );
+
+
+    const eventFilter =
+        document.getElementById(
+            "eventFilter"
+        );
+
+
+    const refreshBtn =
+        document.getElementById(
+            "refreshBtn"
+        );
+
+
+    const modal =
+        document.getElementById(
+            "orderModal"
+        );
+
+
+    const closeModalButton =
+        document.getElementById(
+            "closeModal"
+        );
+
+
+    const modalOrderCode =
+        document.getElementById(
+            "modalOrderCode"
+        );
+
+
+    const orderDetails =
+        document.getElementById(
+            "orderDetails"
+        );
+
+
+    const participantsContainer =
+        document.getElementById(
+            "participantsContainer"
+        );
+
+
+    const orderActions =
+        document.getElementById(
+            "orderActions"
+        );
+
+
+    const logoutBtn =
+        document.getElementById(
+            "logoutBtn"
+        );
+
 
 
     // =========================================================
-    // CARREGAR
+    // STATE
+    // =========================================================
+
+    let allOrders = [];
+
+    let allParticipants = [];
+
+
+
+    // =========================================================
+    // USER
+    // =========================================================
+
+    async function loadUser() {
+
+        try {
+
+            const me =
+                await api(
+                    "/api/auth/me"
+                );
+
+
+            if (email) {
+
+                email.textContent =
+                    me.email ||
+                    "Admin";
+            }
+
+        } catch {
+
+            // api() já trata 401
+        }
+    }
+
+
+
+    // =========================================================
+    // LOAD
     // =========================================================
 
     async function load() {
 
         try {
+
+            ordersBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty"
+                    >
+                        A carregar…
+                    </td>
+
+                </tr>
+
+            `;
+
 
             const data =
                 await api(
@@ -150,14 +334,22 @@
 
 
             allOrders =
-                Array.isArray(data.orders)
+                Array.isArray(
+                    data.orders
+                )
                     ? data.orders
                     : [];
 
 
-            populateEvents(
-                allOrders
-            );
+            allParticipants =
+                Array.isArray(
+                    data.participants
+                )
+                    ? data.participants
+                    : [];
+
+
+            populateEvents();
 
 
             render();
@@ -165,125 +357,133 @@
 
         } catch (error) {
 
-            document
-                .getElementById(
-                    "ordersBody"
-                )
-                .innerHTML = `
+            console.error(
+                "[101] PEDIDOS:",
+                error
+            );
 
-                    <tr>
 
-                        <td
-                            colspan="8"
-                            class="empty"
-                        >
-                            ${esc(
-                                error.message
-                            )}
-                        </td>
+            ordersBody.innerHTML = `
 
-                    </tr>
+                <tr>
 
-                `;
+                    <td
+                        colspan="8"
+                        class="empty"
+                    >
+                        ${esc(
+                            error.message
+                        )}
+                    </td>
+
+                </tr>
+
+            `;
         }
     }
 
 
+
     // =========================================================
-    // EVENTOS
+    // EVENTS FILTER
     // =========================================================
 
-    function populateEvents(
-        orders
-    ) {
+    function populateEvents() {
 
-        const select =
-            document.getElementById(
-                "eventFilter"
-            );
+        if (!eventFilter) {
+            return;
+        }
 
 
         const current =
-            select.value;
+            eventFilter.value;
 
 
         const events =
             [
                 ...new Set(
-                    orders
+                    allOrders
                         .map(
                             order =>
                                 order.event
                         )
-                        .filter(Boolean)
+                        .filter(
+                            Boolean
+                        )
                 )
-            ]
-                .sort(
-                    (a, b) =>
-                        String(a)
-                            .localeCompare(
-                                String(b)
-                            )
-                );
+            ].sort(
+                (a, b) =>
+                    String(a)
+                        .localeCompare(
+                            String(b)
+                        )
+            );
 
 
-        select.innerHTML = `
+        eventFilter.innerHTML = `
 
             <option value="">
                 Todos os eventos
             </option>
 
-            ${events.map(
-                event => `
-                    <option value="${esc(event)}">
-                        ${esc(event)}
-                    </option>
-                `
-            ).join("")}
+            ${
+                events
+                    .map(
+                        event => `
+
+                            <option
+                                value="${esc(event)}"
+                            >
+                                ${esc(event)}
+                            </option>
+
+                        `
+                    )
+                    .join("")
+            }
 
         `;
 
 
         if (
-            events.includes(current)
+            events.includes(
+                current
+            )
         ) {
 
-            select.value =
+            eventFilter.value =
                 current;
         }
     }
 
 
+
     // =========================================================
-    // FILTRAR
+    // FILTER
     // =========================================================
 
-    function filteredOrders() {
+    function getFilteredOrders() {
 
         const search =
-            document
-                .getElementById(
-                    "searchInput"
-                )
-                .value
+            String(
+                searchInput?.value ||
+                ""
+            )
                 .trim()
                 .toLowerCase();
 
 
         const status =
-            document
-                .getElementById(
-                    "statusFilter"
-                )
-                .value;
+            String(
+                statusFilter?.value ||
+                ""
+            )
+                .toUpperCase();
 
 
         const event =
-            document
-                .getElementById(
-                    "eventFilter"
-                )
-                .value;
+            eventFilter?.value ||
+            "";
 
 
         return allOrders.filter(
@@ -300,15 +500,20 @@
                     order.discord
 
                 ]
-                    .filter(Boolean)
+                    .filter(
+                        Boolean
+                    )
                     .join(" ")
                     .toLowerCase();
 
 
                 if (
                     search &&
-                    !text.includes(search)
+                    !text.includes(
+                        search
+                    )
                 ) {
+
                     return false;
                 }
 
@@ -316,18 +521,23 @@
                 if (
                     status &&
                     String(
-                        order.status || ""
-                    ).toUpperCase()
+                        order.status ||
+                        ""
+                    )
+                        .toUpperCase()
                     !== status
                 ) {
+
                     return false;
                 }
 
 
                 if (
                     event &&
-                    order.event !== event
+                    order.event !==
+                    event
                 ) {
+
                     return false;
                 }
 
@@ -338,25 +548,20 @@
     }
 
 
+
     // =========================================================
-    // RENDER
+    // RENDER TABLE
     // =========================================================
 
     function render() {
 
-        const body =
-            document.getElementById(
-                "ordersBody"
-            );
-
-
         const orders =
-            filteredOrders();
+            getFilteredOrders();
 
 
         if (!orders.length) {
 
-            body.innerHTML = `
+            ordersBody.innerHTML = `
 
                 <tr>
 
@@ -376,90 +581,98 @@
         }
 
 
-        body.innerHTML =
-            orders.map(
-                order => `
+        ordersBody.innerHTML =
+            orders
+                .map(
+                    order => `
 
-                    <tr>
+                        <tr>
 
-                        <td>
-                            <strong>
+                            <td>
+
+                                <strong>
+                                    ${esc(
+                                        order.number
+                                    )}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
                                 ${esc(
-                                    order.number
+                                    order.event
                                 )}
-                            </strong>
-                        </td>
+                            </td>
 
 
-                        <td>
-                            ${esc(
-                                order.event
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                order.customer
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                order.discord ||
-                                "—"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                String(
-                                    order.bracelets ??
-                                    0
-                                )
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${money(order)}
-                        </td>
-
-
-                        <td>
-
-                            <span
-                                class="status ${statusClass(
-                                    order.status
-                                )}"
-                            >
+                            <td>
                                 ${esc(
-                                    order.status
+                                    order.customer
                                 )}
-                            </span>
-
-                        </td>
+                            </td>
 
 
-                        <td>
+                            <td>
+                                ${esc(
+                                    order.discord ||
+                                    "—"
+                                )}
+                            </td>
 
-                            <button
-                                class="ghost order-view"
-                                data-order="${esc(
-                                    order.number
-                                )}"
-                            >
-                                VER
-                            </button>
 
-                        </td>
+                            <td>
+                                ${esc(
+                                    String(
+                                        order.bracelets ??
+                                        0
+                                    )
+                                )}
+                            </td>
 
-                    </tr>
 
-                `
-            ).join("");
+                            <td>
+                                ${money(order)}
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="
+                                        status
+                                        ${statusClass(
+                                            order.status
+                                        )}
+                                    "
+                                >
+                                    ${esc(
+                                        order.status
+                                    )}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <button
+                                    type="button"
+                                    class="ghost order-view"
+                                    data-order="${esc(
+                                        order.number
+                                    )}"
+                                >
+                                    VER
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    `
+                )
+                .join("");
 
 
         document
@@ -471,10 +684,13 @@
 
                     button.addEventListener(
                         "click",
-                        () =>
+                        () => {
+
                             openOrder(
                                 button.dataset.order
-                            )
+                            );
+
+                        }
                     );
 
                 }
@@ -482,8 +698,9 @@
     }
 
 
+
     // =========================================================
-    // DETALHES
+    // OPEN ORDER
     // =========================================================
 
     function openOrder(
@@ -499,252 +716,699 @@
 
 
         if (!order) {
+
             return;
         }
 
 
-        document
-            .getElementById(
-                "modalOrderCode"
+        modalOrderCode.textContent =
+            order.number;
+
+
+        // =====================================================
+        // DETAILS
+        // =====================================================
+
+        orderDetails.innerHTML = `
+
+            <div class="order-detail">
+
+                <small>
+                    EVENTO
+                </small>
+
+                <strong>
+                    ${esc(
+                        order.event
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="order-detail">
+
+                <small>
+                    CLIENTE
+                </small>
+
+                <strong>
+                    ${esc(
+                        order.customer
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="order-detail">
+
+                <small>
+                    DISCORD
+                </small>
+
+                <strong>
+                    ${esc(
+                        order.discord ||
+                        "—"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="order-detail">
+
+                <small>
+                    CONTACTO
+                </small>
+
+                <strong>
+                    ${esc(
+                        order.contact ||
+                        "—"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="order-detail">
+
+                <small>
+                    PULSEIRAS
+                </small>
+
+                <strong>
+                    ${esc(
+                        String(
+                            order.bracelets ??
+                            0
+                        )
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="order-detail">
+
+                <small>
+                    VALOR
+                </small>
+
+                <strong>
+                    ${money(order)}
+                </strong>
+
+            </div>
+
+
+            <div class="order-detail">
+
+                <small>
+                    ESTADO
+                </small>
+
+                <strong>
+                    <span
+                        class="
+                            status
+                            ${statusClass(
+                                order.status
+                            )}
+                        "
+                    >
+                        ${esc(
+                            order.status
+                        )}
+                    </span>
+                </strong>
+
+            </div>
+
+
+            <div class="order-detail">
+
+                <small>
+                    CRIADO EM
+                </small>
+
+                <strong>
+                    ${esc(
+                        formatDate(
+                            order.createdAt
+                        )
+                    )}
+                </strong>
+
+            </div>
+
+        `;
+
+
+
+        // =====================================================
+        // PARTICIPANTS
+        // =====================================================
+
+        const participants =
+            allParticipants.filter(
+                participant =>
+                    participant.order ===
+                    order.number
+            );
+
+
+        participantsContainer.innerHTML = `
+
+            <div class="eyebrow">
+                PARTICIPANTES
+            </div>
+
+
+            <div class="participant-list">
+
+                ${
+                    participants.length
+
+                        ? participants
+                            .map(
+                                participant => `
+
+                                    <div
+                                        class="participant-row"
+                                    >
+
+                                        <strong>
+                                            ${esc(
+                                                participant.name
+                                            )}
+                                        </strong>
+
+                                        <span>
+                                            ${esc(
+                                                participant.event
+                                            )}
+                                        </span>
+
+                                    </div>
+
+                                `
+                            )
+                            .join("")
+
+                        : `
+
+                            <div class="empty">
+                                Sem participantes
+                                registados.
+                            </div>
+
+                        `
+                }
+
+            </div>
+
+        `;
+
+
+
+        // =====================================================
+        // ACTIONS
+        // =====================================================
+
+        const currentStatus =
+            String(
+                order.status ||
+                ""
             )
-            .textContent =
-                order.number;
+                .toUpperCase();
 
 
-        document
-            .getElementById(
-                "orderDetails"
-            )
-            .innerHTML = `
+        let actions = "";
 
-                <div
-                    style="
-                        display:grid;
-                        gap:14px;
-                    "
+
+        if (
+            currentStatus ===
+            "PENDENTE"
+        ) {
+
+            actions += `
+
+                <button
+                    type="button"
+                    class="order-action primary"
+                    id="confirmPaymentBtn"
                 >
+                    CONFIRMAR PAGAMENTO
+                </button>
 
-                    <div>
-                        <div class="eyebrow">
-                            EVENTO
-                        </div>
-                        <strong>
-                            ${esc(
-                                order.event
-                            )}
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <div class="eyebrow">
-                            CLIENTE
-                        </div>
-                        <strong>
-                            ${esc(
-                                order.customer
-                            )}
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <div class="eyebrow">
-                            DISCORD
-                        </div>
-                        <strong>
-                            ${esc(
-                                order.discord ||
-                                "—"
-                            )}
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <div class="eyebrow">
-                            PULSEIRAS
-                        </div>
-                        <strong>
-                            ${esc(
-                                String(
-                                    order.bracelets ??
-                                    0
-                                )
-                            )}
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <div class="eyebrow">
-                            VALOR
-                        </div>
-                        <strong>
-                            ${money(order)}
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <div class="eyebrow">
-                            ESTADO
-                        </div>
-
-                        <span
-                            class="status ${statusClass(
-                                order.status
-                            )}"
-                        >
-                            ${esc(
-                                order.status
-                            )}
-                        </span>
-                    </div>
-
-
-                    <div>
-                        <div class="eyebrow">
-                            DATA
-                        </div>
-                        <strong>
-                            ${esc(
-                                formatDate(
-                                    order.createdAt
-                                )
-                            )}
-                        </strong>
-                    </div>
-
-                </div>
             `;
 
+        }
+
+
+        else if (
+            currentStatus ===
+            "PAGO"
+        ) {
+
+            actions += `
+
+                <button
+                    type="button"
+                    class="order-action primary"
+                    id="confirmOrderBtn"
+                >
+                    MARCAR COMO CONFIRMADO
+                </button>
+
+
+                <button
+                    type="button"
+                    class="order-action"
+                    id="pendingOrderBtn"
+                >
+                    VOLTAR A PENDENTE
+                </button>
+
+            `;
+
+        }
+
+
+        else if (
+            currentStatus ===
+            "CONFIRMADO"
+        ) {
+
+            actions += `
+
+                <button
+                    type="button"
+                    class="order-action"
+                    id="pendingOrderBtn"
+                >
+                    VOLTAR A PENDENTE
+                </button>
+
+            `;
+
+        }
+
+
+        actions += `
+
+            <button
+                type="button"
+                class="order-action danger"
+                id="deleteOrderBtn"
+            >
+                ELIMINAR PEDIDO
+            </button>
+
+        `;
+
+
+        orderActions.innerHTML =
+            actions;
+
+
+
+        // =====================================================
+        // CONFIRM PAYMENT
+        // =====================================================
 
         document
             .getElementById(
-                "orderModal"
+                "confirmPaymentBtn"
             )
-            .style.display =
-                "flex";
+            ?.addEventListener(
+                "click",
+                async () => {
+
+                    await changeStatus(
+                        order.number,
+                        "pago"
+                    );
+
+                }
+            );
+
+
+
+        // =====================================================
+        // CONFIRM ORDER
+        // =====================================================
+
+        document
+            .getElementById(
+                "confirmOrderBtn"
+            )
+            ?.addEventListener(
+                "click",
+                async () => {
+
+                    await changeStatus(
+                        order.number,
+                        "confirmado"
+                    );
+
+                }
+            );
+
+
+
+        // =====================================================
+        // PENDING
+        // =====================================================
+
+        document
+            .getElementById(
+                "pendingOrderBtn"
+            )
+            ?.addEventListener(
+                "click",
+                async () => {
+
+                    await changeStatus(
+                        order.number,
+                        "pendente"
+                    );
+
+                }
+            );
+
+
+
+        // =====================================================
+        // DELETE
+        // =====================================================
+
+        document
+            .getElementById(
+                "deleteOrderBtn"
+            )
+            ?.addEventListener(
+                "click",
+                async () => {
+
+                    await deleteOrder(
+                        order.number
+                    );
+
+                }
+            );
+
+
+        // =====================================================
+        // OPEN
+        // =====================================================
+
+        modal.classList.add(
+            "open"
+        );
     }
 
 
+
     // =========================================================
-    // FECHAR MODAL
+    // CHANGE STATUS
     // =========================================================
 
-    document
-        .getElementById(
-            "closeModal"
-        )
-        .addEventListener(
-            "click",
-            () => {
+    async function changeStatus(
+        orderCode,
+        status
+    ) {
 
-                document
-                    .getElementById(
-                        "orderModal"
-                    )
-                    .style.display =
-                        "none";
+        try {
+
+            const response =
+                await api(
+                    "/api/orders/update",
+                    {
+                        method:
+                            "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                orderCode,
+                                estado:
+                                    status
+                            })
+                    }
+                );
+
+
+            if (
+                response.ok !==
+                true
+            ) {
+
+                throw new Error(
+                    response.error ||
+                    "Não foi possível atualizar o pedido."
+                );
             }
+
+
+            closeModal();
+
+
+            await load();
+
+
+        } catch (error) {
+
+            console.error(
+                "[101] UPDATE:",
+                error
+            );
+
+
+            alert(
+                error.message
+            );
+        }
+    }
+
+
+
+    // =========================================================
+    // DELETE
+    // =========================================================
+
+    async function deleteOrder(
+        orderCode
+    ) {
+
+        const confirmed =
+            window.confirm(
+                `Tens a certeza que queres eliminar o pedido ${orderCode}?\n\nEsta ação não pode ser anulada.`
+            );
+
+
+        if (!confirmed) {
+
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await api(
+                    "/api/orders/delete",
+                    {
+                        method:
+                            "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                orderCode
+                            })
+                    }
+                );
+
+
+            if (
+                response.ok !==
+                true
+            ) {
+
+                throw new Error(
+                    response.error ||
+                    "Não foi possível eliminar o pedido."
+                );
+            }
+
+
+            closeModal();
+
+
+            await load();
+
+
+        } catch (error) {
+
+            console.error(
+                "[101] DELETE:",
+                error
+            );
+
+
+            alert(
+                error.message
+            );
+        }
+    }
+
+
+
+    // =========================================================
+    // CLOSE MODAL
+    // =========================================================
+
+    function closeModal() {
+
+        modal.classList.remove(
+            "open"
+        );
+    }
+
+
+    closeModalButton
+        ?.addEventListener(
+            "click",
+            closeModal
         );
 
 
-    document
-        .getElementById(
-            "orderModal"
-        )
-        .addEventListener(
+    modal
+        ?.addEventListener(
             "click",
             event => {
 
                 if (
-                    event.target.id ===
-                    "orderModal"
+                    event.target ===
+                    modal
                 ) {
 
-                    event.currentTarget
-                        .style
-                        .display =
-                            "none";
+                    closeModal();
+
                 }
+
             }
         );
 
 
+    document
+        .addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                    "Escape"
+                ) {
+
+                    closeModal();
+
+                }
+
+            }
+        );
+
+
+
     // =========================================================
-    // FILTROS
+    // FILTER EVENTS
     // =========================================================
 
-    document
-        .getElementById(
-            "searchInput"
-        )
-        .addEventListener(
+    searchInput
+        ?.addEventListener(
             "input",
             render
         );
 
 
-    document
-        .getElementById(
-            "statusFilter"
-        )
-        .addEventListener(
+    statusFilter
+        ?.addEventListener(
             "change",
             render
         );
 
 
-    document
-        .getElementById(
-            "eventFilter"
-        )
-        .addEventListener(
+    eventFilter
+        ?.addEventListener(
             "change",
             render
         );
 
 
-    document
-        .getElementById(
-            "refreshBtn"
-        )
-        .addEventListener(
+
+    // =========================================================
+    // REFRESH
+    // =========================================================
+
+    refreshBtn
+        ?.addEventListener(
             "click",
             load
         );
+
 
 
     // =========================================================
     // LOGOUT
     // =========================================================
 
-    document
-        .getElementById(
-            "logoutBtn"
-        )
-        .addEventListener(
+    logoutBtn
+        ?.addEventListener(
             "click",
             async () => {
 
-                await fetch(
-                    "/api/auth/logout",
-                    {
-                        method: "POST",
-                        credentials:
-                            "same-origin"
-                    }
-                );
+                try {
 
-                location.replace(
-                    "/admin/"
-                );
+                    await fetch(
+                        "/api/auth/logout",
+                        {
+                            method:
+                                "POST",
+
+                            credentials:
+                                "same-origin"
+                        }
+                    );
+
+                } finally {
+
+                    location.replace(
+                        "/admin/"
+                    );
+                }
             }
         );
 
 
-    load();
+
+    // =========================================================
+    // START
+    // =========================================================
+
+    await loadUser();
+
+    await load();
 
 })();
