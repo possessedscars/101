@@ -72,8 +72,10 @@ export function createSession(email) {
 
 export function readSession(request) {
 
-    const raw =
-        request.headers.get("cookie") || "";
+const raw =
+    typeof request?.headers?.get === "function"
+        ? request.headers.get("cookie") || ""
+        : request?.headers?.cookie || "";
 
 
     const item =
