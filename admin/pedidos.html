@@ -111,6 +111,110 @@
 
         }
 
+/* =========================================================
+   DELETE CONFIRMATION
+========================================================= */
+
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0,0,0,.82);
+    backdrop-filter: blur(10px);
+}
+
+.confirm-overlay.open {
+    display: flex;
+}
+
+.confirm-modal {
+    width: min(430px, 100%);
+    padding: 30px;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 12px;
+    background: #090909;
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.75),
+        0 0 0 1px rgba(255,255,255,.02);
+    text-align: center;
+    animation: confirmModalIn .18s ease-out;
+}
+
+@keyframes confirmModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.confirm-icon {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,90,90,.25);
+    border-radius: 50%;
+    color: #ff7373;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.confirm-modal h3 {
+    margin: 8px 0 12px;
+    color: #fff;
+    font-size: 20px;
+    letter-spacing: -.02em;
+}
+
+.confirm-modal p {
+    margin: 0;
+    color: #888;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.confirm-modal p strong {
+    color: #fff;
+}
+
+.confirm-warning {
+    display: block;
+    margin-top: 8px;
+    color: #555;
+    font-size: 10px;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 26px;
+}
+
+.confirm-actions .order-action {
+    min-width: 125px;
+}
+
+@media (max-width: 500px) {
+    .confirm-actions {
+        flex-direction: column-reverse;
+    }
+
+    .confirm-actions .order-action {
+        width: 100%;
+    }
+}
 
         /* =====================================================
            ACTION BUTTON
@@ -795,7 +899,47 @@
 
 </div>
 
+<!-- CONFIRM DELETE MODAL -->
+<div class="confirm-overlay" id="confirmDeleteModal">
+    <div class="confirm-modal">
 
+        <div class="confirm-icon">!</div>
+
+        <div class="eyebrow">CONFIRMAR AÇÃO</div>
+
+        <h3>ELIMINAR PEDIDO?</h3>
+
+        <p>
+            Tens a certeza que queres eliminar
+            <strong id="confirmDeleteOrder"></strong>?
+        </p>
+
+        <span class="confirm-warning">
+            Esta ação não pode ser anulada.
+        </span>
+
+        <div class="confirm-actions">
+            <button
+                type="button"
+                class="order-action"
+                id="cancelDeleteBtn"
+            >
+                CANCELAR
+            </button>
+
+            <button
+                type="button"
+                class="order-action danger"
+                id="confirmDeleteBtn"
+            >
+                ELIMINAR PEDIDO
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script src="/admin/pedidos.js" defer></script>
 
 <script
     src="/admin/pedidos.js"
