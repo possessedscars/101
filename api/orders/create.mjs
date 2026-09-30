@@ -4,15 +4,24 @@ export default async function handler(req, res) {
 
     console.log("[101] CREATE ORDER - INICIO");
 
+    // ==========================================================
+    // MÉTODO
+    // ==========================================================
+
     if (req.method !== "POST") {
+
         return res.status(405).json({
             error: "Método não permitido."
         });
+
     }
 
     try {
 
-        // A Vercel já disponibiliza o body através de req.body
+        // ======================================================
+        // BODY
+        // ======================================================
+
         const body =
             typeof req.body === "string"
                 ? JSON.parse(req.body)
@@ -21,9 +30,14 @@ export default async function handler(req, res) {
         console.log("[101] BODY RECEBIDO:", {
             orderCode: body?.orderCode,
             evento: body?.evento,
+            eventoSlug: body?.eventoSlug,
             nome: body?.nome,
             quantidade: body?.quantidade
         });
+
+        // ======================================================
+        // DADOS
+        // ======================================================
 
         const {
             orderCode,
@@ -40,7 +54,26 @@ export default async function handler(req, res) {
             estado
         } = body || {};
 
-        if (!orderCode || !evento || !nome) {
+        // ======================================================
+        // EVENTO
+        // ======================================================
+
+        const eventoFinal =
+            typeof evento === "string" &&
+            evento.trim()
+                ? evento.trim()
+                : (
+                    typeof eventoSlug === "string" &&
+                    eventoSlug.trim()
+                        ? eventoSlug.trim()
+                        : "Evento 1Ø1"
+                );
+
+        // ======================================================
+        // VALIDAÇÃO
+        // ======================================================
+
+        if (!orderCode || !nome) {
 
             return res.status(400).json({
                 error: "Dados do pedido incompletos."
@@ -48,16 +81,22 @@ export default async function handler(req, res) {
 
         }
 
+        // ======================================================
+        // PEDIDO
+        // ======================================================
+
         const order = {
 
             orderCode,
 
-            evento,
+            evento:
+                eventoFinal,
 
             eventoSlug:
                 eventoSlug || "",
 
-            nome,
+            nome:
+                nome.trim(),
 
             discord:
                 discord || "",
@@ -66,16 +105,22 @@ export default async function handler(req, res) {
                 contacto || "",
 
             quantidade:
-                Number(quantidade || 1),
+                Number(
+                    quantidade || 1
+                ),
 
             precoUnitario:
-                Number(precoUnitario || 0),
+                Number(
+                    precoUnitario || 0
+                ),
 
             moeda:
                 moeda || "€",
 
             total:
-                Number(total || 0),
+                Number(
+                    total || 0
+                ),
 
             participantes:
                 Array.isArray(participantes)
@@ -90,17 +135,57 @@ export default async function handler(req, res) {
 
         };
 
+        // ======================================================
+        // LOG
+        // ======================================================
+
         console.log(
-            "[101] A GUARDAR NO BLOB..."
+            "[101] PEDIDO PREPARADO:",
+            {
+                orderCode:
+                    order.orderCode,
+
+                evento:
+                    order.evento,
+
+                eventoSlug:
+                    order.eventoSlug,
+
+                nome:
+                    order.nome,
+
+                quantidade:
+                    order.quantidade
+            }
         );
 
+        console.log(
+            "[101] A GUARDAR NO VERCEL BLOB..."
+        );
+
+        // ======================================================
+        // VERCEL BLOB
+        // ======================================================
+
         const blob = await put(
+
             `orders/${orderCode}.json`,
-            JSON.stringify(order, null, 2),
+
+            JSON.stringify(
+                order,
+                null,
+                2
+            ),
+
             {
                 access: "private"
             }
+
         );
+
+        // ======================================================
+        // SUCESSO
+        // ======================================================
 
         console.log(
             "[101] BLOB OK:",
@@ -108,11 +193,21 @@ export default async function handler(req, res) {
         );
 
         return res.status(201).json({
+
             ok: true,
-            orderCode
+
+            orderCode,
+
+            evento:
+                order.evento
+
         });
 
     } catch (error) {
+
+        // ======================================================
+        // ERRO
+        // ======================================================
 
         console.error(
             "[101] ERRO AO CRIAR PEDIDO:",
@@ -120,10 +215,13 @@ export default async function handler(req, res) {
         );
 
         return res.status(500).json({
+
             ok: false,
+
             error:
                 error?.message ||
                 "Não foi possível guardar o pedido."
+
         });
 
     }
