@@ -1,33 +1,73 @@
-import { list, get } from "@vercel/blob";
-import { json, readSession } from "../auth/_session.mjs";
+const blob = require("@vercel/blob");
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
 
     console.log("[101] ADMIN OVERVIEW - INICIO");
 
+    if (req.method !== "GET") {
+        return res.status(405).json({
+            ok: false,
+            error: "Método não permitido."
+        });
+    }
+
     try {
+
+        // =====================================================
+        // CARREGAR SESSION ESM
+        // =====================================================
+
+        const sessionModule =
+            await import("../auth/_session.mjs");
+
+        const readSession =
+            sessionModule.readSession;
+
+        if (typeof readSession !== "function") {
+
+            console.error(
+                "[101] readSession não é uma função."
+            );
+
+            return res.status(500).json({
+                ok: false,
+                error: "Sistema de sessão inválido."
+            });
+        }
+
+        // =====================================================
+        // VALIDAR SESSÃO
+        // =====================================================
 
         const session = readSession(req);
 
         if (!session) {
 
-            console.log("[101] ADMIN OVERVIEW - SEM SESSAO");
+            console.log(
+                "[101] ADMIN OVERVIEW - SEM SESSÃO"
+            );
 
-            return json(res, 401, {
+            return res.status(401).json({
                 ok: false,
                 error: "Não autenticado."
             });
         }
 
-        console.log("[101] ADMIN OVERVIEW - SESSAO OK");
+        console.log(
+            "[101] ADMIN OVERVIEW - SESSÃO OK"
+        );
 
-        const result = await list({
+        // =====================================================
+        // LISTAR PEDIDOS NO VERCEL BLOB
+        // =====================================================
+
+        const result = await blob.list({
             prefix: "orders/",
             access: "private"
         });
 
         console.log(
-            "[101] ADMIN OVERVIEW - BLOBS:",
+            "[101] ADMIN OVERVIEW - BLOBs:",
             result.blobs?.length || 0
         );
 
@@ -35,23 +75,31 @@ export default async function handler(req, res) {
         const participants = [];
         const eventsMap = {};
 
-        for (const blob of result.blobs || []) {
+        // =====================================================
+        // LER CADA PEDIDO
+        // =====================================================
+
+        for (const item of result.blobs || []) {
 
             try {
 
-                const response = await get(
-                    blob.pathname,
-                    {
-                        access: "private"
-                    }
-                );
+                const response =
+                    await blob.get(
+                        item.pathname,
+                        {
+                            access: "private"
+                        }
+                    );
 
                 if (!response) {
                     continue;
                 }
 
-                const text = await response.text();
-                const order = JSON.parse(text);
+                const text =
+                    await response.text();
+
+                const order =
+                    JSON.parse(text);
 
                 const eventName =
                     order.evento ||
@@ -59,11 +107,18 @@ export default async function handler(req, res) {
                     "Evento 1Ø1";
 
                 const quantity =
-                    Number(order.quantidade || 0);
+                    Number(
+                        order.quantidade || 0
+                    );
+
+                // =================================================
+                // PEDIDO
+                // =================================================
 
                 orders.push({
+
                     number:
-                        order.orderCode || "",
+                        order.orderCode || "—",
 
                     event:
                         eventName,
@@ -78,23 +133,48 @@ export default async function handler(req, res) {
                         String(
                             order.estado ||
                             "pendente"
-                        ).toUpperCase()
+                        ).toUpperCase(),
+
+                    total:
+                        Number(
+                            order.total || 0
+                        )
+
                 });
+
+                // =================================================
+                // EVENTO
+                // =================================================
 
                 if (!eventsMap[eventName]) {
 
                     eventsMap[eventName] = {
-                        name: eventName,
-                        orders: 0,
-                        bracelets: 0
+
+                        name:
+                            eventName,
+
+                        orders:
+                            0,
+
+                        bracelets:
+                            0
+
                     };
                 }
 
                 eventsMap[eventName].orders += 1;
-                eventsMap[eventName].bracelets += quantity;
+
+                eventsMap[eventName].bracelets +=
+                    quantity;
+
+                // =================================================
+                // PARTICIPANTES
+                // =================================================
 
                 const names =
-                    Array.isArray(order.participantes)
+                    Array.isArray(
+                        order.participantes
+                    )
                         ? order.participantes
                         : [order.nome];
 
@@ -106,10 +186,11 @@ export default async function handler(req, res) {
 
                     participants.push({
 
-                        name,
+                        name:
+                            name,
 
                         order:
-                            order.orderCode || "",
+                            order.orderCode || "—",
 
                         event:
                             eventName,
@@ -119,18 +200,23 @@ export default async function handler(req, res) {
 
                         contact:
                             order.contacto || ""
+
                     });
                 }
 
             } catch (error) {
 
                 console.error(
-                    "[101] ERRO A LER BLOB:",
-                    blob.pathname,
+                    "[101] ERRO A LER PEDIDO:",
+                    item.pathname,
                     error
                 );
             }
         }
+
+        // =====================================================
+        // ESTATÍSTICAS
+        // =====================================================
 
         const stats = {
 
@@ -154,7 +240,10 @@ export default async function handler(req, res) {
                 ).length,
 
             events:
-                Object.keys(eventsMap).length
+                Object.keys(
+                    eventsMap
+                ).length
+
         };
 
         console.log(
@@ -162,7 +251,11 @@ export default async function handler(req, res) {
             stats
         );
 
-        return json(res, 200, {
+        // =====================================================
+        // RESPOSTA
+        // =====================================================
+
+        return res.status(200).json({
 
             ok: true,
 
@@ -174,7 +267,9 @@ export default async function handler(req, res) {
                     .reverse(),
 
             events:
-                Object.values(eventsMap),
+                Object.values(
+                    eventsMap
+                ),
 
             participants
 
@@ -187,7 +282,7 @@ export default async function handler(req, res) {
             error
         );
 
-        return json(res, 500, {
+        return res.status(500).json({
 
             ok: false,
 
@@ -197,4 +292,4 @@ export default async function handler(req, res) {
 
         });
     }
-}
+};
