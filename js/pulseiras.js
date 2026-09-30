@@ -1407,7 +1407,7 @@ function generateOrderCode() {
         if (
             !cfg.webhookUrl ||
             cfg.webhookUrl.includes(
-                "COLOCA_AQUI"
+                "https://discord.com/api/webhooks/1554615194477531176/KdU3NR3KvYE-UEzc1-oH2l2tUDW4tWb18iKlTgADdM1d07_yG9MqFfoVlM_nYqhDF7bo"
             )
         ) {
 
