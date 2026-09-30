@@ -1,391 +1,176 @@
 (async function () {
-
     "use strict";
 
+    console.log("[101] PEDIDOS.JS INICIADO");
 
-    // =========================================================
-    // API
-    // =========================================================
+    async function api(path, options = {}) {
+        console.log("[101] API:", path, options);
 
-    async function api(
-        path,
-        options = {}
-    ) {
+        const response = await fetch(path, {
+            ...options,
+            credentials: "same-origin"
+        });
 
-        const response =
-            await fetch(
-                path,
-                {
-                    ...options,
-                    credentials:
-                        "same-origin"
-                }
-            );
+        console.log("[101] API STATUS:", path, response.status);
 
-
-        if (
-            response.status === 401
-        ) {
-
-            location.replace(
-                "/admin/"
-            );
-
-            throw new Error(
-                "Sessão expirada."
-            );
+        if (response.status === 401) {
+            location.replace("/admin/");
+            throw new Error("Sessão expirada.");
         }
 
+        const data = await response.json().catch(() => ({}));
 
-        const data =
-            await response
-                .json()
-                .catch(
-                    () => ({})
-                );
-
+        console.log("[101] API RESPONSE:", data);
 
         if (!response.ok) {
-
-            throw new Error(
-                data.error ||
-                "Erro."
-            );
+            throw new Error(data.error || `Erro HTTP ${response.status}`);
         }
-
 
         return data;
     }
 
-
-
-    // =========================================================
-    // HELPERS
-    // =========================================================
-
     function esc(value) {
-
-        return String(
-            value ?? ""
-        ).replace(
-            /[&<>'"]/g,
-            char => ({
-                "&":
-                    "&amp;",
-
-                "<":
-                    "&lt;",
-
-                ">":
-                    "&gt;",
-
-                "'":
-                    "&#39;",
-
-                '"':
-                    "&quot;"
-            }[char])
-        );
+        return String(value ?? "").replace(/[&<>'"]/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            "'": "&#39;",
+            '"': "&quot;"
+        }[char]));
     }
-
-
 
     function money(order) {
+        const currency = order.currency || "€";
+        const total = Number(order.total || 0);
 
-        const currency =
-            order.currency ||
-            "€";
-
-
-        const total =
-            Number(
-                order.total || 0
-            );
-
-
-        return (
-            `${esc(currency)}${total.toFixed(2)}`
-        );
+        return `${esc(currency)}${total.toFixed(2)}`;
     }
 
-
-
-    function statusClass(
-        status
-    ) {
-
-        const value =
-            String(
-                status || ""
-            )
-                .toUpperCase();
-
+    function statusClass(status) {
+        const value = String(status || "").toUpperCase();
 
         return [
             "PAGO",
             "CONFIRMADO",
             "PAGO / CONFIRMADO"
         ].includes(value)
-
             ? "paid"
-
             : "pending";
     }
 
+    function formatDate(value) {
+        if (!value) return "—";
 
+        const date = new Date(value);
 
-    function formatDate(
-        value
-    ) {
-
-        if (!value) {
-
+        if (Number.isNaN(date.getTime())) {
             return "—";
         }
-
-
-        const date =
-            new Date(value);
-
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
-            return "—";
-        }
-
 
         return new Intl.DateTimeFormat(
             "pt-PT",
             {
-                day:
-                    "2-digit",
-
-                month:
-                    "2-digit",
-
-                year:
-                    "numeric",
-
-                hour:
-                    "2-digit",
-
-                minute:
-                    "2-digit"
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
             }
         ).format(date);
     }
 
+    const email = document.getElementById("userEmail");
+    const ordersBody = document.getElementById("ordersBody");
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const eventFilter = document.getElementById("eventFilter");
+    const refreshBtn = document.getElementById("refreshBtn");
 
+    const modal = document.getElementById("orderModal");
+    const closeModalButton = document.getElementById("closeModal");
 
-    // =========================================================
-    // DOM
-    // =========================================================
+    const modalOrderCode = document.getElementById("modalOrderCode");
+    const orderDetails = document.getElementById("orderDetails");
+    const participantsContainer = document.getElementById("participantsContainer");
+    const orderActions = document.getElementById("orderActions");
 
-    const email =
-        document.getElementById(
-            "userEmail"
-        );
-
-
-    const ordersBody =
-        document.getElementById(
-            "ordersBody"
-        );
-
-
-    const searchInput =
-        document.getElementById(
-            "searchInput"
-        );
-
-
-    const statusFilter =
-        document.getElementById(
-            "statusFilter"
-        );
-
-
-    const eventFilter =
-        document.getElementById(
-            "eventFilter"
-        );
-
-
-    const refreshBtn =
-        document.getElementById(
-            "refreshBtn"
-        );
-
-
-    const modal =
-        document.getElementById(
-            "orderModal"
-        );
-
-
-    const closeModalButton =
-        document.getElementById(
-            "closeModal"
-        );
-
-
-    const modalOrderCode =
-        document.getElementById(
-            "modalOrderCode"
-        );
-
-
-    const orderDetails =
-        document.getElementById(
-            "orderDetails"
-        );
-
-
-    const participantsContainer =
-        document.getElementById(
-            "participantsContainer"
-        );
-
-
-    const orderActions =
-        document.getElementById(
-            "orderActions"
-        );
-
-
-    const logoutBtn =
-        document.getElementById(
-            "logoutBtn"
-        );
-
-
-
-    // =========================================================
-    // STATE
-    // =========================================================
+    const logoutBtn = document.getElementById("logoutBtn");
 
     let allOrders = [];
-
     let allParticipants = [];
 
-
+    let currentOrder = null;
 
     // =========================================================
-    // USER
+    // UTILIZADOR
     // =========================================================
 
     async function loadUser() {
-
         try {
-
-            const me =
-                await api(
-                    "/api/auth/me"
-                );
-
+            const me = await api("/api/auth/me");
 
             if (email) {
-
-                email.textContent =
-                    me.email ||
-                    "Admin";
+                email.textContent = me.email || "Admin";
             }
 
-        } catch {
-
-            // api() já trata 401
+        } catch (error) {
+            console.error("[101] ERRO USER:", error);
         }
     }
 
-
-
     // =========================================================
-    // LOAD
+    // CARREGAR PEDIDOS
     // =========================================================
 
     async function load() {
-
         try {
 
             ordersBody.innerHTML = `
-
                 <tr>
-
-                    <td
-                        colspan="8"
-                        class="empty"
-                    >
+                    <td colspan="8" class="empty">
                         A carregar…
                     </td>
-
                 </tr>
-
             `;
 
-
-            const data =
-                await api(
-                    "/api/admin/overview"
-                );
-
+            const data = await api("/api/admin/overview");
 
             allOrders =
-                Array.isArray(
-                    data.orders
-                )
+                Array.isArray(data.orders)
                     ? data.orders
                     : [];
 
-
             allParticipants =
-                Array.isArray(
-                    data.participants
-                )
+                Array.isArray(data.participants)
                     ? data.participants
                     : [];
 
+            console.log("[101] PEDIDOS:", allOrders);
+            console.log("[101] PARTICIPANTES:", allParticipants);
 
             populateEvents();
 
-
             render();
-
 
         } catch (error) {
 
             console.error(
-                "[101] PEDIDOS:",
+                "[101] ERRO AO CARREGAR PEDIDOS:",
                 error
             );
 
-
             ordersBody.innerHTML = `
-
                 <tr>
-
-                    <td
-                        colspan="8"
-                        class="empty"
-                    >
-                        ${esc(
-                            error.message
-                        )}
+                    <td colspan="8" class="empty">
+                        ${esc(error.message)}
                     </td>
-
                 </tr>
-
             `;
         }
     }
 
-
-
     // =========================================================
-    // EVENTS FILTER
+    // EVENTOS
     // =========================================================
 
     function populateEvents() {
@@ -394,163 +179,98 @@
             return;
         }
 
-
         const current =
             eventFilter.value;
 
-
-        const events =
-            [
-                ...new Set(
-                    allOrders
-                        .map(
-                            order =>
-                                order.event
-                        )
-                        .filter(
-                            Boolean
-                        )
-                )
-            ].sort(
-                (a, b) =>
-                    String(a)
-                        .localeCompare(
-                            String(b)
-                        )
-            );
-
+        const events = [
+            ...new Set(
+                allOrders
+                    .map(order => order.event)
+                    .filter(Boolean)
+            )
+        ].sort((a, b) =>
+            String(a).localeCompare(String(b))
+        );
 
         eventFilter.innerHTML = `
-
             <option value="">
                 Todos os eventos
             </option>
 
-            ${
-                events
-                    .map(
-                        event => `
-
-                            <option
-                                value="${esc(event)}"
-                            >
-                                ${esc(event)}
-                            </option>
-
-                        `
-                    )
-                    .join("")
-            }
-
+            ${events.map(event => `
+                <option value="${esc(event)}">
+                    ${esc(event)}
+                </option>
+            `).join("")}
         `;
 
-
-        if (
-            events.includes(
-                current
-            )
-        ) {
-
-            eventFilter.value =
-                current;
+        if (events.includes(current)) {
+            eventFilter.value = current;
         }
     }
 
-
-
     // =========================================================
-    // FILTER
+    // FILTROS
     // =========================================================
 
     function getFilteredOrders() {
 
         const search =
             String(
-                searchInput?.value ||
-                ""
+                searchInput?.value || ""
             )
-                .trim()
-                .toLowerCase();
-
+            .trim()
+            .toLowerCase();
 
         const status =
             String(
-                statusFilter?.value ||
-                ""
+                statusFilter?.value || ""
             )
-                .toUpperCase();
-
+            .toUpperCase();
 
         const event =
-            eventFilter?.value ||
-            "";
+            eventFilter?.value || "";
 
+        return allOrders.filter(order => {
 
-        return allOrders.filter(
-            order => {
+            const text = [
+                order.number,
+                order.event,
+                order.customer,
+                order.discord
+            ]
+                .filter(Boolean)
+                .join(" ")
+                .toLowerCase();
 
-                const text = [
-
-                    order.number,
-
-                    order.event,
-
-                    order.customer,
-
-                    order.discord
-
-                ]
-                    .filter(
-                        Boolean
-                    )
-                    .join(" ")
-                    .toLowerCase();
-
-
-                if (
-                    search &&
-                    !text.includes(
-                        search
-                    )
-                ) {
-
-                    return false;
-                }
-
-
-                if (
-                    status &&
-                    String(
-                        order.status ||
-                        ""
-                    )
-                        .toUpperCase()
-                    !== status
-                ) {
-
-                    return false;
-                }
-
-
-                if (
-                    event &&
-                    order.event !==
-                    event
-                ) {
-
-                    return false;
-                }
-
-
-                return true;
+            if (
+                search &&
+                !text.includes(search)
+            ) {
+                return false;
             }
-        );
+
+            if (
+                status &&
+                String(order.status || "")
+                    .toUpperCase() !== status
+            ) {
+                return false;
+            }
+
+            if (
+                event &&
+                order.event !== event
+            ) {
+                return false;
+            }
+
+            return true;
+        });
     }
 
-
-
     // =========================================================
-    // RENDER TABLE
+    // TABELA
     // =========================================================
 
     function render() {
@@ -558,327 +278,171 @@
         const orders =
             getFilteredOrders();
 
-
         if (!orders.length) {
 
             ordersBody.innerHTML = `
-
                 <tr>
-
-                    <td
-                        colspan="8"
-                        class="empty"
-                    >
-                        Não existem pedidos
-                        com estes filtros.
+                    <td colspan="8" class="empty">
+                        Não existem pedidos com estes filtros.
                     </td>
-
                 </tr>
-
             `;
 
             return;
         }
 
-
         ordersBody.innerHTML =
-            orders
-                .map(
-                    order => `
+            orders.map(order => `
+                <tr>
 
-                        <tr>
+                    <td>
+                        <strong>
+                            ${esc(order.number)}
+                        </strong>
+                    </td>
 
-                            <td>
+                    <td>
+                        ${esc(order.event)}
+                    </td>
 
-                                <strong>
-                                    ${esc(
-                                        order.number
-                                    )}
-                                </strong>
+                    <td>
+                        ${esc(order.customer)}
+                    </td>
 
-                            </td>
+                    <td>
+                        ${esc(order.discord || "—")}
+                    </td>
 
+                    <td>
+                        ${esc(String(order.bracelets ?? 0))}
+                    </td>
 
-                            <td>
-                                ${esc(
-                                    order.event
-                                )}
-                            </td>
+                    <td>
+                        ${money(order)}
+                    </td>
 
+                    <td>
+                        <span class="status ${statusClass(order.status)}">
+                            ${esc(order.status)}
+                        </span>
+                    </td>
 
-                            <td>
-                                ${esc(
-                                    order.customer
-                                )}
-                            </td>
+                    <td>
+                        <button
+                            type="button"
+                            class="ghost order-view"
+                            data-order="${esc(order.number)}"
+                        >
+                            VER
+                        </button>
+                    </td>
 
-
-                            <td>
-                                ${esc(
-                                    order.discord ||
-                                    "—"
-                                )}
-                            </td>
-
-
-                            <td>
-                                ${esc(
-                                    String(
-                                        order.bracelets ??
-                                        0
-                                    )
-                                )}
-                            </td>
-
-
-                            <td>
-                                ${money(order)}
-                            </td>
-
-
-                            <td>
-
-                                <span
-                                    class="
-                                        status
-                                        ${statusClass(
-                                            order.status
-                                        )}
-                                    "
-                                >
-                                    ${esc(
-                                        order.status
-                                    )}
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <button
-                                    type="button"
-                                    class="ghost order-view"
-                                    data-order="${esc(
-                                        order.number
-                                    )}"
-                                >
-                                    VER
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    `
-                )
-                .join("");
-
-
-        document
-            .querySelectorAll(
-                ".order-view"
-            )
-            .forEach(
-                button => {
-
-                    button.addEventListener(
-                        "click",
-                        () => {
-
-                            openOrder(
-                                button.dataset.order
-                            );
-
-                        }
-                    );
-
-                }
-            );
+                </tr>
+            `).join("");
     }
 
-
-
     // =========================================================
-    // OPEN ORDER
+    // ABRIR PEDIDO
     // =========================================================
 
-    function openOrder(
-        orderCode
-    ) {
+    function openOrder(orderCode) {
+
+        console.log(
+            "[101] ABRIR PEDIDO:",
+            orderCode
+        );
 
         const order =
             allOrders.find(
                 item =>
-                    item.number ===
-                    orderCode
+                    item.number === orderCode
             );
 
-
         if (!order) {
-
+            console.error(
+                "[101] PEDIDO NÃO ENCONTRADO:",
+                orderCode
+            );
             return;
         }
 
+        currentOrder = order;
+
+        console.log(
+            "[101] PEDIDO ATUAL:",
+            order
+        );
 
         modalOrderCode.textContent =
             order.number;
 
-
-        // =====================================================
-        // DETAILS
-        // =====================================================
-
         orderDetails.innerHTML = `
 
             <div class="order-detail">
-
-                <small>
-                    EVENTO
-                </small>
-
+                <small>EVENTO</small>
                 <strong>
-                    ${esc(
-                        order.event
-                    )}
+                    ${esc(order.event)}
                 </strong>
-
             </div>
 
-
             <div class="order-detail">
-
-                <small>
-                    CLIENTE
-                </small>
-
+                <small>CLIENTE</small>
                 <strong>
-                    ${esc(
-                        order.customer
-                    )}
+                    ${esc(order.customer)}
                 </strong>
-
             </div>
 
-
             <div class="order-detail">
-
-                <small>
-                    DISCORD
-                </small>
-
+                <small>DISCORD</small>
                 <strong>
-                    ${esc(
-                        order.discord ||
-                        "—"
-                    )}
+                    ${esc(order.discord || "—")}
                 </strong>
-
             </div>
 
-
             <div class="order-detail">
-
-                <small>
-                    CONTACTO
-                </small>
-
+                <small>CONTACTO</small>
                 <strong>
-                    ${esc(
-                        order.contact ||
-                        "—"
-                    )}
+                    ${esc(order.contact || "—")}
                 </strong>
-
             </div>
 
-
             <div class="order-detail">
-
-                <small>
-                    PULSEIRAS
-                </small>
-
+                <small>PULSEIRAS</small>
                 <strong>
-                    ${esc(
-                        String(
-                            order.bracelets ??
-                            0
-                        )
-                    )}
+                    ${esc(String(order.bracelets ?? 0))}
                 </strong>
-
             </div>
 
-
             <div class="order-detail">
-
-                <small>
-                    VALOR
-                </small>
-
+                <small>VALOR</small>
                 <strong>
                     ${money(order)}
                 </strong>
-
             </div>
 
-
             <div class="order-detail">
-
-                <small>
-                    ESTADO
-                </small>
-
+                <small>ESTADO</small>
                 <strong>
-                    <span
-                        class="
-                            status
-                            ${statusClass(
-                                order.status
-                            )}
-                        "
-                    >
-                        ${esc(
-                            order.status
-                        )}
+                    <span class="status ${statusClass(order.status)}">
+                        ${esc(order.status)}
                     </span>
                 </strong>
-
             </div>
 
-
             <div class="order-detail">
-
-                <small>
-                    CRIADO EM
-                </small>
-
+                <small>CRIADO EM</small>
                 <strong>
-                    ${esc(
-                        formatDate(
-                            order.createdAt
-                        )
-                    )}
+                    ${esc(formatDate(order.createdAt))}
                 </strong>
-
             </div>
 
         `;
 
-
-
-        // =====================================================
-        // PARTICIPANTS
-        // =====================================================
-
         const participants =
             allParticipants.filter(
                 participant =>
-                    participant.order ===
-                    order.number
+                    participant.order === order.number
             );
-
 
         participantsContainer.innerHTML = `
 
@@ -886,255 +450,226 @@
                 PARTICIPANTES
             </div>
 
-
             <div class="participant-list">
 
                 ${
                     participants.length
 
-                        ? participants
-                            .map(
-                                participant => `
+                        ? participants.map(
+                            participant => `
+                                <div class="participant-row">
+                                    <strong>
+                                        ${esc(participant.name)}
+                                    </strong>
 
-                                    <div
-                                        class="participant-row"
-                                    >
-
-                                        <strong>
-                                            ${esc(
-                                                participant.name
-                                            )}
-                                        </strong>
-
-                                        <span>
-                                            ${esc(
-                                                participant.event
-                                            )}
-                                        </span>
-
-                                    </div>
-
-                                `
-                            )
-                            .join("")
+                                    <span>
+                                        ${esc(participant.event)}
+                                    </span>
+                                </div>
+                            `
+                        ).join("")
 
                         : `
-
                             <div class="empty">
-                                Sem participantes
-                                registados.
+                                Sem participantes registados.
                             </div>
-
                         `
                 }
 
             </div>
-
         `;
 
+        renderActions(order);
 
+        modal.classList.add("open");
+    }
 
-        // =====================================================
-        // ACTIONS
-        // =====================================================
+    // =========================================================
+    // BOTÕES DO PEDIDO
+    // =========================================================
+
+    function renderActions(order) {
 
         const currentStatus =
-            String(
-                order.status ||
-                ""
-            )
+            String(order.status || "")
+                .trim()
                 .toUpperCase();
 
+        console.log(
+            "[101] ESTADO DO PEDIDO:",
+            currentStatus
+        );
 
         let actions = "";
 
-
-        if (
-            currentStatus ===
-            "PENDENTE"
-        ) {
+        if (currentStatus === "PENDENTE") {
 
             actions += `
-
                 <button
                     type="button"
                     class="order-action primary"
-                    id="confirmPaymentBtn"
+                    data-action="confirm-payment"
                 >
                     CONFIRMAR PAGAMENTO
                 </button>
-
             `;
 
-        }
-
-
-        else if (
-            currentStatus ===
-            "PAGO"
-        ) {
+        } else if (currentStatus === "PAGO") {
 
             actions += `
-
                 <button
                     type="button"
                     class="order-action primary"
-                    id="confirmOrderBtn"
+                    data-action="confirm-order"
                 >
                     MARCAR COMO CONFIRMADO
                 </button>
 
-
                 <button
                     type="button"
                     class="order-action"
-                    id="pendingOrderBtn"
+                    data-action="pending"
                 >
                     VOLTAR A PENDENTE
                 </button>
-
             `;
 
-        }
-
-
-        else if (
-            currentStatus ===
-            "CONFIRMADO"
-        ) {
+        } else if (currentStatus === "CONFIRMADO") {
 
             actions += `
-
                 <button
                     type="button"
                     class="order-action"
-                    id="pendingOrderBtn"
+                    data-action="pending"
                 >
                     VOLTAR A PENDENTE
                 </button>
-
             `;
-
         }
 
-
         actions += `
-
             <button
                 type="button"
                 class="order-action danger"
-                id="deleteOrderBtn"
+                data-action="delete"
             >
                 ELIMINAR PEDIDO
             </button>
-
         `;
 
+        orderActions.innerHTML = actions;
+    }
 
-        orderActions.innerHTML =
-            actions;
+    // =========================================================
+    // EVENT DELEGATION DOS BOTÕES
+    // =========================================================
 
+    orderActions.addEventListener(
+        "click",
+        async function (event) {
 
+            const button =
+                event.target.closest(
+                    "button[data-action]"
+                );
 
-        // =====================================================
-        // CONFIRM PAYMENT
-        // =====================================================
+            if (!button) {
+                return;
+            }
 
-        document
-            .getElementById(
-                "confirmPaymentBtn"
-            )
-            ?.addEventListener(
-                "click",
-                async () => {
+            if (!currentOrder) {
+                console.error(
+                    "[101] NÃO EXISTE PEDIDO ATUAL"
+                );
+                return;
+            }
+
+            const action =
+                button.dataset.action;
+
+            console.log(
+                "[101] BOTÃO CLICADO:",
+                action,
+                currentOrder.number
+            );
+
+            if (
+                button.dataset.busy === "true"
+            ) {
+                return;
+            }
+
+            button.dataset.busy = "true";
+            button.disabled = true;
+
+            const originalText =
+                button.textContent;
+
+            button.textContent =
+                "A PROCESSAR...";
+
+            try {
+
+                if (
+                    action ===
+                    "confirm-payment"
+                ) {
 
                     await changeStatus(
-                        order.number,
+                        currentOrder.number,
                         "pago"
                     );
 
-                }
-            );
-
-
-
-        // =====================================================
-        // CONFIRM ORDER
-        // =====================================================
-
-        document
-            .getElementById(
-                "confirmOrderBtn"
-            )
-            ?.addEventListener(
-                "click",
-                async () => {
+                } else if (
+                    action ===
+                    "confirm-order"
+                ) {
 
                     await changeStatus(
-                        order.number,
+                        currentOrder.number,
                         "confirmado"
                     );
 
-                }
-            );
-
-
-
-        // =====================================================
-        // PENDING
-        // =====================================================
-
-        document
-            .getElementById(
-                "pendingOrderBtn"
-            )
-            ?.addEventListener(
-                "click",
-                async () => {
+                } else if (
+                    action === "pending"
+                ) {
 
                     await changeStatus(
-                        order.number,
+                        currentOrder.number,
                         "pendente"
                     );
 
-                }
-            );
-
-
-
-        // =====================================================
-        // DELETE
-        // =====================================================
-
-        document
-            .getElementById(
-                "deleteOrderBtn"
-            )
-            ?.addEventListener(
-                "click",
-                async () => {
+                } else if (
+                    action === "delete"
+                ) {
 
                     await deleteOrder(
-                        order.number
+                        currentOrder.number
                     );
-
                 }
-            );
 
+            } catch (error) {
 
-        // =====================================================
-        // OPEN
-        // =====================================================
+                console.error(
+                    "[101] AÇÃO FALHOU:",
+                    error
+                );
 
-        modal.classList.add(
-            "open"
-        );
-    }
+                alert(
+                    error?.message ||
+                    "Ocorreu um erro."
+                );
 
-
+                button.disabled = false;
+                button.dataset.busy = "false";
+                button.textContent =
+                    originalText;
+            }
+        }
+    );
 
     // =========================================================
-    // CHANGE STATUS
+    // ALTERAR ESTADO
     // =========================================================
 
     async function changeStatus(
@@ -1142,66 +677,60 @@
         status
     ) {
 
-        try {
+        console.log(
+            "[101] A ALTERAR ESTADO:",
+            orderCode,
+            status
+        );
 
-            const response =
-                await api(
-                    "/api/orders/update",
-                    {
-                        method:
-                            "POST",
+        const response =
+            await api(
+                "/api/orders/update",
+                {
+                    method: "POST",
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-                        body:
-                            JSON.stringify({
-                                orderCode,
-                                estado:
-                                    status
-                            })
-                    }
-                );
-
-
-            if (
-                response.ok !==
-                true
-            ) {
-
-                throw new Error(
-                    response.error ||
-                    "Não foi possível atualizar o pedido."
-                );
-            }
-
-
-            closeModal();
-
-
-            await load();
-
-
-        } catch (error) {
-
-            console.error(
-                "[101] UPDATE:",
-                error
+                    body: JSON.stringify({
+                        orderCode,
+                        estado: status
+                    })
+                }
             );
 
+        console.log(
+            "[101] UPDATE RESPONSE:",
+            response
+        );
 
-            alert(
-                error.message
+        if (
+            response.ok !== true
+        ) {
+
+            throw new Error(
+                response.error ||
+                "Não foi possível atualizar o pedido."
             );
         }
+
+        // Fecha imediatamente
+        closeModal();
+
+        // Recarrega os dados
+        await load();
+
+        console.log(
+            "[101] ESTADO ALTERADO COM SUCESSO:",
+            orderCode,
+            status
+        );
     }
 
-
-
     // =========================================================
-    // DELETE
+    // ELIMINAR
     // =========================================================
 
     async function deleteOrder(
@@ -1213,71 +742,44 @@
                 `Tens a certeza que queres eliminar o pedido ${orderCode}?\n\nEsta ação não pode ser anulada.`
             );
 
-
         if (!confirmed) {
-
             return;
         }
 
+        const response =
+            await api(
+                "/api/orders/delete",
+                {
+                    method: "POST",
 
-        try {
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-            const response =
-                await api(
-                    "/api/orders/delete",
-                    {
-                        method:
-                            "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-                                orderCode
-                            })
-                    }
-                );
-
-
-            if (
-                response.ok !==
-                true
-            ) {
-
-                throw new Error(
-                    response.error ||
-                    "Não foi possível eliminar o pedido."
-                );
-            }
-
-
-            closeModal();
-
-
-            await load();
-
-
-        } catch (error) {
-
-            console.error(
-                "[101] DELETE:",
-                error
+                    body: JSON.stringify({
+                        orderCode
+                    })
+                }
             );
 
+        if (
+            response.ok !== true
+        ) {
 
-            alert(
-                error.message
+            throw new Error(
+                response.error ||
+                "Não foi possível eliminar o pedido."
             );
         }
+
+        closeModal();
+
+        await load();
     }
 
-
-
     // =========================================================
-    // CLOSE MODAL
+    // MODAL
     // =========================================================
 
     function closeModal() {
@@ -1285,130 +787,119 @@
         modal.classList.remove(
             "open"
         );
+
+        currentOrder = null;
     }
 
+    closeModalButton?.addEventListener(
+        "click",
+        closeModal
+    );
 
-    closeModalButton
-        ?.addEventListener(
-            "click",
-            closeModal
-        );
+    modal?.addEventListener(
+        "click",
+        event => {
 
-
-    modal
-        ?.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target ===
-                    modal
-                ) {
-
-                    closeModal();
-
-                }
-
+            if (
+                event.target === modal
+            ) {
+                closeModal();
             }
-        );
+        }
+    );
 
+    document.addEventListener(
+        "keydown",
+        event => {
 
-    document
-        .addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key ===
-                    "Escape"
-                ) {
-
-                    closeModal();
-
-                }
-
+            if (
+                event.key === "Escape"
+            ) {
+                closeModal();
             }
-        );
-
-
-
-    // =========================================================
-    // FILTER EVENTS
-    // =========================================================
-
-    searchInput
-        ?.addEventListener(
-            "input",
-            render
-        );
-
-
-    statusFilter
-        ?.addEventListener(
-            "change",
-            render
-        );
-
-
-    eventFilter
-        ?.addEventListener(
-            "change",
-            render
-        );
-
-
+        }
+    );
 
     // =========================================================
-    // REFRESH
+    // CLIQUE VER
     // =========================================================
 
-    refreshBtn
-        ?.addEventListener(
-            "click",
-            load
-        );
+    ordersBody.addEventListener(
+        "click",
+        event => {
 
+            const button =
+                event.target.closest(
+                    ".order-view"
+                );
 
+            if (!button) {
+                return;
+            }
+
+            openOrder(
+                button.dataset.order
+            );
+        }
+    );
+
+    // =========================================================
+    // FILTROS
+    // =========================================================
+
+    searchInput?.addEventListener(
+        "input",
+        render
+    );
+
+    statusFilter?.addEventListener(
+        "change",
+        render
+    );
+
+    eventFilter?.addEventListener(
+        "change",
+        render
+    );
+
+    refreshBtn?.addEventListener(
+        "click",
+        load
+    );
 
     // =========================================================
     // LOGOUT
     // =========================================================
 
-    logoutBtn
-        ?.addEventListener(
-            "click",
-            async () => {
+    logoutBtn?.addEventListener(
+        "click",
+        async () => {
 
-                try {
+            try {
 
-                    await fetch(
-                        "/api/auth/logout",
-                        {
-                            method:
-                                "POST",
+                await fetch(
+                    "/api/auth/logout",
+                    {
+                        method: "POST",
+                        credentials:
+                            "same-origin"
+                    }
+                );
 
-                            credentials:
-                                "same-origin"
-                        }
-                    );
+            } finally {
 
-                } finally {
-
-                    location.replace(
-                        "/admin/"
-                    );
-                }
+                location.replace(
+                    "/admin/"
+                );
             }
-        );
-
-
+        }
+    );
 
     // =========================================================
     // START
     // =========================================================
 
     await loadUser();
-
     await load();
 
 })();
