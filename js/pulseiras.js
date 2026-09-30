@@ -26,10 +26,86 @@
     }, window.PULSEIRAS_CONFIG || {});
 
 
+let activeEventSlug = null;
 
-    function getAutomaticEventName() {
+function getEventSlugFromUrl(url) {
 
-    // 1. Tenta usar o título da página
+    if (!url) {
+        return "";
+    }
+
+    try {
+
+        const parsed = new URL(
+            url,
+            window.location.origin
+        );
+
+        const match =
+            parsed.pathname.match(
+                /\/eventos\/([^/]+?)(?:\.html)?$/i
+            );
+
+        if (match && match[1]) {
+
+            return match[1]
+                .replace(/[-_]+/g, "-")
+                .toLowerCase();
+
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "[101] Não foi possível detetar o evento:",
+            error
+        );
+
+    }
+
+    return "";
+}
+
+
+function getCurrentEventSlug() {
+
+    // 1. Evento definido pelo botão clicado
+    if (activeEventSlug) {
+        return activeEventSlug;
+    }
+
+    // 2. Evento diretamente pelo URL
+    const fromUrl =
+        getEventSlugFromUrl(
+            window.location.href
+        );
+
+    if (fromUrl) {
+        return fromUrl;
+    }
+
+    // 3. Fallback para configuração existente
+    if (cfg.eventoSlug) {
+        return cfg.eventoSlug;
+    }
+
+    return "";
+}
+
+
+function getAutomaticEventName() {
+
+    // 1. Se estamos numa página de evento,
+    // deteta automaticamente pelo URL.
+    const slug = getCurrentEventSlug();
+
+    if (slug) {
+        return slug
+            .replace(/[-_]+/g, " ")
+            .replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+    // 2. Tenta usar o título da página
     const title = document.title || "";
 
     if (title.includes("•")) {
@@ -43,10 +119,9 @@
         if (titleEvent) {
             return titleEvent;
         }
-
     }
 
-    // 2. Tenta encontrar um título principal na página
+    // 3. Tenta encontrar o título principal
     const heading = document.querySelector(
         "h1[data-event-name], .event-title, .hero-title, h1"
     );
@@ -60,19 +135,8 @@
         if (headingText) {
             return headingText;
         }
-
     }
 
-    // 3. Usa o slug da configuração
-    if (cfg.eventoSlug) {
-
-        return cfg.eventoSlug
-            .replace(/[-_]+/g, " ")
-            .toUpperCase();
-
-    }
-
-    // 4. Último fallback
     return "EVENTO 1Ø1";
 }
 
@@ -85,10 +149,7 @@ if (
     cfg.evento = getAutomaticEventName();
 
 }
-
-
     const MAX_IMG_MB = 8;
-
     const PAYMENT_IBAN = "ALT4263227";
 
 
@@ -1378,32 +1439,43 @@ function openModal(presetQty) {
     ===================================================== */
 
 function generateOrderCode() {
-    const eventName = (
-        cfg.eventoSlug ||
-        cfg.evento ||
-        "evento"
-    )
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-zA-Z0-9]/g, "")
-        .toUpperCase();
 
-    const prefix = eventName.slice(0, 3);
+    const eventName =
+        getAutomaticEventName();
+
+    const prefix =
+        eventName
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-zA-Z0-9]/g, "")
+            .slice(0, 3)
+            .toUpperCase() || "101";
 
     const random =
         Math.random()
             .toString(36)
-            .slice(2, 8)
+            .slice(2, 5)
             .toUpperCase();
 
-    return `101-${prefix}-${random}`;
+    const time =
+        Date.now()
+            .toString(36)
+            .slice(-3)
+            .toUpperCase();
+
+    return `101-${prefix}-${random}${time}`;
 }
     /* =====================================================
        ENVIO PARA DISCORD
     ===================================================== */
 
+    
     async function sendOrder(orderCode) {
 
+        Object.assign(
+    cfg,
+    window.PULSEIRAS_CONFIG || {}
+);
         if (
             !cfg.webhookUrl ||
             cfg.webhookUrl.includes(
@@ -2163,41 +2235,95 @@ function generateOrderCode() {
         );
 
 
-        /* BOTÕES DE ABRIR */
+/* BOTÕES DE ABRIR */
 
-        document
-            .querySelectorAll(
-                "[data-open-pulseiras]"
-            )
-            .forEach(
-                button => {
+document
+    .querySelectorAll(
+        "[data-open-pulseiras]"
+    )
+    .forEach(
+        button => {
 
-                    button.addEventListener(
-                        "click",
-                        event => {
+            button.addEventListener(
+                "click",
+                event => {
 
-                            event.preventDefault();
+                    event.preventDefault();
 
+                    /*
+                     * Tenta descobrir automaticamente
+                     * qual é o evento associado ao botão.
+                     */
 
-                            const preset =
-                                document.getElementById(
-                                    "pzQty"
-                                );
+                    activeEventSlug = null;
 
-
-                            openModal(
-                                preset
-                                    ? Number(
-                                        preset.textContent
-                                    )
-                                    : null
+                    // 1. Procura um link de evento dentro
+                    // do mesmo cartão/bloco
+                    const eventLink =
+                        button
+                            .closest(
+                                ".featured-event, .event-card, article, section"
+                            )
+                            ?.querySelector(
+                                'a[href*="/eventos/"]'
                             );
 
-                        }
+                    if (eventLink) {
+
+                        activeEventSlug =
+                            getEventSlugFromUrl(
+                                eventLink.href
+                            );
+
+                    }
+
+                    // 2. Se não encontrou no cartão,
+                    // tenta o próprio href/data do botão
+                    if (!activeEventSlug) {
+
+                        activeEventSlug =
+                            getEventSlugFromUrl(
+                                button.dataset.eventUrl ||
+                                button.getAttribute("href") ||
+                                ""
+                            );
+
+                    }
+
+                    // 3. Se estivermos numa página de evento,
+                    // usa automaticamente o URL atual
+                    if (!activeEventSlug) {
+
+                        activeEventSlug =
+                            getEventSlugFromUrl(
+                                window.location.href
+                            );
+
+                    }
+
+                    console.log(
+                        "[101] Evento detetado:",
+                        activeEventSlug
+                    );
+
+                    const preset =
+                        document.getElementById(
+                            "pzQty"
+                        );
+
+                    openModal(
+                        preset
+                            ? Number(
+                                preset.textContent
+                            )
+                            : null
                     );
 
                 }
             );
+
+        }
+    );
 
 
         /* STEPPER EXTERNO */
