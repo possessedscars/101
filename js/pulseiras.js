@@ -1379,8 +1379,21 @@ function openModal(presetQty) {
 
     function generateOrderCode() {
 
-        // Prefixo fixo: o código não revela o nome do evento
-        const prefix = "PULS";
+        const prefix =
+            (
+                cfg.eventoSlug ||
+                "101"
+            )
+                .replace(
+                    /[^a-z0-9]/gi,
+                    ""
+                )
+                .slice(
+                    0,
+                    4
+                )
+                .toUpperCase() ||
+            "101";
 
 
         const random =
@@ -1418,7 +1431,7 @@ function openModal(presetQty) {
         if (
             !cfg.webhookUrl ||
             cfg.webhookUrl.includes(
-                "https://discord.com/api/webhooks/1554615194477531176/KdU3NR3KvYE-UEzc1-oH2l2tUDW4tWb18iKlTgADdM1d07_yG9MqFfoVlM_nYqhDF7bo"
+                "COLOCA_AQUI"
             )
         ) {
 
