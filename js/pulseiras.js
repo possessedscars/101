@@ -1,2564 +1,5043 @@
 /* ==========================================================
-   1Ø1 • SISTEMA DE PULSEIRAS
-   ========================================================== */
+
+   1Ø1 • SISTEMA DE PULSEIRAS
+
+   ========================================================== */
+
 (function () {
-    "use strict";
 
-    const cfg = Object.assign({
-        evento: "",
-        eventoSlug: "",
-        data: "",
-        preco: 100,
-        moeda: "$",
-        maxPorPessoa: 8,
-        webhookUrl: ""
-    }, window.PULSEIRAS_CONFIG || {});
+    "use strict";
 
-    let activeEventSlug = "";
-    const MAX_IMG_MB = 8;
-    const PAYMENT_IBAN = "ALTF4263227";
-    const state = {
-        qty: 1,
-        file: null,
-        previewUrl: null,
-        step: 1,
-        sending: false
-    };
 
-    let els = {};
-    let pausedBackgroundVideos = [];
 
-    /* ==========================================================
-       DETEÇÃO AUTOMÁTICA DO EVENTO
-       ========================================================== */
+    const cfg = Object.assign({
 
-    function getEventSlugFromUrl(url) {
+        evento: "",
 
-        if (!url) return "";
+        eventoSlug: "",
 
-        try {
+        data: "",
 
-            const parsed = new URL(
-                url,
-                window.location.origin
-            );
+        preco: 100,
 
-            const match = parsed.pathname.match(
+        moeda: "$",
+
+        maxPorPessoa: 8,
+
+        webhookUrl: ""
+
+    }, window.PULSEIRAS_CONFIG || {});
+
+
+
+    let activeEventSlug = "";
+
+    const MAX_IMG_MB = 8;
+
+    const PAYMENT_IBAN = "ALTF4263227";
+
+    const state = {
+
+        qty: 1,
+
+        file: null,
+
+        previewUrl: null,
+
+        step: 1,
+
+        sending: false
+
+    };
+
+
+
+    let els = {};
+
+    let pausedBackgroundVideos = [];
+
+
+
+    /* ==========================================================
+
+       DETEÇÃO AUTOMÁTICA DO EVENTO
+
+       ========================================================== */
+
+
+
+    function getEventSlugFromUrl(url) {
+
+
+
+        if (!url) return "";
+
+
+
+        try {
+
+
+
+            const parsed = new URL(
+
+                url,
+
+                window.location.origin
+
+            );
+
+
+
+            const match = parsed.pathname.match(
+
                 /\/eventos\/([^/]+?)(?:\.html)?\/?$/i
-            );
 
-            return match && match[1]
-                ? match[1]
-                    .replace(/[-_]+/g, "-")
-                    .toLowerCase()
-                : "";
-
-        } catch (error) {
-
-            console.warn(
-                "[101] Não foi possível detetar o evento:",
-                error
-            );
-
-            return "";
-        }
-    }
-
-
-    function getCurrentEventSlug() {
-
-        return (
-            activeEventSlug ||
-            getEventSlugFromUrl(
-                window.location.href
-            ) ||
-            cfg.eventoSlug ||
-            ""
-        );
-
-    }
-
-
-    function getAutomaticEventName() {
-
-        const slug =
-            getCurrentEventSlug();
-
-        if (slug) {
-
-            return slug
-                .replace(/[-_]+/g, " ")
-                .replace(
-                    /\b\w/g,
-                    char => char.toUpperCase()
-                );
-
-        }
-
-        const title =
-            document.title || "";
-
-        if (title.includes("•")) {
-
-            const name =
-                title
-                    .split("•")
-                    .slice(1)
-                    .join("•")
-                    .trim();
-
-            if (name) return name;
-        }
-
-        const heading =
-            document.querySelector(
-                "h1[data-event-name], .event-title, .hero-title, h1"
-            );
-
-        if (heading) {
-
-            const name =
-                heading.textContent
-                    .replace(/\s+/g, " ")
-                    .trim();
-
-            if (name) return name;
-        }
-
-        return "EVENTO 1Ø1";
-    }
-
-
-    if (
-        !cfg.evento ||
-        !String(cfg.evento).trim()
-    ) {
-
-        cfg.evento =
-            getAutomaticEventName();
-
-    }
-
-
-    /* ==========================================================
-       ESCAPE HTML
-       ========================================================== */
-
-    function escapeHtml(str) {
-
-        return String(str).replace(
-            /[&<>"']/g,
-            s => ({
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#39;"
-            }[s])
-        );
-
-    }
-
-
-    /* ==========================================================
-       MODAL
-       ========================================================== */
-
-    function buildModal() {
-
-        if (
-            document.getElementById(
-                "pzOverlay"
             )
-        ) {
-            return;
-        }
 
-        const wrap =
-            document.createElement("div");
 
-        wrap.innerHTML = `
+
+            return match && match[1]
+
+                ? match[1]
+
+                    .replace(/[-\_]+/g, "-")
+
+                    .toLowerCase()
+
+                : "";
+
+
+
+        } catch (error) {
+
+
+
+            console.warn(
+
+                "[101] Não foi possível detetar o evento:",
+
+                error
+
+            );
+
+
+
+            return "";
+
+        }
+
+    }
+
+
+
+
+
+    function getCurrentEventSlug() {
+
+
+
+        return (
+
+            activeEventSlug ||
+
+            getEventSlugFromUrl(
+
+                window.location.href
+
+            ) ||
+
+            cfg.eventoSlug ||
+
+            ""
+
+        );
+
+
+
+    }
+
+
+
+
+
+    function getAutomaticEventName() {
+
+
+
+        const slug =
+
+            getCurrentEventSlug();
+
+
+
+        if (slug) {
+
+
+
+            return slug
+
+                .replace(/[-\_]+/g, " ")
+
+                .replace(
+
+                    /\b\w/g,
+
+                    char => char.toUpperCase()
+
+                );
+
+
+
+        }
+
+
+
+        const title =
+
+            document.title || "";
+
+
+
+        if (title.includes("•")) {
+
+
+
+            const name =
+
+                title
+
+                    .split("•")
+
+                    .slice(1)
+
+                    .join("•")
+
+                    .trim();
+
+
+
+            if (name) return name;
+
+        }
+
+
+
+        const heading =
+
+            document.querySelector(
+
+                "h1[data-event-name], .event-title, .hero-title, h1"
+
+            );
+
+
+
+        if (heading) {
+
+
+
+            const name =
+
+                heading.textContent
+
+                    .replace(/\s+/g, " ")
+
+                    .trim();
+
+
+
+            if (name) return name;
+
+        }
+
+
+
+        return "EVENTO 1Ø1";
+
+    }
+
+
+
+
+
+    if (
+
+        !cfg.evento ||
+
+        !String(cfg.evento).trim()
+
+    ) {
+
+
+
+        cfg.evento =
+
+            getAutomaticEventName();
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       ESCAPE HTML
+
+       ========================================================== */
+
+
+
+    function escapeHtml(str) {
+
+
+
+        return String(str).replace(
+
+            /[&<>"']/g,
+
+            s => ({
+
+                "&": "&amp;",
+
+                "<": "&lt;",
+
+                ">": "&gt;",
+
+                '"': "&quot;",
+
+                "'": "&#39;"
+
+            }[s])
+
+        );
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       MODAL
+
+       ========================================================== */
+
+
+
+    function buildModal() {
+
+
+
+        if (
+
+            document.getElementById(
+
+                "pzOverlay"
+
+            )
+
+        ) {
+
+            return;
+
+        }
+
+
+
+        const wrap =
+
+            document.createElement("div");
+
+
+
+        wrap.innerHTML = `
+
+
 
 <div
-    class="pz-overlay"
-    id="pzOverlay"
+
+    class="pz-overlay"
+
+    id="pzOverlay"
+
 >
 
-    <div
-        class="pz-modal"
-        role="dialog"
-        aria-modal="true"
-    >
-
-        <button
-            class="pz-close"
-            id="pzClose"
-            aria-label="Fechar"
-            type="button"
-        >
-            ✕
-        </button>
 
 
-        <div class="pz-steps-track">
+    <div
 
-            <span
-                data-step="1"
-                class="active"
-            ></span>
+        class="pz-modal"
 
-            <span data-step="2"></span>
+        role="dialog"
 
-            <span data-step="3"></span>
+        aria-modal="true"
 
-            <span data-step="4"></span>
-
-        </div>
+    >
 
 
-        <!-- ==================================================
-             STEP 1
-        ================================================== -->
 
-        <div
-            class="pz-step active"
-            data-step="1"
-        >
+        <button
 
-            <span class="pz-eyebrow">
-                ${escapeHtml(
-                    String(cfg.evento).toUpperCase()
-                )}
-            </span>
+            class="pz-close"
 
-            <h3>
-                ESCOLHE A QUANTIDADE
-            </h3>
+            id="pzClose"
 
-            <p class="pz-sub">
-                Cada pulseira dá acesso ao evento.
-                <br>
-                Escolhe a quantidade que pretendes.
-            </p>
+            aria-label="Fechar"
+
+            type="button"
+
+        >
+
+            ✕
+
+        </button>
 
 
-            <div class="pz-summary-row">
-
-                <div class="qty-control">
-
-                    <button
-                        type="button"
-                        class="qty-btn"
-                        id="pzModalMinus"
-                    >
-                        −
-                    </button>
-
-                    <span
-                        class="qty-value"
-                        id="pzModalQty"
-                    >
-                        1
-                    </span>
-
-                    <button
-                        type="button"
-                        class="qty-btn"
-                        id="pzModalPlus"
-                    >
-                        +
-                    </button>
-
-                </div>
 
 
-                <div style="text-align:right">
 
-                    <div
-                        style="
-                            color:#999;
-                            font-size:12px;
-                            letter-spacing:1px;
-                        "
-                    >
-                        PREÇO UNITÁRIO
-                    </div>
-
-                    <strong style="font-size:20px">
-                        ${cfg.moeda}${cfg.preco}
-                    </strong>
-
-                </div>
-
-            </div>
+        <div class="pz-steps-track">
 
 
-            <div class="pz-total-line">
 
-                <span
-                    style="
-                        color:#999;
-                        font-size:13px;
-                        letter-spacing:2px;
-                    "
-                >
-                    TOTAL A PAGAR
-                </span>
+            <span
 
-                <strong id="pzModalTotal">
-                    ${cfg.moeda}${cfg.preco}
-                </strong>
+                data-step="1"
 
-            </div>
+                class="active"
+
+            ></span>
 
 
-            <div class="pz-actions">
 
-                <button
-                    type="button"
-                    class="pz-btn pz-btn-primary"
-                    id="pzToStep2"
-                    style="flex:1"
-                >
-                    CONTINUAR →
-                </button>
-
-            </div>
-
-        </div>
+            <span data-step="2"></span>
 
 
-        <!-- ==================================================
-             STEP 2
-        ================================================== -->
 
-        <div
-            class="pz-step"
-            data-step="2"
-        >
-
-            <span class="pz-eyebrow">
-                OS TEUS DADOS
-            </span>
-
-            <h3>
-                QUEM VAI LEVANTAR
-            </h3>
-
-            <p class="pz-sub">
-                Introduz os teus dados para associarmos
-                o pagamento ao pedido.
-            </p>
+            <span data-step="3"></span>
 
 
-            <div class="pz-field">
 
-                <label>
-                    NOME DA PESSOA (IC)
-                </label>
-
-                <input
-                    type="text"
-                    id="pzNome"
-                    placeholder="Ex: John Doe"
-                    autocomplete="off"
-                >
-
-            </div>
+            <span data-step="4"></span>
 
 
-            <div class="pz-field">
 
-                <label>
-                    DISCORD (UTILIZADOR)
-                </label>
-
-                <input
-                    type="text"
-                    id="pzDiscord"
-                    placeholder="Ex: nome_utilizador"
-                    autocomplete="off"
-                >
-
-            </div>
+        </div>
 
 
-            <div class="pz-field">
 
-                <label>
-                    CONTACTO / TELEMÓVEL
-                </label>
 
-                <input
-                    type="text"
-                    id="pzContacto"
-                    autocomplete="off"
-                >
 
-            </div>
+        <!-- ==================================================
 
-            <div
-    id="pzParticipantsWrap"
-    style="
-        display:none;
-        margin-top:22px;
-        padding:18px;
-        border:1px solid rgba(255,255,255,.10);
-        border-radius:16px;
-        background:rgba(255,255,255,.025);
-    "
+             STEP 1
+
+        ================================================== -->
+
+
+
+        <div
+
+            class="pz-step active"
+
+            data-step="1"
+
+        >
+
+
+
+            <span class="pz-eyebrow">
+
+                ${escapeHtml(
+
+                    String(cfg.evento).toUpperCase()
+
+                )}
+
+            </span>
+
+
+
+            <h3>
+
+                ESCOLHE A QUANTIDADE
+
+            </h3>
+
+
+
+            <p class="pz-sub">
+
+                Cada pulseira dá acesso ao evento.
+
+                <br>
+
+                Escolhe a quantidade que pretendes.
+
+            </p>
+
+
+
+
+
+            <div class="pz-summary-row">
+
+
+
+                <div class="qty-control">
+
+
+
+                    <button
+
+                        type="button"
+
+                        class="qty-btn"
+
+                        id="pzModalMinus"
+
+                    >
+
+                        −
+
+                    </button>
+
+
+
+                    <span
+
+                        class="qty-value"
+
+                        id="pzModalQty"
+
+                    >
+
+                        1
+
+                    </span>
+
+
+
+                    <button
+
+                        type="button"
+
+                        class="qty-btn"
+
+                        id="pzModalPlus"
+
+                    >
+
+                        +
+
+                    </button>
+
+
+
+                </div>
+
+
+
+
+
+                <div style="text-align:right">
+
+
+
+                    <div
+
+                        style="
+
+                            color:#999;
+
+                            font-size:12px;
+
+                            letter-spacing:1px;
+
+                        "
+
+                    >
+
+                        PREÇO UNITÁRIO
+
+                    </div>
+
+
+
+                    <strong style="font-size:20px">
+
+                        ${cfg.moeda}${cfg.preco}
+
+                    </strong>
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+            <div class="pz-total-line">
+
+
+
+                <span
+
+                    style="
+
+                        color:#999;
+
+                        font-size:13px;
+
+                        letter-spacing:2px;
+
+                    "
+
+                >
+
+                    TOTAL A PAGAR
+
+                </span>
+
+
+
+                <strong id="pzModalTotal">
+
+                    ${cfg.moeda}${cfg.preco}
+
+                </strong>
+
+
+
+            </div>
+
+
+
+
+
+            <div class="pz-actions">
+
+
+
+                <button
+
+                    type="button"
+
+                    class="pz-btn pz-btn-primary"
+
+                    id="pzToStep2"
+
+                    style="flex:1"
+
+                >
+
+                    CONTINUAR →
+
+                </button>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+        <!-- ==================================================
+
+             STEP 2
+
+        ================================================== -->
+
+
+
+        <div
+
+            class="pz-step"
+
+            data-step="2"
+
+        >
+
+
+
+            <span class="pz-eyebrow">
+
+                OS TEUS DADOS
+
+            </span>
+
+
+
+            <h3>
+
+                QUEM VAI LEVANTAR
+
+            </h3>
+
+
+
+            <p class="pz-sub">
+
+                Introduz os teus dados para associarmos
+
+                o pagamento ao pedido.
+
+            </p>
+
+
+
+
+
+            <div class="pz-field">
+
+
+
+                <label>
+
+                    NOME DA PERSONAGEM (IC)
+
+                </label>
+
+
+
+                <input
+
+                    type="text"
+
+                    id="pzNome"
+
+                    placeholder="Ex: John Doe"
+
+                    autocomplete="off"
+
+                >
+
+
+
+            </div>
+
+
+
+
+
+            <div class="pz-field">
+
+
+
+                <label>
+
+                    DISCORD (UTILIZADOR)
+
+                </label>
+
+
+
+                <input
+
+                    type="text"
+
+                    id="pzDiscord"
+
+                    placeholder="Ex: nome_utilizador"
+
+                    autocomplete="off"
+
+                >
+
+
+
+            </div>
+
+
+
+
+
+            <div class="pz-field">
+
+
+
+                <label>
+
+                    CONTACTO / TELEMÓVEL
+
+                </label>
+
+
+
+                <input
+
+                    type="text"
+
+                    id="pzContacto"
+
+                    autocomplete="off"
+
+                >
+
+
+
+            </div>
+
+
+
+            <div
+
+    id="pzParticipantsWrap"
+
+    style="
+
+        display:none;
+
+        margin-top:22px;
+
+        padding:18px;
+
+        border:1px solid rgba(255,255,255,.10);
+
+        border-radius:16px;
+
+        background:rgba(255,255,255,.025);
+
+    "
+
 >
 
-    <div
-        style="
-            margin-bottom:15px;
-        "
-    >
-
-        <div
-            style="
-                font-size:11px;
-                letter-spacing:2px;
-                color:#999;
-                margin-bottom:6px;
-            "
-        >
-            PARTICIPANTES
-        </div>
-
-        <strong
-            style="
-                font-size:15px;
-            "
-        >
-            QUEM VAI AO EVENTO?
-        </strong>
-
-        <div
-            style="
-                color:#888;
-                font-size:12px;
-                margin-top:6px;
-                line-height:1.5;
-            "
-        >
-            Indica o nome da pessoa de cada pessoa
-            que vai utilizar uma das pulseiras.
-        </div>
-
-    </div>
 
 
-    <div id="pzParticipantsFields"></div>
+    <div
+
+        style="
+
+            margin-bottom:15px;
+
+        "
+
+    >
+
+
+
+        <div
+
+            style="
+
+                font-size:11px;
+
+                letter-spacing:2px;
+
+                color:#999;
+
+                margin-bottom:6px;
+
+            "
+
+        >
+
+            PARTICIPANTES
+
+        </div>
+
+
+
+        <strong
+
+            style="
+
+                font-size:15px;
+
+            "
+
+        >
+
+            QUEM VAI AO EVENTO?
+
+        </strong>
+
+
+
+        <div
+
+            style="
+
+                color:#888;
+
+                font-size:12px;
+
+                margin-top:6px;
+
+                line-height:1.5;
+
+            "
+
+        >
+
+            Indica o nome da personagem de cada pessoa
+
+            que vai utilizar uma das pulseiras.
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+    <div id="pzParticipantsFields"></div>
+
+
 
 </div>
 
 
-            <div
-                class="pz-error"
-                id="pzErrorStep2"
-            >
-                Preenche o nome e o Discord para continuar.
-            </div>
-
-
-            <div class="pz-actions">
-
-                <button
-                    type="button"
-                    class="pz-btn pz-btn-ghost"
-                    data-back="1"
-                >
-                    ← VOLTAR
-                </button>
-
-                <button
-                    type="button"
-                    class="pz-btn pz-btn-primary"
-                    id="pzToStep3"
-                >
-                    CONTINUAR →
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- ==================================================
-             STEP 3
-        ================================================== -->
-
-        <div
-            class="pz-step"
-            data-step="3"
-        >
-
-            <span class="pz-eyebrow">
-                PAGAMENTO
-            </span>
-
-            <h3>
-                FAZ A TRANSFERÊNCIA
-            </h3>
-
-            <p class="pz-sub">
-                Faz a transferência para o
-                <strong>
-                    IBAN ${PAYMENT_IBAN}
-                </strong>
-                no valor indicado abaixo.
-                Depois, tira um print da transação
-                e envia-o como comprovativo.
-            </p>
-
-
-            <div
-                style="
-                    margin:24px 0;
-                    padding:22px;
-                    border:1px solid rgba(255,32,32,.35);
-                    border-radius:18px;
-                    background:
-                        linear-gradient(
-                            135deg,
-                            rgba(255,32,32,.10),
-                            rgba(255,255,255,.025)
-                        );
-                "
-            >
-
-                <div
-                    style="
-                        display:flex;
-                        justify-content:space-between;
-                        align-items:center;
-                        gap:20px;
-                    "
-                >
-
-                    <div>
-
-                        <div
-                            style="
-                                font-size:10px;
-                                letter-spacing:2px;
-                                color:#999;
-                                margin-bottom:7px;
-                            "
-                        >
-                            IBAN
-                        </div>
-
-                        <strong
-                            style="
-                                font-size:30px;
-                                letter-spacing:3px;
-                            "
-                        >
-                            ${PAYMENT_IBAN}
-                        </strong>
 
-                    </div>
-
 
-                    <div
-                        style="text-align:right"
-                    >
 
-                        <div
-                            style="
-                                font-size:10px;
-                                letter-spacing:2px;
-                                color:#999;
-                                margin-bottom:7px;
-                            "
-                        >
-                            VALOR A TRANSFERIR
-                        </div>
+            <div
 
-                        <strong
-                            id="pzPaymentTotal"
-                            style="font-size:28px"
-                        >
-                            ${cfg.moeda}${cfg.preco}
-                        </strong>
+                class="pz-error"
 
-                    </div>
+                id="pzErrorStep2"
 
-                </div>
-
-
-                <div
-                    style="
-                        height:1px;
-                        background:rgba(255,255,255,.08);
-                        margin:18px 0;
-                    "
-                ></div>
+            >
 
+                Preenche o nome e o Discord para continuar.
 
-                <div
-                    style="
-                        font-size:12px;
-                        line-height:1.6;
-                        color:#aaa;
-                    "
-                >
+            </div>
 
-                    <strong style="color:#fff">
-                        IMPORTANTE:
-                    </strong>
 
-                    A transferência tem de ser feita
-                    para o
 
-                    <strong style="color:#fff">
-                        IBAN ${PAYMENT_IBAN}
-                    </strong>.
 
-                    Depois de concluíres o pagamento,
 
-                    <strong style="color:#fff">
-                        tira um print da transação
-                    </strong>
+            <div class="pz-actions">
 
-                    e envia-o abaixo.
 
-                </div>
 
-            </div>
+                <button
 
+                    type="button"
 
-            <div
-                style="
-                    font-size:11px;
-                    letter-spacing:2px;
-                    color:#999;
-                    margin-bottom:10px;
-                "
-            >
-                COMPROVATIVO DE PAGAMENTO
-            </div>
+                    class="pz-btn pz-btn-ghost"
 
+                    data-back="1"
 
-            <label
-                class="pz-dropzone"
-                id="pzDropzone"
-            >
+                >
 
-                <input
-                    type="file"
-                    id="pzFile"
-                    accept="image/png,image/jpeg,image/jpg"
-                >
+                    ← VOLTAR
 
-                <div class="pz-drop-icon">
-                    📎
-                </div>
+                </button>
 
-                <strong>
-                    CLICA OU ARRASTA O PRINT PARA AQUI
-                </strong>
 
-                <small>
-                    PNG ou JPG • até ${MAX_IMG_MB}MB
-                </small>
 
-            </label>
+                <button
 
+                    type="button"
 
-            <div
-                class="pz-preview"
-                id="pzPreview"
-            >
+                    class="pz-btn pz-btn-primary"
 
-                <img
-                    id="pzPreviewImg"
-                    alt="Pré-visualização"
-                >
+                    id="pzToStep3"
 
-                <span
-                    class="pz-preview-name"
-                    id="pzPreviewName"
-                ></span>
+                >
 
-                <button
-                    type="button"
-                    class="pz-preview-remove"
-                    id="pzPreviewRemove"
-                >
-                    REMOVER
-                </button>
+                    CONTINUAR →
 
-            </div>
+                </button>
 
 
-            <label class="pz-checkbox">
 
-                <input
-                    type="checkbox"
-                    id="pzConfirm"
-                >
+            </div>
 
-                <span>
 
-                    Confirmo que fiz a transferência
-                    para o
 
-                    <strong>
-                        IBAN ${PAYMENT_IBAN}
-                    </strong>
+        </div>
 
-                    e que o comprovativo enviado
-                    corresponde a uma transferência real.
 
-                </span>
 
-            </label>
 
 
-            <div
-                class="pz-error"
-                id="pzErrorStep3"
-            >
-                Faz a transferência, envia o print
-                e confirma a caixa acima para continuar.
-            </div>
+        <!-- ==================================================
 
+             STEP 3
 
-            <div class="pz-actions">
+        ================================================== -->
 
-                <button
-                    type="button"
-                    class="pz-btn pz-btn-ghost"
-                    data-back="2"
-                >
-                    ← VOLTAR
-                </button>
 
-                <button
-                    type="button"
-                    class="pz-btn pz-btn-primary"
-                    id="pzSubmit"
-                >
 
-                    <span id="pzSubmitLabel">
-                        CONFIRMAR PEDIDO →
-                    </span>
+        <div
 
-                </button>
+            class="pz-step"
 
-            </div>
+            data-step="3"
 
+        >
 
-            <div
-                class="pz-error"
-                id="pzErrorSubmit"
-            >
-                Não foi possível enviar o pedido.
-            </div>
 
-        </div>
 
+            <span class="pz-eyebrow">
 
-        <!-- ==================================================
-             STEP 4
-        ================================================== -->
+                PAGAMENTO
 
-        <div
-            class="pz-step"
-            data-step="4"
-        >
+            </span>
 
-            <div class="pz-success">
 
-                <div class="pz-success-icon">
-                    ✓
-                </div>
 
-                <h3>
-                    PEDIDO ENVIADO!
-                </h3>
+            <h3>
 
-                <p class="pz-sub">
-                    O teu pedido foi enviado para
-                    a equipa da 1Ø1.
-                    <br>
-                    Assim que o comprovativo for
-                    validado, a tua pulseira fica
-                    confirmada.
-                </p>
+                FAZ A TRANSFERÊNCIA
 
+            </h3>
 
-                <div class="pz-order-code">
 
-                    <span id="pzOrderCode">
-                        101-0000
-                    </span>
 
-                    <button
-                        type="button"
-                        id="pzCopyCode"
-                    >
-                        COPIAR
-                    </button>
+            <p class="pz-sub">
 
-                </div>
+                Faz a transferência para o
 
+                <strong>
 
-                <div class="pz-actions">
+                    IBAN ${PAYMENT_IBAN}
 
-                    <button
-                        type="button"
-                        class="pz-btn pz-btn-primary"
-                        id="pzFinish"
-                        style="flex:1"
-                    >
-                        CONCLUIR
-                    </button>
+                </strong>
 
-                </div>
+                no valor indicado abaixo.
 
-            </div>
+                Depois, tira um print da transação
 
-        </div>
+                e envia-o como comprovativo.
 
-    </div>
+            </p>
+
+
+
+
+
+            <div
+
+                style="
+
+                    margin:24px 0;
+
+                    padding:22px;
+
+                    border:1px solid rgba(255,32,32,.35);
+
+                    border-radius:18px;
+
+                    background:
+
+                        linear-gradient(
+
+                            135deg,
+
+                            rgba(255,32,32,.10),
+
+                            rgba(255,255,255,.025)
+
+                        );
+
+                "
+
+            >
+
+
+
+                <div
+
+                    style="
+
+                        display:flex;
+
+                        justify-content:space-between;
+
+                        align-items:center;
+
+                        gap:20px;
+
+                    "
+
+                >
+
+
+
+                    <div>
+
+
+
+                        <div
+
+                            style="
+
+                                font-size:10px;
+
+                                letter-spacing:2px;
+
+                                color:#999;
+
+                                margin-bottom:7px;
+
+                            "
+
+                        >
+
+                            IBAN
+
+                        </div>
+
+
+
+                        <strong
+
+                            style="
+
+                                font-size:30px;
+
+                                letter-spacing:3px;
+
+                            "
+
+                        >
+
+                            ${PAYMENT_IBAN}
+
+                        </strong>
+
+
+
+                    </div>
+
+
+
+
+
+                    <div
+
+                        style="text-align:right"
+
+                    >
+
+
+
+                        <div
+
+                            style="
+
+                                font-size:10px;
+
+                                letter-spacing:2px;
+
+                                color:#999;
+
+                                margin-bottom:7px;
+
+                            "
+
+                        >
+
+                            VALOR A TRANSFERIR
+
+                        </div>
+
+
+
+                        <strong
+
+                            id="pzPaymentTotal"
+
+                            style="font-size:28px"
+
+                        >
+
+                            ${cfg.moeda}${cfg.preco}
+
+                        </strong>
+
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+                <div
+
+                    style="
+
+                        height:1px;
+
+                        background:rgba(255,255,255,.08);
+
+                        margin:18px 0;
+
+                    "
+
+                ></div>
+
+
+
+
+
+                <div
+
+                    style="
+
+                        font-size:12px;
+
+                        line-height:1.6;
+
+                        color:#aaa;
+
+                    "
+
+                >
+
+
+
+                    <strong style="color:#fff">
+
+                        IMPORTANTE:
+
+                    </strong>
+
+
+
+                    A transferência tem de ser feita
+
+                    para o
+
+
+
+                    <strong style="color:#fff">
+
+                        IBAN ${PAYMENT_IBAN}
+
+                    </strong>.
+
+
+
+                    Depois de concluíres o pagamento,
+
+
+
+                    <strong style="color:#fff">
+
+                        tira um print da transação
+
+                    </strong>
+
+
+
+                    e envia-o abaixo.
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+            <div
+
+                style="
+
+                    font-size:11px;
+
+                    letter-spacing:2px;
+
+                    color:#999;
+
+                    margin-bottom:10px;
+
+                "
+
+            >
+
+                COMPROVATIVO DE PAGAMENTO
+
+            </div>
+
+
+
+
+
+            <label
+
+                class="pz-dropzone"
+
+                id="pzDropzone"
+
+            >
+
+
+
+                <input
+
+                    type="file"
+
+                    id="pzFile"
+
+                    accept="image/png,image/jpeg,image/jpg"
+
+                >
+
+
+
+                <div class="pz-drop-icon">
+
+                    📎
+
+                </div>
+
+
+
+                <strong>
+
+                    CLICA OU ARRASTA O PRINT PARA AQUI
+
+                </strong>
+
+
+
+                <small>
+
+                    PNG ou JPG • até ${MAX_IMG_MB}MB
+
+                </small>
+
+
+
+            </label>
+
+
+
+
+
+            <div
+
+                class="pz-preview"
+
+                id="pzPreview"
+
+            >
+
+
+
+                <img
+
+                    id="pzPreviewImg"
+
+                    alt="Pré-visualização"
+
+                >
+
+
+
+                <span
+
+                    class="pz-preview-name"
+
+                    id="pzPreviewName"
+
+                ></span>
+
+
+
+                <button
+
+                    type="button"
+
+                    class="pz-preview-remove"
+
+                    id="pzPreviewRemove"
+
+                >
+
+                    REMOVER
+
+                </button>
+
+
+
+            </div>
+
+
+
+
+
+            <label class="pz-checkbox">
+
+
+
+                <input
+
+                    type="checkbox"
+
+                    id="pzConfirm"
+
+                >
+
+
+
+                <span>
+
+
+
+                    Confirmo que fiz a transferência
+
+                    para o
+
+
+
+                    <strong>
+
+                        IBAN ${PAYMENT_IBAN}
+
+                    </strong>
+
+
+
+                    e que o comprovativo enviado
+
+                    corresponde a uma transferência real.
+
+
+
+                </span>
+
+
+
+            </label>
+
+
+
+
+
+            <div
+
+                class="pz-error"
+
+                id="pzErrorStep3"
+
+            >
+
+                Faz a transferência, envia o print
+
+                e confirma a caixa acima para continuar.
+
+            </div>
+
+
+
+
+
+            <div class="pz-actions">
+
+
+
+                <button
+
+                    type="button"
+
+                    class="pz-btn pz-btn-ghost"
+
+                    data-back="2"
+
+                >
+
+                    ← VOLTAR
+
+                </button>
+
+
+
+                <button
+
+                    type="button"
+
+                    class="pz-btn pz-btn-primary"
+
+                    id="pzSubmit"
+
+                >
+
+
+
+                    <span id="pzSubmitLabel">
+
+                        CONFIRMAR PEDIDO →
+
+                    </span>
+
+
+
+                </button>
+
+
+
+            </div>
+
+
+
+
+
+            <div
+
+                class="pz-error"
+
+                id="pzErrorSubmit"
+
+            >
+
+                Não foi possível enviar o pedido.
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+        <!-- ==================================================
+
+             STEP 4
+
+        ================================================== -->
+
+
+
+        <div
+
+            class="pz-step"
+
+            data-step="4"
+
+        >
+
+
+
+            <div class="pz-success">
+
+
+
+                <div class="pz-success-icon">
+
+                    ✓
+
+                </div>
+
+
+
+                <h3>
+
+                    PEDIDO ENVIADO!
+
+                </h3>
+
+
+
+                <p class="pz-sub">
+
+                    O teu pedido foi enviado para
+
+                    a equipa da 1Ø1.
+
+                    <br>
+
+                    Assim que o comprovativo for
+
+                    validado, a tua pulseira fica
+
+                    confirmada.
+
+                </p>
+
+
+
+
+
+                <div class="pz-order-code">
+
+
+
+                    <span id="pzOrderCode">
+
+                        101-0000
+
+                    </span>
+
+
+
+                    <button
+
+                        type="button"
+
+                        id="pzCopyCode"
+
+                    >
+
+                        COPIAR
+
+                    </button>
+
+
+
+                </div>
+
+
+
+
+
+                <div class="pz-actions">
+
+
+
+                    <button
+
+                        type="button"
+
+                        class="pz-btn pz-btn-primary"
+
+                        id="pzFinish"
+
+                        style="flex:1"
+
+                    >
+
+                        CONCLUIR
+
+                    </button>
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
 
 </div>
+
 `;
 
-        document.body.appendChild(
-            wrap.firstElementChild
-        );
-    }
 
 
-    /* ==========================================================
-       ELEMENTOS
-       ========================================================== */
+        document.body.appendChild(
+
+            wrap.firstElementChild
+
+        );
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       ELEMENTOS
+
+       ========================================================== */
+
+
 
 function cacheEls() {
 
-    els = {
 
-        overlay:
-            document.getElementById("pzOverlay"),
 
-        close:
-            document.getElementById("pzClose"),
+    els = {
 
-        modalQty:
-            document.getElementById("pzModalQty"),
 
-        modalTotal:
-            document.getElementById("pzModalTotal"),
 
-        paymentTotal:
-            document.getElementById("pzPaymentTotal"),
+        overlay:
 
-        minus:
-            document.getElementById("pzModalMinus"),
+            document.getElementById("pzOverlay"),
 
-        plus:
-            document.getElementById("pzModalPlus"),
 
-        toStep2:
-            document.getElementById("pzToStep2"),
 
-        toStep3:
-            document.getElementById("pzToStep3"),
+        close:
 
-        nome:
-            document.getElementById("pzNome"),
+            document.getElementById("pzClose"),
 
-        discord:
-            document.getElementById("pzDiscord"),
 
-        contacto:
-             document.getElementById("pzContacto"),
 
-        participantsWrap:
+        modalQty:
+
+            document.getElementById("pzModalQty"),
+
+
+
+        modalTotal:
+
+            document.getElementById("pzModalTotal"),
+
+
+
+        paymentTotal:
+
+            document.getElementById("pzPaymentTotal"),
+
+
+
+        minus:
+
+            document.getElementById("pzModalMinus"),
+
+
+
+        plus:
+
+            document.getElementById("pzModalPlus"),
+
+
+
+        toStep2:
+
+            document.getElementById("pzToStep2"),
+
+
+
+        toStep3:
+
+            document.getElementById("pzToStep3"),
+
+
+
+        nome:
+
+            document.getElementById("pzNome"),
+
+
+
+        discord:
+
+            document.getElementById("pzDiscord"),
+
+
+
+        contacto:
+
+            document.getElementById("pzContacto"),
+
+
+
+        participantsWrap:
+
             document.getElementById("pzParticipantsWrap"),
 
+
+
         participantsFields:
+
             document.getElementById("pzParticipantsFields"),
 
+
+
         errorStep2:
-            document.getElementById("pzErrorStep2"),
 
-        errorStep3:
-            document.getElementById("pzErrorStep3"),
-
-        errorSubmit:
-            document.getElementById("pzErrorSubmit"),
-
-        dropzone:
-            document.getElementById("pzDropzone"),
-
-        fileInput:
-            document.getElementById("pzFile"),
-
-        preview:
-            document.getElementById("pzPreview"),
-
-        previewImg:
-            document.getElementById("pzPreviewImg"),
-
-        previewName:
-            document.getElementById("pzPreviewName"),
-
-        previewRemove:
-            document.getElementById("pzPreviewRemove"),
-
-        confirm:
-            document.getElementById("pzConfirm"),
-
-        submit:
-            document.getElementById("pzSubmit"),
-
-        submitLabel:
-            document.getElementById("pzSubmitLabel"),
-
-        orderCode:
-            document.getElementById("pzOrderCode"),
-
-        copyCode:
-            document.getElementById("pzCopyCode"),
-
-        finish:
-            document.getElementById("pzFinish"),
-
-        stepsTrack:
-            document.querySelectorAll(
-                ".pz-steps-track span"
-            ),
-
-        steps:
-            document.querySelectorAll(
-                ".pz-step"
-            )
-
-    };
-
-}
+            document.getElementById("pzErrorStep2"),
 
 
-    /* ==========================================================
-       STEPS
-       ========================================================== */
 
-    function goToStep(n) {
+        errorStep3:
 
-        state.step = n;
-
-        els.steps.forEach(
-            step => {
-
-                step.classList.toggle(
-                    "active",
-                    Number(
-                        step.dataset.step
-                    ) === n
-                );
-
-            }
-        );
+            document.getElementById("pzErrorStep3"),
 
 
-        els.stepsTrack.forEach(
-            step => {
 
-                const num =
-                    Number(
-                        step.dataset.step
-                    );
+        errorSubmit:
 
-                step.classList.toggle(
-                    "done",
-                    num < n
-                );
-
-                step.classList.toggle(
-                    "active",
-                    num <= n
-                );
-
-            }
-        );
-
-    }
+            document.getElementById("pzErrorSubmit"),
 
 
-    /* ==========================================================
-       QUANTIDADE
-       ========================================================== */
 
-    function updateQtyUI() {
+        dropzone:
 
-        const total =
-            state.qty *
-            Number(
-                cfg.preco || 0
-            );
+            document.getElementById("pzDropzone"),
 
 
-        if (els.modalQty) {
 
-            els.modalQty.textContent =
-                state.qty;
+        fileInput:
 
-        }
+            document.getElementById("pzFile"),
 
 
-        if (els.modalTotal) {
 
-            els.modalTotal.textContent =
-                cfg.moeda +
-                total;
+        preview:
 
-        }
+            document.getElementById("pzPreview"),
 
 
-        if (els.paymentTotal) {
 
-            els.paymentTotal.textContent =
-                cfg.moeda +
-                total;
+        previewImg:
 
-        }
+            document.getElementById("pzPreviewImg"),
 
 
-        const q =
-            document.getElementById(
-                "pzQty"
-            );
 
-        const t =
-            document.getElementById(
-                "pzTotal"
-            );
+        previewName:
+
+            document.getElementById("pzPreviewName"),
 
 
-        if (q) {
 
-            q.textContent =
-                state.qty;
+        previewRemove:
 
-        }
+            document.getElementById("pzPreviewRemove"),
 
 
-        if (t) {
 
-         t.textContent =
-             cfg.moeda +
-        total;
-}
+        confirm:
 
-renderParticipantFields();
+            document.getElementById("pzConfirm"),
+
+
+
+        submit:
+
+            document.getElementById("pzSubmit"),
+
+
+
+        submitLabel:
+
+            document.getElementById("pzSubmitLabel"),
+
+
+
+        orderCode:
+
+            document.getElementById("pzOrderCode"),
+
+
+
+        copyCode:
+
+            document.getElementById("pzCopyCode"),
+
+
+
+        finish:
+
+            document.getElementById("pzFinish"),
+
+
+
+        stepsTrack:
+
+            document.querySelectorAll(
+
+                ".pz-steps-track span"
+
+            ),
+
+
+
+        steps:
+
+            document.querySelectorAll(
+
+                ".pz-step"
+
+            )
+
+
+
+    };
+
+
 
 }
 
-    function renderParticipantFields() {
 
-    if (
-        !els.participantsWrap ||
-        !els.participantsFields
-    ) {
-        return;
-    }
 
-    if (state.qty <= 1) {
 
-        els.participantsWrap.style.display = "none";
+
+    /* ==========================================================
+
+       STEPS
+
+       ========================================================== */
+
+
+
+    function goToStep(n) {
+
+
+
+        state.step = n;
+
+
+
+        els.steps.forEach(
+
+            step => {
+
+
+
+                step.classList.toggle(
+
+                    "active",
+
+                    Number(
+
+                        step.dataset.step
+
+                    ) === n
+
+                );
+
+
+
+            }
+
+        );
+
+
+
+
+
+        els.stepsTrack.forEach(
+
+            step => {
+
+
+
+                const num =
+
+                    Number(
+
+                        step.dataset.step
+
+                    );
+
+
+
+                step.classList.toggle(
+
+                    "done",
+
+                    num < n
+
+                );
+
+
+
+                step.classList.toggle(
+
+                    "active",
+
+                    num <= n
+
+                );
+
+
+
+            }
+
+        );
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       QUANTIDADE
+
+       ========================================================== */
+
+
+
+    function updateQtyUI() {
+
+
+
+        const total =
+
+            state.qty *
+
+            Number(
+
+                cfg.preco || 0
+
+            );
+
+
+
+
+
+        if (els.modalQty) {
+
+
+
+            els.modalQty.textContent =
+
+                state.qty;
+
+
+
+        }
+
+
+
+
+
+        if (els.modalTotal) {
+
+
+
+            els.modalTotal.textContent =
+
+                cfg.moeda +
+
+                total;
+
+
+
+        }
+
+
+
+
+
+        if (els.paymentTotal) {
+
+
+
+            els.paymentTotal.textContent =
+
+                cfg.moeda +
+
+                total;
+
+
+
+        }
+
+
+
+
+
+        const q =
+
+            document.getElementById(
+
+                "pzQty"
+
+            );
+
+
+
+        const t =
+
+            document.getElementById(
+
+                "pzTotal"
+
+            );
+
+
+
+
+
+        if (q) {
+
+
+
+            q.textContent =
+
+                state.qty;
+
+
+
+        }
+
+
+
+
+
+        if (t) {
+
+
+
+            t.textContent =
+
+                cfg.moeda +
+
+                total;
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+    function renderParticipantFields() {
+
+
+
+        if (!els.participantsWrap || !els.participantsFields) {
+
+            return;
+
+        }
+
+
+
+        if (state.qty <= 1) {
+
+            els.participantsWrap.style.display = "none";
+
+            els.participantsFields.innerHTML = "";
+
+            return;
+
+        }
+
+
+
+        const existing =
+
+            Array.from(
+
+                els.participantsFields.querySelectorAll(
+
+                    ".pz-participant-input"
+
+                )
+
+            ).map(input => input.value);
+
+
+
+        const buyerName =
+
+            els.nome ? els.nome.value.trim() : "";
+
+
+
+        els.participantsWrap.style.display = "block";
+
         els.participantsFields.innerHTML = "";
 
-        return;
-    }
 
-    const existing =
-        Array.from(
-            els.participantsFields.querySelectorAll(
-                ".pz-participant-input"
-            )
-        ).map(
-            input => input.value
-        );
 
-    els.participantsWrap.style.display = "block";
-    els.participantsFields.innerHTML = "";
+        for (let i = 0; i < state.qty; i++) {
 
-    for (let i = 0; i < state.qty; i++) {
+            const field = document.createElement("div");
 
-        const field =
-            document.createElement("div");
+            field.className = "pz-field";
 
-        field.className = "pz-field";
+            field.style.marginBottom =
 
-        field.style.marginBottom =
-            i === state.qty - 1
-                ? "0"
-                : "12px";
+                i === state.qty - 1 ? "0" : "12px";
 
-        field.innerHTML = `
-            <label>
-                PULSEIRA ${i + 1}
-            </label>
 
-            <input
-                type="text"
-                class="pz-participant-input"
-                data-participant-index="${i}"
-                placeholder="Nome da pessoa"
-                autocomplete="off"
-            >
-        `;
 
-        els.participantsFields.appendChild(field);
+            field.innerHTML = `
 
-        const input =
-            field.querySelector(
-                ".pz-participant-input"
-            );
+                <label>PULSEIRA ${i + 1}</label>
 
-        /*
-         * A primeira pulseira pertence
-         * automaticamente ao comprador.
-         */
-        if (i === 0) {
+                <input
 
-            input.value =
-                els.nome
-                    ? els.nome.value.trim()
-                    : "";
+                    type="text"
 
-        } else if (existing[i]) {
+                    class="pz-participant-input"
 
-            input.value =
-                existing[i];
+                    data-participant-index="${i}"
+
+                    placeholder="Nome da personagem"
+
+                    autocomplete="off"
+
+                >
+
+            `;
+
+
+
+            els.participantsFields.appendChild(field);
+
+
+
+            const input = field.querySelector(".pz-participant-input");
+
+            if (existing[i]) {
+
+                input.value = existing[i];
+
+            } else if (i === 0 && buyerName) {
+
+                input.value = buyerName;
+
+            }
 
         }
 
+    
+
+        renderParticipantFields();
+
     }
-}
+
+
 
     function changeQty(delta) {
 
-        const next =
-            state.qty + delta;
 
-        if (
-            next < 1 ||
-            next >
-                Number(
-                    cfg.maxPorPessoa || 8
-                )
-        ) {
-            return;
-        }
 
-        state.qty =
-            next;
+        const next =
 
-        updateQtyUI();
+            state.qty + delta;
 
-    }
 
 
-    /* ==========================================================
-       VÍDEO DE FUNDO
-       ========================================================== */
+        if (
 
-    function pauseBackgroundMedia() {
+            next < 1 ||
 
-        pausedBackgroundVideos = [];
+            next >
 
-        document
-            .querySelectorAll("video")
-            .forEach(
-                video => {
+                Number(
 
-                    if (!video.paused) {
+                    cfg.maxPorPessoa || 8
 
-                        pausedBackgroundVideos.push(
-                            video
-                        );
+                )
 
-                        video.pause();
+        ) {
 
-                    }
+            return;
 
-                }
-            );
+        }
 
-    }
 
 
-    function resumeBackgroundMedia() {
+        state.qty =
 
-        pausedBackgroundVideos.forEach(
-            video => {
+            next;
 
-                video
-                    .play()
-                    .catch(
-                        () => {}
-                    );
 
-            }
-        );
 
-        pausedBackgroundVideos = [];
+        updateQtyUI();
 
-    }
 
 
-    /* ==========================================================
-       ABRIR / FECHAR
-       ========================================================== */
+    }
 
-    function openModal(presetQty) {
 
-        if (presetQty > 0) {
 
-            state.qty =
-                Math.min(
-                    Number(presetQty),
-                    Number(
-                        cfg.maxPorPessoa || 8
-                    )
-                );
 
-        }
 
-        updateQtyUI();
+    /* ==========================================================
 
-        goToStep(1);
+       VÍDEO DE FUNDO
 
-        pauseBackgroundMedia();
+       ========================================================== */
 
-        els.overlay.classList.add(
-            "open"
-        );
 
-        document.body.style.overflow =
-            "hidden";
 
-    }
+    function pauseBackgroundMedia() {
 
 
-    function closeModal() {
 
-        resumeBackgroundMedia();
+        pausedBackgroundVideos = [];
 
-        els.overlay.classList.remove(
-            "open"
-        );
 
-        document.body.style.overflow =
-            "";
 
-    }
+        document
 
+            .querySelectorAll("video")
 
-    /* ==========================================================
-       IMAGEM
-       ========================================================== */
+            .forEach(
 
-    function clearPreview() {
+                video => {
 
-        if (state.previewUrl) {
 
-            URL.revokeObjectURL(
-                state.previewUrl
-            );
 
-        }
+                    if (!video.paused) {
 
-        state.previewUrl = null;
 
-        els.previewImg.removeAttribute(
-            "src"
-        );
 
-        els.previewName.textContent =
-            "";
+                        pausedBackgroundVideos.push(
 
-        els.preview.classList.remove(
-            "show"
-        );
+                            video
 
-        if (els.dropzone) {
+                        );
 
-            els.dropzone.classList.remove(
-                "pz-file-selected"
-            );
 
-        }
 
-    }
+                        video.pause();
 
 
-    function handleFile(file) {
 
-        if (!file) return;
+                    }
 
-        if (
-            !file.type.startsWith(
-                "image/"
-            )
-        ) {
 
-            alert(
-                "Por favor envia uma imagem PNG ou JPG."
-            );
 
-            return;
+                }
 
-        }
+            );
 
 
-        if (
-            file.size >
-            MAX_IMG_MB *
-            1024 *
-            1024
-        ) {
 
-            alert(
-                `A imagem excede o limite de ${MAX_IMG_MB}MB.`
-            );
+    }
 
-            return;
 
-        }
 
 
-        clearPreview();
 
-        state.file =
-            file;
+    function resumeBackgroundMedia() {
 
-        state.previewUrl =
-            URL.createObjectURL(
-                file
-            );
 
-        els.previewImg.src =
-            state.previewUrl;
 
-        els.previewName.textContent =
-            file.name;
+        pausedBackgroundVideos.forEach(
 
-        els.preview.classList.add(
-            "show"
-        );
+            video => {
 
-        if (els.dropzone) {
 
-            els.dropzone.classList.add(
-                "pz-file-selected"
-            );
 
-        }
+                video
 
-    }
+                    .play()
 
+                    .catch(
 
-    /* ==========================================================
-       COMPRESSÃO
-       ========================================================== */
+                        () => {}
 
-    async function compressImage(file) {
+                    );
 
-        if (
-            file.size <
-            1.5 *
-            1024 *
-            1024
-        ) {
 
-            return file;
 
-        }
+            }
 
-        try {
+        );
 
-            const bitmap =
-                await createImageBitmap(
-                    file
-                );
 
-            const maxW =
-                1400;
 
-            const scale =
-                Math.min(
-                    1,
-                    maxW /
-                    bitmap.width
-                );
+        pausedBackgroundVideos = [];
 
-            const canvas =
-                document.createElement(
-                    "canvas"
-                );
 
-            canvas.width =
-                Math.round(
-                    bitmap.width *
-                    scale
-                );
 
-            canvas.height =
-                Math.round(
-                    bitmap.height *
-                    scale
-                );
+    }
 
-            const ctx =
-                canvas.getContext(
-                    "2d"
-                );
 
-            ctx.drawImage(
-                bitmap,
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
 
-            bitmap.close();
 
-            const blob =
-                await new Promise(
-                    resolve =>
-                        canvas.toBlob(
-                            resolve,
-                            "image/jpeg",
-                            0.8
-                        )
-                );
 
-            return blob || file;
+    /* ==========================================================
 
-        } catch {
+       ABRIR / FECHAR
 
-            return file;
+       ========================================================== */
 
-        }
 
-    }
 
+    function openModal(presetQty) {
 
-    /* ==========================================================
-       CÓDIGO DO PEDIDO
-       ========================================================== */
+
+
+        if (presetQty > 0) {
+
+
+
+            state.qty =
+
+                Math.min(
+
+                    Number(presetQty),
+
+                    Number(
+
+                        cfg.maxPorPessoa || 8
+
+                    )
+
+                );
+
+
+
+        }
+
+
+
+        updateQtyUI();
+
+
+
+        goToStep(1);
+
+
+
+        pauseBackgroundMedia();
+
+
+
+        els.overlay.classList.add(
+
+            "open"
+
+        );
+
+
+
+        document.body.style.overflow =
+
+            "hidden";
+
+
+
+    }
+
+
+
+
+
+    function closeModal() {
+
+
+
+        resumeBackgroundMedia();
+
+
+
+        els.overlay.classList.remove(
+
+            "open"
+
+        );
+
+
+
+        document.body.style.overflow =
+
+            "";
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       IMAGEM
+
+       ========================================================== */
+
+
+
+    function clearPreview() {
+
+
+
+        if (state.previewUrl) {
+
+
+
+            URL.revokeObjectURL(
+
+                state.previewUrl
+
+            );
+
+
+
+        }
+
+
+
+        state.previewUrl = null;
+
+
+
+        els.previewImg.removeAttribute(
+
+            "src"
+
+        );
+
+
+
+        els.previewName.textContent =
+
+            "";
+
+
+
+        els.preview.classList.remove(
+
+            "show"
+
+        );
+
+
+
+        if (els.dropzone) {
+
+
+
+            els.dropzone.classList.remove(
+
+                "pz-file-selected"
+
+            );
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+    function handleFile(file) {
+
+
+
+        if (!file) return;
+
+
+
+        if (
+
+            !file.type.startsWith(
+
+                "image/"
+
+            )
+
+        ) {
+
+
+
+            alert(
+
+                "Por favor envia uma imagem PNG ou JPG."
+
+            );
+
+
+
+            return;
+
+
+
+        }
+
+
+
+
+
+        if (
+
+            file.size >
+
+            MAX_IMG_MB *
+
+            1024 *
+
+            1024
+
+        ) {
+
+
+
+            alert(
+
+                `A imagem excede o limite de ${MAX_IMG_MB}MB.`
+
+            );
+
+
+
+            return;
+
+
+
+        }
+
+
+
+
+
+        clearPreview();
+
+
+
+        state.file =
+
+            file;
+
+
+
+        state.previewUrl =
+
+            URL.createObjectURL(
+
+                file
+
+            );
+
+
+
+        els.previewImg.src =
+
+            state.previewUrl;
+
+
+
+        els.previewName.textContent =
+
+            file.name;
+
+
+
+        els.preview.classList.add(
+
+            "show"
+
+        );
+
+
+
+        if (els.dropzone) {
+
+
+
+            els.dropzone.classList.add(
+
+                "pz-file-selected"
+
+            );
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       COMPRESSÃO
+
+       ========================================================== */
+
+
+
+    async function compressImage(file) {
+
+
+
+        if (
+
+            file.size <
+
+            1.5 *
+
+            1024 *
+
+            1024
+
+        ) {
+
+
+
+            return file;
+
+
+
+        }
+
+
+
+        try {
+
+
+
+            const bitmap =
+
+                await createImageBitmap(
+
+                    file
+
+                );
+
+
+
+            const maxW =
+
+                1400;
+
+
+
+            const scale =
+
+                Math.min(
+
+                    1,
+
+                    maxW /
+
+                    bitmap.width
+
+                );
+
+
+
+            const canvas =
+
+                document.createElement(
+
+                    "canvas"
+
+                );
+
+
+
+            canvas.width =
+
+                Math.round(
+
+                    bitmap.width *
+
+                    scale
+
+                );
+
+
+
+            canvas.height =
+
+                Math.round(
+
+                    bitmap.height *
+
+                    scale
+
+                );
+
+
+
+            const ctx =
+
+                canvas.getContext(
+
+                    "2d"
+
+                );
+
+
+
+            ctx.drawImage(
+
+                bitmap,
+
+                0,
+
+                0,
+
+                canvas.width,
+
+                canvas.height
+
+            );
+
+
+
+            bitmap.close();
+
+
+
+            const blob =
+
+                await new Promise(
+
+                    resolve =>
+
+                        canvas.toBlob(
+
+                            resolve,
+
+                            "image/jpeg",
+
+                            0.8
+
+                        )
+
+                );
+
+
+
+            return blob || file;
+
+
+
+        } catch {
+
+
+
+            return file;
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       CÓDIGO DO PEDIDO
+
+       ========================================================== */
+
+
 
 function generateOrderCode() {
 
-    const eventSlug =
-        getCurrentEventSlug();
 
-    const source =
-        eventSlug ||
-        getAutomaticEventName();
 
-    const prefix =
-        String(source)
-            .normalize("NFD")
-            .replace(
-                /[\u0300-\u036f]/g,
-                ""
-            )
-            .replace(
-                /[^a-zA-Z0-9]/g,
-                ""
-            )
-            .slice(0, 3)
-            .toUpperCase() || "101";
+    const eventSlug =
 
-    const random =
-        Math.random()
-            .toString(36)
-            .slice(2, 5)
-            .toUpperCase();
+        getCurrentEventSlug();
 
-    const time =
-        Date.now()
-            .toString(36)
-            .slice(-3)
-            .toUpperCase();
 
-    return `101-${prefix}-${random}${time}`;
+
+    const source =
+
+        eventSlug ||
+
+        getAutomaticEventName();
+
+
+
+    const prefix =
+
+        String(source)
+
+            .normalize("NFD")
+
+            .replace(
+
+                /[\u0300-\u036f]/g,
+
+                ""
+
+            )
+
+            .replace(
+
+                /[^a-zA-Z0-9]/g,
+
+                ""
+
+            )
+
+            .slice(0, 3)
+
+            .toUpperCase() || "101";
+
+
+
+    const random =
+
+        Math.random()
+
+            .toString(36)
+
+            .slice(2, 5)
+
+            .toUpperCase();
+
+
+
+    const time =
+
+        Date.now()
+
+            .toString(36)
+
+            .slice(-3)
+
+            .toUpperCase();
+
+
+
+    return `101-${prefix}-${random}${time}`;
+
 }
+
+
+
+
+
+    /* ==========================================================
+       REGISTO DO PEDIDO NO ADMIN
+       ========================================================== */
+
+    async function saveOrderToAdmin(orderCode, data) {
+
+        const response = await fetch(
+            "/api/orders/create",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    orderCode,
+                    event: data.event,
+                    eventSlug: data.eventSlug,
+                    customer: data.customer,
+                    discord: data.discord,
+                    contact: data.contact,
+                    quantity: data.quantity,
+                    unitPrice: data.unitPrice,
+                    currency: data.currency,
+                    participants: data.participants
+                })
+            }
+        );
+
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(
+                result.error ||
+                "Não foi possível registar o pedido no sistema."
+            );
+        }
+
+        return result;
+    }
 
 
     /* ==========================================================
-       ENVIO PARA DISCORD
-       ========================================================== */
 
-    async function sendOrder(orderCode) {
+       ENVIO PARA DISCORD
 
-        Object.assign(
-            cfg,
-            window.PULSEIRAS_CONFIG || {}
+       ========================================================== */
+
+
+
+
+    async function sendOrder(orderCode) {
+
+
+
+        Object.assign(
+
+            cfg,
+
+            window.PULSEIRAS_CONFIG || {}
+
+        );
+
+
+
+
+
+        if (!cfg.webhookUrl) {
+
+
+
+            throw new Error(
+
+                "O webhook do Discord não está configurado."
+
+            );
+
+
+
+        }
+
+
+
+
+
+        if (!state.file) {
+
+
+
+            throw new Error(
+
+                "Nenhum comprovativo foi selecionado."
+
+            );
+
+
+
+        }
+
+
+
+
+
+        const nome =
+
+            els.nome.value.trim() ||
+
+            "—";
+
+
+
+        const discord =
+
+            els.discord.value.trim() ||
+
+            "—";
+
+
+
+        const contacto =
+
+            els.contacto.value.trim() ||
+
+            "—";
+
+
+
+        const participantNames =
+
+            state.qty > 1
+
+                ? Array.from(
+
+                    els.participantsFields.querySelectorAll(
+
+                        ".pz-participant-input"
+
+                    )
+
+                )
+
+                    .map(input => input.value.trim())
+
+                    .filter(Boolean)
+
+                : [nome];
+
+
+
+        const quantidade =
+
+            state.qty;
+
+
+
+        const total =
+
+            `${cfg.moeda}${state.qty * cfg.preco}`;
+
+
+
+
+
+        const payload = {
+
+
+
+            username:
+
+                "1Ø1 • TICKETING",
+
+
+
+            embeds: [
+
+
+
+                {
+
+
+
+                    title:
+
+                        "🎟️  NOVO PEDIDO DE PULSEIRA",
+
+
+
+                    description:
+
+                        `**${cfg.evento}**\n\n` +
+
+                        `Novo pedido submetido através ` +
+
+                        `do sistema oficial de pulseiras da **1Ø1**.`,
+
+
+
+                    color:
+
+                        0x9146FF,
+
+
+
+                    fields: [
+
+
+
+                        {
+
+
+
+                            name:
+
+                                "🎫  CÓDIGO DO PEDIDO",
+
+
+
+                            value:
+
+                                `**${orderCode}**`,
+
+
+
+                            inline:
+
+                                false
+
+
+
+                        },
+
+
+
+
+
+                        {
+
+
+
+                            name:
+
+                                "👤  COMPRADOR",
+
+
+
+                            value:
+
+                                [
+
+                                    "**Nome (IC)**",
+
+                                    nome,
+
+                                    "",
+
+                                    "**Discord**",
+
+                                    discord,
+
+                                    "",
+
+                                    "**Contacto**",
+
+                                    contacto
+
+                                ].join("\n"),
+
+
+
+                            inline:
+
+                                true
+
+
+
+                        },
+
+
+
+
+
+                        {
+
+
+
+                            name:
+
+                                "👥  PARTICIPANTES",
+
+
+
+                            value:
+
+                                participantNames
+
+                                    .map(
+
+                                        (name, index) =>
+
+                                            `**${index + 1}.** ${name}`
+
+                                    )
+
+                                    .join("\n"),
+
+
+
+                            inline:
+
+                                false
+
+                        },
+
+
+
+                        {
+
+
+
+                            name:
+
+                                "🎟️  PEDIDO",
+
+
+
+                            value:
+
+                                [
+
+                                    "**Quantidade**",
+
+                                    `${quantidade} ${
+
+                                        quantidade === 1
+
+                                            ? "pulseira"
+
+                                            : "pulseiras"
+
+                                    }`,
+
+                                    "",
+
+                                    "**Preço unitário**",
+
+                                    `${cfg.moeda}${cfg.preco}`,
+
+                                    "",
+
+                                    "**TOTAL**",
+
+                                    `**${total}**`
+
+                                ].join("\n"),
+
+
+
+                            inline:
+
+                                true
+
+
+
+                        },
+
+
+
+
+
+                        {
+
+
+
+                            name:
+
+                                "💳  PAGAMENTO",
+
+
+
+                            value:
+
+                                [
+
+                                    "**IBAN**",
+
+                                    `**${PAYMENT_IBAN}**`,
+
+                                    "",
+
+                                    "**Valor a transferir**",
+
+                                    `**${total}**`,
+
+                                    "",
+
+                                    "📸 Comprovativo anexado abaixo."
+
+                                ].join("\n"),
+
+
+
+                            inline:
+
+                                false
+
+
+
+                        },
+
+
+
+
+
+                        {
+
+
+
+                            name:
+
+                                "🟢  ESTADO",
+
+
+
+                            value:
+
+                                [
+
+                                    "**AGUARDA VALIDAÇÃO**",
+
+                                    "O pagamento deve ser confirmado pela equipa 1Ø1."
+
+                                ].join("\n"),
+
+
+
+                            inline:
+
+                                false
+
+
+
+                        }
+
+
+
+                    ],
+
+
+
+                    image: {
+
+
+
+                        url:
+
+                            "attachment://comprovativo.jpg"
+
+
+
+                    },
+
+
+
+                    footer: {
+
+
+
+                        text:
+
+                            "1Ø1 • Sistema Oficial de Pulseiras"
+
+
+
+                    },
+
+
+
+                    timestamp:
+
+                        new Date().toISOString()
+
+
+
+                }
+
+
+
+            ]
+
+
+
+        };
+
+
+
+
+
+        const compressed =
+
+            await compressImage(
+
+                state.file
+
+            );
+
+
+
+
+
+        const form =
+
+            new FormData();
+
+
+
+
+
+        form.append(
+
+            "payload_json",
+
+            JSON.stringify(
+
+                payload
+
+            )
+
+        );
+
+
+
+
+
+        form.append(
+
+            "files[0]",
+
+            compressed,
+
+            "comprovativo.jpg"
+
+        );
+
+
+
+
+
+                await saveOrderToAdmin(
+            orderCode,
+            {
+                event: cfg.evento,
+                eventSlug: getCurrentEventSlug(),
+                customer: nome,
+                discord,
+                contact: contacto,
+                quantity: quantidade,
+                unitPrice: Number(cfg.preco),
+                currency: cfg.moeda,
+                participants: participantNames
+            }
         );
 
 
-        if (!cfg.webhookUrl) {
-
-            throw new Error(
-                "O webhook do Discord não está configurado."
-            );
-
-        }
+let webhookUrl;
 
 
-        if (!state.file) {
 
-            throw new Error(
-                "Nenhum comprovativo foi selecionado."
-            );
+        try {
 
-        }
+
+
+            webhookUrl =
+
+                new URL(
+
+                    cfg.webhookUrl
+
+                );
+
+
+
+        } catch {
+
+
+
+            throw new Error(
+
+                "O URL do webhook do Discord é inválido."
+
+            );
+
+
+
+        }
+
+
+
+
+
+        webhookUrl.searchParams.set(
+
+            "wait",
+
+            "true"
+
+        );
+
+
+
+
+
+        let response;
+
+
+
+        try {
+
+
+
+            response =
+
+                await fetch(
+
+                    webhookUrl.toString(),
+
+                    {
+
+                        method:
+
+                            "POST",
+
+
+
+                        body:
+
+                            form
+
+                    }
+
+                );
+
+
+
+        } catch {
+
+
+
+            throw new Error(
+
+                "Não foi possível contactar o Discord. Verifica a ligação ou o webhook."
+
+            );
+
+
+
+        }
+
+
+
+
+
+        const responseText =
+
+            await response.text();
+
+
+
+
+
+        if (!response.ok) {
+
+
+
+            let details =
+
+                "";
+
+
+
+            try {
+
+
+
+                const json =
+
+                    JSON.parse(
+
+                        responseText
+
+                    );
+
+
+
+                details =
+
+                    json.message ||
+
+                    json.error ||
+
+                    "";
+
+
+
+            } catch {
+
+
+
+                details =
+
+                    responseText;
+
+
+
+            }
+
+
+
+
+
+            throw new Error(
+
+                `Discord recusou o pedido (${response.status})` +
+
+                (
+
+                    details
+
+                        ? `: ${details}`
+
+                        : ""
+
+                )
+
+            );
+
+
+
+        }
+
+
+
+
+
+        return true;
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       VALIDAÇÃO
+
+       ========================================================== */
+
+
+
+    function validateStep2() {
+
 
 
         const nome =
-            els.nome.value.trim() ||
-            "—";
 
-            let participantNames = [];
+            els.nome.value.trim();
 
-if (state.qty > 1) {
 
-    participantNames =
-        Array.from(
-            els.participantsFields.querySelectorAll(
-                ".pz-participant-input"
-            )
-        )
-        .map(
-            input =>
-                input.value.trim()
-        )
-        .filter(Boolean);
-
-} else {
-
-    participantNames = [
-        nome
-    ];
-
-}
 
         const discord =
-            els.discord.value.trim() ||
-            "—";
 
-        const contacto =
-            els.contacto.value.trim() ||
-            "—";
+            els.discord.value.trim();
 
-        const quantidade =
-            state.qty;
 
-        const total =
-            `${cfg.moeda}${state.qty * cfg.preco}`;
 
+        if (nome.length <= 1 || discord.length <= 1) {
 
-        const payload = {
+            els.errorStep2.textContent =
 
-            username:
-                "1Ø1 • TICKETING",
+                "Preenche o nome e o Discord para continuar.";
 
-            embeds: [
+            els.errorStep2.classList.add("show");
 
-                {
-
-                    title:
-                        "🎟️  NOVO PEDIDO DE PULSEIRA",
-
-                    description:
-                        `**${cfg.evento}**\n\n` +
-                        `Novo pedido submetido através ` +
-                        `do sistema oficial de pulseiras da **1Ø1**.`,
-
-                    color:
-                        0x9146FF,
-
-                    fields: [
-
-                        {
-
-                            name:
-                                "🎫  CÓDIGO DO PEDIDO",
-
-                            value:
-                                `**${orderCode}**`,
-
-                            inline:
-                                false
-
-                        },
-
-
-                        {
-
-                            name:
-                                "👤  COMPRADOR",
-
-                            value:
-                                [
-                                    "**Nome (IC)**",
-                                    nome,
-                                    "",
-                                    "**Discord**",
-                                    discord,
-                                    "",
-                                    "**Contacto**",
-                                    contacto
-                                ].join("\n"),
-
-                            inline:
-                                true
-
-                        },
-
-                        {
-    name:
-        "👥  PARTICIPANTES",
-
-    value:
-        participantNames
-            .map(
-                (name, index) =>
-                    `**${index + 1}.** ${name}`
-            )
-            .join("\n"),
-
-    inline:
-        false
-},
-
-
-                        {
-
-                            name:
-                                "🎟️  PEDIDO",
-
-                            value:
-                                [
-                                    "**Quantidade**",
-                                    `${quantidade} ${
-                                        quantidade === 1
-                                            ? "pulseira"
-                                            : "pulseiras"
-                                    }`,
-                                    "",
-                                    "**Preço unitário**",
-                                    `${cfg.moeda}${cfg.preco}`,
-                                    "",
-                                    "**TOTAL**",
-                                    `**${total}**`
-                                ].join("\n"),
-
-                            inline:
-                                true
-
-                        },
-
-
-                        {
-
-                            name:
-                                "💳  PAGAMENTO",
-
-                            value:
-                                [
-                                    "**IBAN**",
-                                    `**${PAYMENT_IBAN}**`,
-                                    "",
-                                    "**Valor a transferir**",
-                                    `**${total}**`,
-                                    "",
-                                    "📸 Comprovativo anexado abaixo."
-                                ].join("\n"),
-
-                            inline:
-                                false
-
-                        },
-
-
-                        {
-
-                            name:
-                                "🟢  ESTADO",
-
-                            value:
-                                [
-                                    "**AGUARDA VALIDAÇÃO**",
-                                    "O pagamento deve ser confirmado pela equipa 1Ø1."
-                                ].join("\n"),
-
-                            inline:
-                                false
-
-                        }
-
-                    ],
-
-                    image: {
-
-                        url:
-                            "attachment://comprovativo.jpg"
-
-                    },
-
-                    footer: {
-
-                        text:
-                            "1Ø1 • Sistema Oficial de Pulseiras"
-
-                    },
-
-                    timestamp:
-                        new Date().toISOString()
-
-                }
-
-            ]
-
-        };
-
-
-        const compressed =
-            await compressImage(
-                state.file
-            );
-
-
-        const form =
-            new FormData();
-
-
-        form.append(
-            "payload_json",
-            JSON.stringify(
-                payload
-            )
-        );
-
-
-        form.append(
-            "files[0]",
-            compressed,
-            "comprovativo.jpg"
-        );
-
-
-        let webhookUrl;
-
-        try {
-
-            webhookUrl =
-                new URL(
-                    cfg.webhookUrl
-                );
-
-        } catch {
-
-            throw new Error(
-                "O URL do webhook do Discord é inválido."
-            );
+            return false;
 
         }
 
 
-        webhookUrl.searchParams.set(
-            "wait",
-            "true"
-        );
 
+        if (state.qty > 1) {
 
-        let response;
+            const inputs = Array.from(
 
-        try {
+                els.participantsFields.querySelectorAll(
 
-            response =
-                await fetch(
-                    webhookUrl.toString(),
-                    {
-                        method:
-                            "POST",
+                    ".pz-participant-input"
 
-                        body:
-                            form
-                    }
-                );
+                )
 
-        } catch {
-
-            throw new Error(
-                "Não foi possível contactar o Discord. Verifica a ligação ou o webhook."
             );
 
-        }
 
 
-        const responseText =
-            await response.text();
+            const allFilled =
+
+                inputs.length === state.qty &&
+
+                inputs.every(
+
+                    input => input.value.trim().length > 1
+
+                );
 
 
-        if (!response.ok) {
 
-            let details =
-                "";
+            if (!allFilled) {
 
-            try {
+                els.errorStep2.textContent =
 
-                const json =
-                    JSON.parse(
-                        responseText
-                    );
+                    "Preenche o nome de todas as pessoas que vão ao evento.";
 
-                details =
-                    json.message ||
-                    json.error ||
-                    "";
+                els.errorStep2.classList.add("show");
 
-            } catch {
-
-                details =
-                    responseText;
+                return false;
 
             }
 
-
-            throw new Error(
-                `Discord recusou o pedido (${response.status})` +
-                (
-                    details
-                        ? `: ${details}`
-                        : ""
-                )
-            );
-
         }
 
+
+
+        els.errorStep2.classList.remove("show");
 
         return true;
 
     }
 
 
-    /* ==========================================================
-       VALIDAÇÃO
-       ========================================================== */
-
-function validateStep2() {
-
-    const nome =
-        els.nome.value.trim();
-
-    const discord =
-        els.discord.value.trim();
-
-
-    if (
-        nome.length <= 1 ||
-        discord.length <= 1
-    ) {
-
-        els.errorStep2.textContent =
-            "Preenche o nome e o Discord para continuar.";
-
-        els.errorStep2.classList.add(
-            "show"
-        );
-
-        return false;
-    }
-
-
-    /*
-     * Se houver mais do que uma pulseira,
-     * todos os participantes têm de ter nome.
-     */
-
-    if (state.qty > 1) {
-
-        const inputs =
-            Array.from(
-                els.participantsFields.querySelectorAll(
-                    ".pz-participant-input"
-                )
-            );
-
-        const names =
-            inputs.map(
-                input =>
-                    input.value.trim()
-            );
-
-        const allFilled =
-            names.length === state.qty &&
-            names.every(
-                name =>
-                    name.length > 1
-            );
-
-        if (!allFilled) {
-
-            els.errorStep2.textContent =
-                "Preenche o nome de todas as pessoas que vão ao evento.";
-
-            els.errorStep2.classList.add(
-                "show"
-            );
-
-            return false;
-        }
-    }
-
-
-    els.errorStep2.classList.remove(
-        "show"
-    );
-
-    return true;
-}
-
 
     function validateStep3() {
 
-        const valid =
-            !!state.file &&
-            els.confirm.checked;
-
-        els.errorStep3.classList.toggle(
-            "show",
-            !valid
-        );
-
-        return valid;
-
-    }
 
 
-    /* ==========================================================
-       DETETAR EVENTO DO BOTÃO
-       ========================================================== */
+        const valid =
+
+            !!state.file &&
+
+            els.confirm.checked;
+
+
+
+        els.errorStep3.classList.toggle(
+
+            "show",
+
+            !valid
+
+        );
+
+
+
+        return valid;
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       DETETAR EVENTO DO BOTÃO
+
+       ========================================================== */
+
+
 
 function detectEventForButton(button) {
 
-    activeEventSlug = "";
-
-    /* ======================================================
-       1. PROCURA O EVENTO NO MESMO BLOCO DO BOTÃO
-       ====================================================== */
-
-    const container =
-        button.closest(
-            ".featured-event, .event-card, article, section"
-        );
-
-    if (container) {
-
-        const eventLink =
-            container.querySelector(
-                'a[href*="/eventos/"], a[href*="eventos/"]'
-            );
-
-        if (eventLink) {
-
-            activeEventSlug =
-                getEventSlugFromUrl(
-                    eventLink.href
-                );
-
-        }
-
-    }
 
 
-    /* ======================================================
-       2. DATA-EVENT-URL NO BOTÃO
-       ====================================================== */
-
-    if (!activeEventSlug) {
-
-        activeEventSlug =
-            getEventSlugFromUrl(
-                button.dataset.eventUrl || ""
-            );
-
-    }
+    activeEventSlug = "";
 
 
-    /* ======================================================
-       3. HREF DO PRÓPRIO BOTÃO
-       ====================================================== */
 
-    if (!activeEventSlug) {
+    /* ======================================================
 
-        activeEventSlug =
-            getEventSlugFromUrl(
-                button.getAttribute("href") || ""
-            );
+       1. PROCURA O EVENTO NO MESMO BLOCO DO BOTÃO
 
-    }
+       ====================================================== */
 
 
-    /* ======================================================
-       4. URL ATUAL — SÓ PARA PÁGINAS DE EVENTO
-       ====================================================== */
 
-    if (!activeEventSlug) {
+    const container =
 
-        activeEventSlug =
-            getEventSlugFromUrl(
-                window.location.href
-            );
+        button.closest(
 
-    }
+            ".featured-event, .event-card, article, section"
+
+        );
 
 
-    console.log(
-        "[101] Evento detetado:",
-        activeEventSlug
-    );
+
+    if (container) {
+
+
+
+        const eventLink =
+
+            container.querySelector(
+
+                'a[href*="/eventos/"], a[href*="eventos/"]'
+
+            );
+
+
+
+        if (eventLink) {
+
+
+
+            activeEventSlug =
+
+                getEventSlugFromUrl(
+
+                    eventLink.href
+
+                );
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+    /* ======================================================
+
+       2. DATA-EVENT-URL NO BOTÃO
+
+       ====================================================== */
+
+
+
+    if (!activeEventSlug) {
+
+
+
+        activeEventSlug =
+
+            getEventSlugFromUrl(
+
+                button.dataset.eventUrl || ""
+
+            );
+
+
+
+    }
+
+
+
+
+
+    /* ======================================================
+
+       3. HREF DO PRÓPRIO BOTÃO
+
+       ====================================================== */
+
+
+
+    if (!activeEventSlug) {
+
+
+
+        activeEventSlug =
+
+            getEventSlugFromUrl(
+
+                button.getAttribute("href") || ""
+
+            );
+
+
+
+    }
+
+
+
+
+
+    /* ======================================================
+
+       4. URL ATUAL — SÓ PARA PÁGINAS DE EVENTO
+
+       ====================================================== */
+
+
+
+    if (!activeEventSlug) {
+
+
+
+        activeEventSlug =
+
+            getEventSlugFromUrl(
+
+                window.location.href
+
+            );
+
+
+
+    }
+
+
+
+
+
+    console.log(
+
+        "[101] Evento detetado:",
+
+        activeEventSlug
+
+    );
+
+
 
 }
 
 
-    /* ==========================================================
-       EVENTOS
-       ========================================================== */
-
-    function wireEvents() {
-
-        /* FECHAR */
-
-        els.close.addEventListener(
-            "click",
-            closeModal
-        );
 
 
-        /* CLICAR FORA */
 
-        els.overlay.addEventListener(
-            "click",
-            event => {
+    /* ==========================================================
 
-                if (
-                    event.target ===
-                    els.overlay
-                ) {
+       EVENTOS
 
-                    closeModal();
+       ========================================================== */
+
+
+
+    function wireEvents() {
+
+
+
+        /* FECHAR */
+
+
+
+        els.close.addEventListener(
+
+            "click",
+
+            closeModal
+
+        );
+
+
+
+
+
+        /* CLICAR FORA */
+
+
+
+        els.overlay.addEventListener(
+
+            "click",
+
+            event => {
+
+
+
+                if (
+
+                    event.target ===
+
+                    els.overlay
+
+                ) {
+
+
+
+                    closeModal();
+
+
+
+                }
+
+
+
+            }
+
+        );
+
+
+
+
+
+        /* ESC */
+
+
+
+        document.addEventListener(
+
+            "keydown",
+
+            event => {
+
+
+
+                if (
+
+                    event.key === "Escape" &&
+
+                    els.overlay.classList.contains(
+
+                        "open"
+
+                    )
+
+                ) {
+
+
+
+                    closeModal();
+
+
+
+                }
+
+
+
+            }
+
+        );
+
+
+
+
+
+        /* QUANTIDADE */
+
+
+
+        els.minus.addEventListener(
+
+            "click",
+
+            () =>
+
+                changeQty(-1)
+
+        );
+
+
+
+
+
+        els.plus.addEventListener(
+
+            "click",
+
+            () =>
+
+                changeQty(1)
+
+        );
+
+
+
+
+
+        /* STEP 1 */
+
+
+
+        els.toStep2.addEventListener(
+
+            "click",
+
+            () =>
+
+                goToStep(2)
+
+        );
+
+
+
+
+
+        /* STEP 2 */
+
+
+
+        els.toStep3.addEventListener(
+
+            "click",
+
+            () => {
+
+
+
+                if (
+
+                    validateStep2()
+
+                ) {
+
+
+
+                    goToStep(3);
+
+
+
+                }
+
+
+
+            }
+
+        );
+
+
+
+
+
+        if (els.nome) {
+
+            els.nome.addEventListener(
+
+                "input",
+
+                () => {
+
+                    if (state.qty <= 1 || !els.participantsFields) {
+
+                        return;
+
+                    }
+
+                    const firstParticipant =
+
+                        els.participantsFields.querySelector(
+
+                            '.pz-participant-input[data-participant-index="0"]'
+
+                        );
+
+                    if (firstParticipant && !firstParticipant.value.trim()) {
+
+                        firstParticipant.value = els.nome.value.trim();
+
+                    }
 
                 }
 
-            }
-        );
-
-
-        /* ESC */
-
-        document.addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key === "Escape" &&
-                    els.overlay.classList.contains(
-                        "open"
-                    )
-                ) {
-
-                    closeModal();
-
-                }
-
-            }
-        );
-
-
-        /* QUANTIDADE */
-
-        els.minus.addEventListener(
-            "click",
-            () =>
-                changeQty(-1)
-        );
-
-
-        els.plus.addEventListener(
-            "click",
-            () =>
-                changeQty(1)
-        );
-
-
-        /* STEP 1 */
-
-        els.toStep2.addEventListener(
-            "click",
-            () =>
-                goToStep(2)
-        );
-
-
-        els.nome.addEventListener(
-    "input",
-    () => {
-
-        if (state.qty <= 1) {
-            return;
-        }
-
-        const firstParticipant =
-            els.participantsFields?.querySelector(
-                '.pz-participant-input[data-participant-index="0"]'
             );
 
-        if (firstParticipant) {
-
-            firstParticipant.value =
-                els.nome.value;
-
         }
 
-    }
-);
-
-        /* STEP 2 */
-
-        els.toStep3.addEventListener(
-            "click",
-            () => {
-
-                if (
-                    validateStep2()
-                ) {
-
-                    goToStep(3);
-
-                }
-
-            }
-        );
 
 
         /* VOLTAR */
 
-        document
-            .querySelectorAll(
-                "[data-back]"
-            )
-            .forEach(
-                button => {
 
-                    button.addEventListener(
-                        "click",
-                        () => {
 
-                            goToStep(
-                                Number(
-                                    button.dataset.back
-                                )
-                            );
+        document
 
-                        }
-                    );
+            .querySelectorAll(
 
-                }
-            );
+                "[data-back]"
 
+            )
 
-        /* DRAG */
+            .forEach(
 
-        els.dropzone.addEventListener(
-            "dragover",
-            event => {
+                button => {
 
-                event.preventDefault();
 
-                els.dropzone.classList.add(
-                    "drag"
-                );
 
-            }
-        );
+                    button.addEventListener(
 
+                        "click",
 
-        els.dropzone.addEventListener(
-            "dragleave",
-            () => {
+                        () => {
 
-                els.dropzone.classList.remove(
-                    "drag"
-                );
 
-            }
-        );
 
+                            goToStep(
 
-        els.dropzone.addEventListener(
-            "drop",
-            event => {
+                                Number(
 
-                event.preventDefault();
+                                    button.dataset.back
 
-                els.dropzone.classList.remove(
-                    "drag"
-                );
+                                )
 
-                handleFile(
-                    event
-                        .dataTransfer
-                        .files[0]
-                );
+                            );
 
-            }
-        );
 
 
-        /* INPUT */
+                        }
 
-        els.fileInput.addEventListener(
-            "change",
-            event => {
+                    );
 
-                handleFile(
-                    event.target.files[0]
-                );
 
-            }
-        );
 
+                }
 
-        /* REMOVER */
+            );
 
-        els.previewRemove.addEventListener(
-            "click",
-            () => {
 
-                state.file = null;
 
-                clearPreview();
 
-                els.fileInput.value =
-                    "";
 
-            }
-        );
+        /* DRAG */
 
 
-        /* ENVIAR */
 
-        els.submit.addEventListener(
-            "click",
-            async () => {
+        els.dropzone.addEventListener(
 
-                if (
-                    !validateStep3() ||
-                    state.sending
-                ) {
+            "dragover",
 
-                    return;
+            event => {
 
-                }
 
 
-                state.sending =
-                    true;
+                event.preventDefault();
 
-                els.submit.disabled =
-                    true;
 
-                els.errorSubmit.classList.remove(
-                    "show"
-                );
 
-                els.submitLabel.textContent =
-                    "A ENVIAR...";
+                els.dropzone.classList.add(
 
+                    "drag"
 
-                const orderCode =
-                    generateOrderCode();
+                );
 
 
-                try {
 
-                    await sendOrder(
-                        orderCode
-                    );
+            }
 
-                    els.orderCode.textContent =
-                        orderCode;
+        );
 
-                    goToStep(4);
 
-                } catch (error) {
 
-                    console.error(
-                        "[101] Erro:",
-                        error
-                    );
 
-                    els.errorSubmit.textContent =
-                        error.message ||
-                        "Não foi possível enviar o pedido.";
 
-                    els.errorSubmit.classList.add(
-                        "show"
-                    );
+        els.dropzone.addEventListener(
 
-                } finally {
+            "dragleave",
 
-                    state.sending =
-                        false;
+            () => {
 
-                    els.submit.disabled =
-                        false;
 
-                    els.submitLabel.textContent =
-                        "CONFIRMAR PEDIDO →";
 
-                }
+                els.dropzone.classList.remove(
 
-            }
-        );
+                    "drag"
 
+                );
 
-        /* COPIAR */
 
-        els.copyCode.addEventListener(
-            "click",
-            async () => {
 
-                try {
+            }
 
-                    await navigator.clipboard.writeText(
-                        els.orderCode.textContent
-                    );
+        );
 
-                    els.copyCode.textContent =
-                        "COPIADO ✓";
 
-                    setTimeout(
-                        () =>
-                            els.copyCode.textContent =
-                                "COPIAR",
-                        1500
-                    );
 
-                } catch {}
 
-            }
-        );
 
+        els.dropzone.addEventListener(
 
-        /* CONCLUIR */
+            "drop",
 
-        els.finish.addEventListener(
-            "click",
-            () => {
+            event => {
 
-                closeModal();
 
-                setTimeout(
-                    resetSystem,
-                    250
-                );
 
-            }
-        );
+                event.preventDefault();
 
 
-        /* ======================================================
-           BOTÕES DE COMPRAR
-           ====================================================== */
 
-        document
-            .querySelectorAll(
-                "[data-open-pulseiras]"
-            )
-            .forEach(
-                button => {
+                els.dropzone.classList.remove(
 
-                    button.addEventListener(
-                        "click",
-                        event => {
+                    "drag"
 
-                            event.preventDefault();
+                );
 
-                            detectEventForButton(
-                                button
-                            );
 
 
-                            const preset =
-                                document.getElementById(
-                                    "pzQty"
-                                );
+                handleFile(
 
+                    event
 
-                            openModal(
-                                preset
-                                    ? Number(
-                                        preset.textContent
-                                    )
-                                    : null
-                            );
+                        .dataTransfer
 
-                        }
-                    );
+                        .files[0]
 
-                }
-            );
+                );
 
 
-        /* STEPPER EXTERNO */
 
-        const pageMinus =
-            document.getElementById(
-                "pzQtyMinus"
-            );
+            }
 
-        const pagePlus =
-            document.getElementById(
-                "pzQtyPlus"
-            );
+        );
 
 
-        if (pageMinus) {
 
-            pageMinus.addEventListener(
-                "click",
-                () =>
-                    changeQty(-1)
-            );
+
+
+        /* INPUT */
+
+
+
+        els.fileInput.addEventListener(
+
+            "change",
+
+            event => {
+
+
+
+                handleFile(
+
+                    event.target.files[0]
+
+                );
+
+
+
+            }
+
+        );
+
+
+
+
+
+        /* REMOVER */
+
+
+
+        els.previewRemove.addEventListener(
+
+            "click",
+
+            () => {
+
+
+
+                state.file = null;
+
+
+
+                clearPreview();
+
+
+
+                els.fileInput.value =
+
+                    "";
+
+
+
+            }
+
+        );
+
+
+
+
+
+        /* ENVIAR */
+
+
+
+        els.submit.addEventListener(
+
+            "click",
+
+            async () => {
+
+
+
+                if (
+
+                    !validateStep3() ||
+
+                    state.sending
+
+                ) {
+
+
+
+                    return;
+
+
+
+                }
+
+
+
+
+
+                state.sending =
+
+                    true;
+
+
+
+                els.submit.disabled =
+
+                    true;
+
+
+
+                els.errorSubmit.classList.remove(
+
+                    "show"
+
+                );
+
+
+
+                els.submitLabel.textContent =
+
+                    "A ENVIAR...";
+
+
+
+
+
+                const orderCode =
+
+                    generateOrderCode();
+
+
+
+
+
+                try {
+
+
+
+                    await sendOrder(
+
+                        orderCode
+
+                    );
+
+
+
+                    els.orderCode.textContent =
+
+                        orderCode;
+
+
+
+                    goToStep(4);
+
+
+
+                } catch (error) {
+
+
+
+                    console.error(
+
+                        "[101] Erro:",
+
+                        error
+
+                    );
+
+
+
+                    els.errorSubmit.textContent =
+
+                        error.message ||
+
+                        "Não foi possível enviar o pedido.";
+
+
+
+                    els.errorSubmit.classList.add(
+
+                        "show"
+
+                    );
+
+
+
+                } finally {
+
+
+
+                    state.sending =
+
+                        false;
+
+
+
+                    els.submit.disabled =
+
+                        false;
+
+
+
+                    els.submitLabel.textContent =
+
+                        "CONFIRMAR PEDIDO →";
+
+
+
+                }
+
+
+
+            }
+
+        );
+
+
+
+
+
+        /* COPIAR */
+
+
+
+        els.copyCode.addEventListener(
+
+            "click",
+
+            async () => {
+
+
+
+                try {
+
+
+
+                    await navigator.clipboard.writeText(
+
+                        els.orderCode.textContent
+
+                    );
+
+
+
+                    els.copyCode.textContent =
+
+                        "COPIADO ✓";
+
+
+
+                    setTimeout(
+
+                        () =>
+
+                            els.copyCode.textContent =
+
+                                "COPIAR",
+
+                        1500
+
+                    );
+
+
+
+                } catch {}
+
+
+
+            }
+
+        );
+
+
+
+
+
+        /* CONCLUIR */
+
+
+
+        els.finish.addEventListener(
+
+            "click",
+
+            () => {
+
+
+
+                closeModal();
+
+
+
+                setTimeout(
+
+                    resetSystem,
+
+                    250
+
+                );
+
+
+
+            }
+
+        );
+
+
+
+
+
+        /* ======================================================
+
+           BOTÕES DE COMPRAR
+
+           ====================================================== */
+
+
+
+        document
+
+            .querySelectorAll(
+
+                "[data-open-pulseiras]"
+
+            )
+
+            .forEach(
+
+                button => {
+
+
+
+                    button.addEventListener(
+
+                        "click",
+
+                        event => {
+
+
+
+                            event.preventDefault();
+
+
+
+                            detectEventForButton(
+
+                                button
+
+                            );
+
+
+
+
+
+                            const preset =
+
+                                document.getElementById(
+
+                                    "pzQty"
+
+                                );
+
+
+
+
+
+                            openModal(
+
+                                preset
+
+                                    ? Number(
+
+                                        preset.textContent
+
+                                    )
+
+                                    : null
+
+                            );
+
+
+
+                        }
+
+                    );
+
+
+
+                }
+
+            );
+
+
+
+
+
+        /* STEPPER EXTERNO */
+
+
+
+        const pageMinus =
+
+            document.getElementById(
+
+                "pzQtyMinus"
+
+            );
+
+
+
+        const pagePlus =
+
+            document.getElementById(
+
+                "pzQtyPlus"
+
+            );
+
+
+
+
+
+        if (pageMinus) {
+
+
+
+            pageMinus.addEventListener(
+
+                "click",
+
+                () =>
+
+                    changeQty(-1)
+
+            );
+
+
+
+        }
+
+
+
+
+
+        if (pagePlus) {
+
+
+
+            pagePlus.addEventListener(
+
+                "click",
+
+                () =>
+
+                    changeQty(1)
+
+            );
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       RESET
+
+       ========================================================== */
+
+
+
+    function resetSystem() {
+
+
+
+        state.qty = 1;
+
+
+
+        state.file = null;
+
+
+
+        state.sending = false;
+
+
+
+        clearPreview();
+
+
+
+        els.fileInput.value =
+
+            "";
+
+
+
+        els.nome.value =
+
+            "";
+
+
+
+        els.discord.value =
+
+            "";
+
+
+
+        els.contacto.value =
+
+            "";
+
+
+
+        if (els.participantsWrap) {
+
+            els.participantsWrap.style.display = "none";
 
         }
 
 
-        if (pagePlus) {
 
-            pagePlus.addEventListener(
-                "click",
-                () =>
-                    changeQty(1)
-            );
+        if (els.participantsFields) {
+
+            els.participantsFields.innerHTML = "";
 
         }
 
-    }
 
-
-    /* ==========================================================
-       RESET
-       ========================================================== */
-
-    function resetSystem() {
-
-        state.qty = 1;
-
-        state.file = null;
-
-        state.sending = false;
-
-        clearPreview();
-
-        els.fileInput.value =
-            "";
-
-        els.nome.value =
-            "";
-
-        els.discord.value =
-            "";
-
-        els.contacto.value =
-            "";
 
         els.confirm.checked =
-            false;
 
-        els.errorStep2.classList.remove(
-            "show"
-        );
-
-        els.errorStep3.classList.remove(
-            "show"
-        );
-
-        els.errorSubmit.classList.remove(
-            "show"
-        );
-
-        goToStep(1);
-
-        updateQtyUI();
-
-    }
+            false;
 
 
-    /* ==========================================================
-       INIT
-       ========================================================== */
 
-    function init() {
+        els.errorStep2.classList.remove(
 
-        buildModal();
+            "show"
 
-        cacheEls();
-
-        wireEvents();
-
-        updateQtyUI();
-
-    }
+        );
 
 
-    if (
-        document.readyState ===
-        "loading"
-    ) {
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            init,
-            {
-                once: true
-            }
-        );
+        els.errorStep3.classList.remove(
 
-    } else {
+            "show"
 
-        init();
-
-    }
+        );
 
 
-    /* ==========================================================
-       API
-       ========================================================== */
 
-    window.Pulseiras = {
+        els.errorSubmit.classList.remove(
 
-        open:
-            openModal,
+            "show"
 
-        close:
-            closeModal
+        );
 
-    };
+
+
+        goToStep(1);
+
+
+
+        updateQtyUI();
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       INIT
+
+       ========================================================== */
+
+
+
+    function init() {
+
+
+
+        buildModal();
+
+
+
+        cacheEls();
+
+
+
+        wireEvents();
+
+
+
+        updateQtyUI();
+
+
+
+    }
+
+
+
+
+
+    if (
+
+        document.readyState ===
+
+        "loading"
+
+    ) {
+
+
+
+        document.addEventListener(
+
+            "DOMContentLoaded",
+
+            init,
+
+            {
+
+                once: true
+
+            }
+
+        );
+
+
+
+    } else {
+
+
+
+        init();
+
+
+
+    }
+
+
+
+
+
+    /* ==========================================================
+
+       API
+
+       ========================================================== */
+
+
+
+    window.Pulseiras = {
+
+
+
+        open:
+
+            openModal,
+
+
+
+        close:
+
+            closeModal
+
+
+
+    };
+
+
 
 })();
