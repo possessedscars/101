@@ -16,7 +16,7 @@
     },
     {
       "source": "/api/admin/overview",
-      "destination": "/api/admin-overview.mjs"
+      "destination": "/api/admin/overview.mjs"
     }
   ]
 }
