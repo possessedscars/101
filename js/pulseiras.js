@@ -783,66 +783,104 @@
        ELEMENTOS
        ========================================================== */
 
-    function cacheEls() {
+function cacheEls() {
 
-        const ids = [
-            "pzOverlay",
-            "pzClose",
-            "pzModalQty",
-            "pzModalTotal",
-            "pzPaymentTotal",
-            "pzModalMinus",
-            "pzModalPlus",
-            "pzToStep2",
-            "pzToStep3",
-            "pzNome",
-            "pzDiscord",
-            "pzContacto",
-            "pzErrorStep2",
-            "pzErrorStep3",
-            "pzErrorSubmit",
-            "pzDropzone",
-            "pzFile",
-            "pzPreview",
-            "pzPreviewImg",
-            "pzPreviewName",
-            "pzPreviewRemove",
-            "pzConfirm",
-            "pzSubmit",
-            "pzSubmitLabel",
-            "pzOrderCode",
-            "pzCopyCode",
-            "pzFinish"
-        ];
+    els = {
 
-        els = {};
+        overlay:
+            document.getElementById("pzOverlay"),
 
-        ids.forEach(id => {
+        close:
+            document.getElementById("pzClose"),
 
-            const key =
-                id
-                    .replace("pz", "")
-                    .replace(
-                        /^./,
-                        c => c.toLowerCase()
-                    );
+        modalQty:
+            document.getElementById("pzModalQty"),
 
-            els[key] =
-                document.getElementById(id);
+        modalTotal:
+            document.getElementById("pzModalTotal"),
 
-        });
+        paymentTotal:
+            document.getElementById("pzPaymentTotal"),
 
-        els.stepsTrack =
+        minus:
+            document.getElementById("pzModalMinus"),
+
+        plus:
+            document.getElementById("pzModalPlus"),
+
+        toStep2:
+            document.getElementById("pzToStep2"),
+
+        toStep3:
+            document.getElementById("pzToStep3"),
+
+        nome:
+            document.getElementById("pzNome"),
+
+        discord:
+            document.getElementById("pzDiscord"),
+
+        contacto:
+            document.getElementById("pzContacto"),
+
+        errorStep2:
+            document.getElementById("pzErrorStep2"),
+
+        errorStep3:
+            document.getElementById("pzErrorStep3"),
+
+        errorSubmit:
+            document.getElementById("pzErrorSubmit"),
+
+        dropzone:
+            document.getElementById("pzDropzone"),
+
+        fileInput:
+            document.getElementById("pzFile"),
+
+        preview:
+            document.getElementById("pzPreview"),
+
+        previewImg:
+            document.getElementById("pzPreviewImg"),
+
+        previewName:
+            document.getElementById("pzPreviewName"),
+
+        previewRemove:
+            document.getElementById("pzPreviewRemove"),
+
+        confirm:
+            document.getElementById("pzConfirm"),
+
+        submit:
+            document.getElementById("pzSubmit"),
+
+        submitLabel:
+            document.getElementById("pzSubmitLabel"),
+
+        orderCode:
+            document.getElementById("pzOrderCode"),
+
+        copyCode:
+            document.getElementById("pzCopyCode"),
+
+        finish:
+            document.getElementById("pzFinish"),
+
+        stepsTrack:
             document.querySelectorAll(
                 ".pz-steps-track span"
-            );
+            ),
 
-        els.steps =
+        steps:
             document.querySelectorAll(
                 ".pz-step"
-            );
+            )
 
-    }
+    };
+
+}
 
 
     /* ==========================================================
