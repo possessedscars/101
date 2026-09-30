@@ -54,7 +54,7 @@
             <td>${esc(o.customer)}<small class="table-sub">${esc(o.discord)}</small></td>
             <td>${esc(String(o.quantity))}</td>
             <td>${money(o)}</td>
-            <td><span class="status ${statusClas(o.status)}">${esc(o.status)}</span></td>
+            <td><span class="status ${statusClass(o.status)}">${esc(o.status)}</span></td>
           </tr>`).join('')
         :'<tr><td colspan="6" class="empty">Ainda não existem pedidos.</td></tr>';
 
