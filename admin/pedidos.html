@@ -2,6 +2,7 @@
 <html lang="pt-PT">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -25,24 +26,459 @@
         rel="stylesheet"
         href="/admin/admin.css"
     >
+
+    <style>
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .orders-page .dashboard-main {
+            min-width: 0;
+        }
+
+
+        /* =====================================================
+           FILTERS
+        ===================================================== */
+
+        .orders-toolbar {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(260px, 1fr)
+                180px
+                180px;
+
+            gap: 10px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .orders-toolbar input,
+        .orders-toolbar select {
+
+            width: 100%;
+
+            height: 42px;
+
+            box-sizing: border-box;
+
+            border:
+                1px solid
+                rgba(255,255,255,.10);
+
+            border-radius: 8px;
+
+            background: #0b0b0b;
+
+            color: #fff;
+
+            padding:
+                0 13px;
+
+            outline: none;
+
+            font-family: inherit;
+
+            font-size: 12px;
+
+        }
+
+
+        .orders-toolbar input::placeholder {
+
+            color: #666;
+
+        }
+
+
+        .orders-toolbar input:focus,
+        .orders-toolbar select:focus {
+
+            border-color:
+                rgba(255,255,255,.28);
+
+        }
+
+
+        .orders-toolbar select {
+
+            cursor: pointer;
+
+        }
+
+
+        /* =====================================================
+           ACTION BUTTON
+        ===================================================== */
+
+        .order-action {
+
+            height: 38px;
+
+            padding:
+                0 14px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.10);
+
+            border-radius: 7px;
+
+            background: #0c0c0c;
+
+            color: #fff;
+
+            cursor: pointer;
+
+            font-family: inherit;
+
+            font-size: 10px;
+
+            letter-spacing: .08em;
+
+            transition:
+                .2s ease;
+
+        }
+
+
+        .order-action:hover {
+
+            background: #151515;
+
+            border-color:
+                rgba(255,255,255,.20);
+
+        }
+
+
+        .order-action.primary {
+
+            background: #fff;
+
+            color: #000;
+
+            border-color: #fff;
+
+        }
+
+
+        .order-action.primary:hover {
+
+            background: #e8e8e8;
+
+        }
+
+
+        .order-action.danger {
+
+            color: #ff7373;
+
+            border-color:
+                rgba(255,80,80,.20);
+
+        }
+
+
+        .order-action.danger:hover {
+
+            background:
+                rgba(255,60,60,.08);
+
+            border-color:
+                rgba(255,80,80,.40);
+
+        }
+
+
+        .order-actions {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            margin-top: 24px;
+
+        }
+
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .modal-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 1000;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            background:
+                rgba(0,0,0,.78);
+
+            backdrop-filter:
+                blur(8px);
+
+        }
+
+
+        .modal-overlay.open {
+
+            display: flex;
+
+        }
+
+
+        .order-modal {
+
+            width:
+                min(700px,100%);
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            border:
+                1px solid
+                rgba(255,255,255,.10);
+
+            border-radius: 12px;
+
+            background: #090909;
+
+            box-shadow:
+                0 30px 100px
+                rgba(0,0,0,.65);
+
+            padding: 24px;
+
+        }
+
+
+        .modal-close {
+
+            width: 36px;
+
+            height: 36px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.10);
+
+            border-radius: 7px;
+
+            background: #0c0c0c;
+
+            color: #fff;
+
+            cursor: pointer;
+
+            font-size: 18px;
+
+        }
+
+
+        .modal-close:hover {
+
+            background: #161616;
+
+        }
+
+
+        /* =====================================================
+           ORDER DETAILS
+        ===================================================== */
+
+        .order-detail-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0,1fr)
+                );
+
+            gap: 12px;
+
+        }
+
+
+        .order-detail {
+
+            padding: 15px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            border-radius: 8px;
+
+            background:
+                rgba(255,255,255,.025);
+
+        }
+
+
+        .order-detail small {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #666;
+
+            font-size: 9px;
+
+            letter-spacing: .14em;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .order-detail strong {
+
+            color: #fff;
+
+            font-size: 14px;
+
+            word-break: break-word;
+
+        }
+
+
+        /* =====================================================
+           PARTICIPANTS
+        ===================================================== */
+
+        .participant-list {
+
+            margin-top: 14px;
+
+            display: grid;
+
+            gap: 8px;
+
+        }
+
+
+        .participant-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            padding:
+                11px 13px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            border-radius: 7px;
+
+            background:
+                rgba(255,255,255,.02);
+
+        }
+
+
+        .participant-row strong {
+
+            color: #fff;
+
+            font-size: 12px;
+
+        }
+
+
+        .participant-row span {
+
+            color: #777;
+
+            font-size: 11px;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .orders-toolbar {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .order-detail-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+    </style>
+
 </head>
 
-<body class="dashboard-page">
+
+<body class="dashboard-page orders-page">
+
 
 <div class="admin-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
     <aside class="sidebar">
 
         <div class="sidebar-brand">
+
             <span>1Ø1</span>
-            <small>ADMIN</small>
+
+            <small>
+                ADMIN
+            </small>
+
         </div>
+
 
         <nav>
 
-            <a href="/admin/dashboard.html">
+            <a
+                href="/admin/dashboard.html"
+            >
                 Overview
             </a>
+
 
             <a
                 class="active"
@@ -51,31 +487,50 @@
                 Pedidos
             </a>
 
-            <a href="/admin/eventos.html">
+
+            <a
+                href="/admin/eventos.html"
+            >
                 Eventos
             </a>
 
-            <a href="/admin/participantes.html">
+
+            <a
+                href="/admin/participantes.html"
+            >
                 Participantes
             </a>
 
-            <a href="/admin/pulseiras.html">
+
+            <a
+                href="/admin/pulseiras.html"
+            >
                 Pulseiras
             </a>
 
         </nav>
 
+
         <button
             id="logoutBtn"
             class="logout"
         >
-            SAIR <span>↗</span>
+            SAIR
+            <span>↗</span>
         </button>
 
     </aside>
 
 
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
     <main class="dashboard-main">
+
+
+        <!-- HEADER -->
 
         <header class="topbar">
 
@@ -85,7 +540,9 @@
                     MANAGEMENT
                 </div>
 
-                <h1>PEDIDOS</h1>
+                <h1>
+                    PEDIDOS
+                </h1>
 
             </div>
 
@@ -103,9 +560,13 @@
         </header>
 
 
-        <!-- FILTROS -->
+
+        <!-- =================================================
+             ORDERS
+        ================================================== -->
 
         <section class="panel">
+
 
             <div class="panel-head">
 
@@ -121,6 +582,7 @@
 
                 </div>
 
+
                 <button
                     class="ghost"
                     id="refreshBtn"
@@ -131,36 +593,21 @@
             </div>
 
 
-            <div
-                class="orders-filters"
-                style="
-                    display:grid;
-                    grid-template-columns:
-                        1fr
-                        180px
-                        180px;
-                    gap:12px;
-                    margin-bottom:20px;
-                "
-            >
+
+            <!-- FILTERS -->
+
+            <div class="orders-toolbar">
+
 
                 <input
                     id="searchInput"
                     type="search"
                     placeholder="Pesquisar pedido, cliente ou Discord..."
-                    style="
-                        width:100%;
-                        box-sizing:border-box;
-                    "
                 >
 
 
                 <select
                     id="statusFilter"
-                    style="
-                        width:100%;
-                        box-sizing:border-box;
-                    "
                 >
 
                     <option value="">
@@ -184,10 +631,6 @@
 
                 <select
                     id="eventFilter"
-                    style="
-                        width:100%;
-                        box-sizing:border-box;
-                    "
                 >
 
                     <option value="">
@@ -196,8 +639,12 @@
 
                 </select>
 
+
             </div>
 
+
+
+            <!-- TABLE -->
 
             <div class="table-wrap">
 
@@ -207,21 +654,45 @@
 
                         <tr>
 
-                            <th>PEDIDO</th>
-                            <th>EVENTO</th>
-                            <th>CLIENTE</th>
-                            <th>DISCORD</th>
-                            <th>PULSEIRAS</th>
-                            <th>VALOR</th>
-                            <th>ESTADO</th>
-                            <th></th>
+                            <th>
+                                PEDIDO
+                            </th>
+
+                            <th>
+                                EVENTO
+                            </th>
+
+                            <th>
+                                CLIENTE
+                            </th>
+
+                            <th>
+                                DISCORD
+                            </th>
+
+                            <th>
+                                PULSEIRAS
+                            </th>
+
+                            <th>
+                                VALOR
+                            </th>
+
+                            <th>
+                                ESTADO
+                            </th>
+
+                            <th>
+                            </th>
 
                         </tr>
 
                     </thead>
 
 
-                    <tbody id="ordersBody">
+                    <tbody
+                        id="ordersBody"
+                    >
 
                         <tr>
 
@@ -230,7 +701,6 @@
                                 class="empty"
                             >
                                 A carregar…
-
                             </td>
 
                         </tr>
@@ -248,32 +718,23 @@
 </div>
 
 
-<!-- MODAL -->
+
+<!-- =========================================================
+     ORDER MODAL
+========================================================== -->
 
 <div
+    class="modal-overlay"
     id="orderModal"
-    style="
-        display:none;
-        position:fixed;
-        inset:0;
-        z-index:1000;
-        background:rgba(0,0,0,.75);
-        align-items:center;
-        justify-content:center;
-        padding:20px;
-    "
 >
 
-    <div
-        class="panel"
-        style="
-            width:min(720px,100%);
-            max-height:90vh;
-            overflow:auto;
-        "
-    >
+    <div class="order-modal">
 
-        <div class="panel-head">
+
+        <div
+            class="panel-head"
+            style="margin-bottom:22px;"
+        >
 
             <div>
 
@@ -281,33 +742,66 @@
                     ORDER DETAILS
                 </div>
 
-                <h2 id="modalOrderCode">
+                <h2
+                    id="modalOrderCode"
+                >
                     PEDIDO
                 </h2>
 
             </div>
 
+
             <button
-                class="ghost"
+                class="modal-close"
                 id="closeModal"
             >
-                FECHAR
+                ×
             </button>
 
         </div>
 
 
-        <div id="orderDetails"></div>
+
+        <!-- DETAILS -->
+
+        <div
+            class="order-detail-grid"
+            id="orderDetails"
+        >
+        </div>
+
+
+
+        <!-- PARTICIPANTS -->
+
+        <div
+            id="participantsContainer"
+            style="margin-top:24px;"
+        >
+        </div>
+
+
+
+        <!-- ACTIONS -->
+
+        <div
+            class="order-actions"
+            id="orderActions"
+        >
+        </div>
+
 
     </div>
 
 </div>
 
 
+
 <script
     src="/admin/pedidos.js"
     defer
 ></script>
+
 
 </body>
 
