@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1.0"
+    >
+
+    <title>101 • Pedidos</title>
+
+    <meta
+        name="robots"
+        content="noindex,nofollow,noarchive"
+    >
+
+    <link
+        rel="icon"
+        href="/assets/logo/favicon.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/admin.css"
+    >
+</head>
+
+<body class="dashboard-page">
+
+<div class="admin-layout">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <span>1Ø1</span>
+            <small>ADMIN</small>
+        </div>
+
+        <nav>
+
+            <a href="/admin/dashboard.html">
+                Overview
+            </a>
+
+            <a
+                class="active"
+                href="/admin/pedidos.html"
+            >
+                Pedidos
+            </a>
+
+            <a href="/admin/eventos.html">
+                Eventos
+            </a>
+
+            <a href="/admin/participantes.html">
+                Participantes
+            </a>
+
+            <a href="/admin/pulseiras.html">
+                Pulseiras
+            </a>
+
+        </nav>
+
+        <button
+            id="logoutBtn"
+            class="logout"
+        >
+            SAIR <span>↗</span>
+        </button>
+
+    </aside>
+
+
+    <main class="dashboard-main">
+
+        <header class="topbar">
+
+            <div>
+
+                <div class="eyebrow">
+                    MANAGEMENT
+                </div>
+
+                <h1>PEDIDOS</h1>
+
+            </div>
+
+
+            <div class="user-pill">
+
+                <span class="dot"></span>
+
+                <span id="userEmail">
+                    —
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- FILTROS -->
+
+        <section class="panel">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <div class="eyebrow">
+                        TICKETING
+                    </div>
+
+                    <h2>
+                        TODOS OS PEDIDOS
+                    </h2>
+
+                </div>
+
+                <button
+                    class="ghost"
+                    id="refreshBtn"
+                >
+                    ATUALIZAR ↻
+                </button>
+
+            </div>
+
+
+            <div
+                class="orders-filters"
+                style="
+                    display:grid;
+                    grid-template-columns:
+                        1fr
+                        180px
+                        180px;
+                    gap:12px;
+                    margin-bottom:20px;
+                "
+            >
+
+                <input
+                    id="searchInput"
+                    type="search"
+                    placeholder="Pesquisar pedido, cliente ou Discord..."
+                    style="
+                        width:100%;
+                        box-sizing:border-box;
+                    "
+                >
+
+
+                <select
+                    id="statusFilter"
+                    style="
+                        width:100%;
+                        box-sizing:border-box;
+                    "
+                >
+
+                    <option value="">
+                        Todos os estados
+                    </option>
+
+                    <option value="PENDENTE">
+                        Pendente
+                    </option>
+
+                    <option value="PAGO">
+                        Pago
+                    </option>
+
+                    <option value="CONFIRMADO">
+                        Confirmado
+                    </option>
+
+                </select>
+
+
+                <select
+                    id="eventFilter"
+                    style="
+                        width:100%;
+                        box-sizing:border-box;
+                    "
+                >
+
+                    <option value="">
+                        Todos os eventos
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>PEDIDO</th>
+                            <th>EVENTO</th>
+                            <th>CLIENTE</th>
+                            <th>DISCORD</th>
+                            <th>PULSEIRAS</th>
+                            <th>VALOR</th>
+                            <th>ESTADO</th>
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="ordersBody">
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="empty"
+                            >
+                                A carregar…
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div
+    id="orderModal"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        z-index:1000;
+        background:rgba(0,0,0,.75);
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+    "
+>
+
+    <div
+        class="panel"
+        style="
+            width:min(720px,100%);
+            max-height:90vh;
+            overflow:auto;
+        "
+    >
+
+        <div class="panel-head">
+
+            <div>
+
+                <div class="eyebrow">
+                    ORDER DETAILS
+                </div>
+
+                <h2 id="modalOrderCode">
+                    PEDIDO
+                </h2>
+
+            </div>
+
+            <button
+                class="ghost"
+                id="closeModal"
+            >
+                FECHAR
+            </button>
+
+        </div>
+
+
+        <div id="orderDetails"></div>
+
+    </div>
+
+</div>
+
+
+<script
+    src="/admin/pedidos.js"
+    defer
+></script>
+
+</body>
+
+</html>
