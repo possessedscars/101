@@ -1312,51 +1312,43 @@ function cacheEls() {
        CÓDIGO DO PEDIDO
        ========================================================== */
 
-    function generateOrderCode() {
+function generateOrderCode() {
 
-        const slug =
-            getCurrentEventSlug();
+    const eventSlug =
+        getCurrentEventSlug();
 
-        const source =
-            slug ||
-            getAutomaticEventName();
+    const source =
+        eventSlug ||
+        getAutomaticEventName();
 
-        let prefix =
-            String(source)
-                .normalize("NFD")
-                .replace(
-                    /[\u0300-\u036f]/g,
-                    ""
-                )
-                .replace(
-                    /[^a-zA-Z0-9]/g,
-                    ""
-                )
-                .slice(0, 3)
-                .toUpperCase();
+    const prefix =
+        String(source)
+            .normalize("NFD")
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .replace(
+                /[^a-zA-Z0-9]/g,
+                ""
+            )
+            .slice(0, 3)
+            .toUpperCase() || "101";
 
-        if (!prefix) {
+    const random =
+        Math.random()
+            .toString(36)
+            .slice(2, 5)
+            .toUpperCase();
 
-            prefix =
-                "101";
+    const time =
+        Date.now()
+            .toString(36)
+            .slice(-3)
+            .toUpperCase();
 
-        }
-
-        const random =
-            Math.random()
-                .toString(36)
-                .slice(2, 5)
-                .toUpperCase();
-
-        const time =
-            Date.now()
-                .toString(36)
-                .slice(-3)
-                .toUpperCase();
-
-        return `101-${prefix}-${random}${time}`;
-
-    }
+    return `101-${prefix}-${random}${time}`;
+}
 
 
     /* ==========================================================
@@ -1718,21 +1710,25 @@ function cacheEls() {
        DETETAR EVENTO DO BOTÃO
        ========================================================== */
 
-    function detectEventForButton(button) {
+function detectEventForButton(button) {
 
-        activeEventSlug = "";
+    activeEventSlug = "";
 
-        const container =
-            button.closest(
-                ".featured-event, .event-card, article, section"
-            );
+    /* ======================================================
+       1. PROCURA O EVENTO NO MESMO BLOCO DO BOTÃO
+       ====================================================== */
 
+    const container =
+        button.closest(
+            ".featured-event, .event-card, article, section"
+        );
+
+    if (container) {
 
         const eventLink =
-            container?.querySelector(
-                'a[href*="/eventos/"]'
+            container.querySelector(
+                'a[href*="/eventos/"], a[href*="eventos/"]'
             );
-
 
         if (eventLink) {
 
@@ -1743,36 +1739,57 @@ function cacheEls() {
 
         }
 
-
-        if (!activeEventSlug) {
-
-            activeEventSlug =
-                getEventSlugFromUrl(
-                    button.dataset.eventUrl ||
-                    button.getAttribute("href") ||
-                    ""
-                );
-
-        }
+    }
 
 
-        if (!activeEventSlug) {
+    /* ======================================================
+       2. DATA-EVENT-URL NO BOTÃO
+       ====================================================== */
 
-            activeEventSlug =
-                getEventSlugFromUrl(
-                    window.location.href
-                );
+    if (!activeEventSlug) {
 
-        }
-
-
-        console.log(
-            "[101] Evento detetado:",
-            activeEventSlug ||
-            getCurrentEventSlug()
-        );
+        activeEventSlug =
+            getEventSlugFromUrl(
+                button.dataset.eventUrl || ""
+            );
 
     }
+
+
+    /* ======================================================
+       3. HREF DO PRÓPRIO BOTÃO
+       ====================================================== */
+
+    if (!activeEventSlug) {
+
+        activeEventSlug =
+            getEventSlugFromUrl(
+                button.getAttribute("href") || ""
+            );
+
+    }
+
+
+    /* ======================================================
+       4. URL ATUAL — SÓ PARA PÁGINAS DE EVENTO
+       ====================================================== */
+
+    if (!activeEventSlug) {
+
+        activeEventSlug =
+            getEventSlugFromUrl(
+                window.location.href
+            );
+
+    }
+
+
+    console.log(
+        "[101] Evento detetado:",
+        activeEventSlug
+    );
+
+}
 
 
     /* ==========================================================
