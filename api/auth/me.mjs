@@ -10,6 +10,7 @@ export default async function handler(req, res) {
             readSession(req);
 
         if (!session) {
+
             return res.status(401).json({
                 authenticated: false,
                 error: "Não autenticado."
