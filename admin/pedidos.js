@@ -733,50 +733,99 @@
     // ELIMINAR
     // =========================================================
 
-    async function deleteOrder(
-        orderCode
-    ) {
+async function deleteOrder(orderCode) {
 
-        const confirmed =
-            window.confirm(
-                `Tens a certeza que queres eliminar o pedido ${orderCode}?\n\nEsta ação não pode ser anulada.`
-            );
+    const confirmModal =
+        document.getElementById("confirmDeleteModal");
 
-        if (!confirmed) {
-            return;
-        }
+    const confirmOrder =
+        document.getElementById("confirmDeleteOrder");
 
-        const response =
-            await api(
-                "/api/orders/delete",
-                {
-                    method: "POST",
+    const confirmButton =
+        document.getElementById("confirmDeleteBtn");
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
+    const cancelButton =
+        document.getElementById("cancelDeleteBtn");
 
-                    body: JSON.stringify({
-                        orderCode
-                    })
-                }
-            );
-
-        if (
-            response.ok !== true
-        ) {
-
-            throw new Error(
-                response.error ||
-                "Não foi possível eliminar o pedido."
-            );
-        }
-
-        closeModal();
-
-        await load();
+    if (!confirmModal) {
+        console.error(
+            "[101] Modal de confirmação não encontrado."
+        );
+        return;
     }
+
+    confirmOrder.textContent = orderCode;
+
+    confirmModal.classList.add("open");
+
+    const closeConfirm = () => {
+        confirmModal.classList.remove("open");
+
+        confirmButton.onclick = null;
+        cancelButton.onclick = null;
+    };
+
+    cancelButton.onclick = () => {
+        closeConfirm();
+    };
+
+    confirmModal.onclick = (event) => {
+        if (event.target === confirmModal) {
+            closeConfirm();
+        }
+    };
+
+    confirmButton.onclick = async () => {
+
+        confirmButton.disabled = true;
+        confirmButton.textContent = "A ELIMINAR...";
+
+        try {
+
+            const response =
+                await api(
+                    "/api/orders/delete",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            orderCode
+                        })
+                    }
+                );
+
+            if (response.ok !== true) {
+                throw new Error(
+                    response.error ||
+                    "Não foi possível eliminar o pedido."
+                );
+            }
+
+            closeConfirm();
+            closeModal();
+
+            await load();
+
+        } catch (error) {
+
+            console.error(
+                "[101] DELETE:",
+                error
+            );
+
+            alert(error.message);
+
+            confirmButton.disabled = false;
+            confirmButton.textContent =
+                "ELIMINAR PEDIDO";
+        }
+    };
+}
 
     // =========================================================
     // MODAL
