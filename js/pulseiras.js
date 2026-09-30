@@ -1379,7 +1379,7 @@ function openModal(presetQty) {
 
     function generateOrderCode() {
 
-        const prefix =
+            const prefix = "PULS";
             (
                 cfg.eventoSlug ||
                 "101"
