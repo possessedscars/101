@@ -14,7 +14,7 @@ async function getOrders() {
   do {
     const page = await list({
       prefix: 'orders/',
-      limit: 1000,
+      limit: 1000
       cursor,
       access: 'private'
     });
