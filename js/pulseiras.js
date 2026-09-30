@@ -2147,14 +2147,9 @@ if (els.nome) {
                     '.pz-participant-input[data-participant-index="0"]'
                 );
 
-            if (
-                firstParticipant &&
-                !firstParticipant.value.trim()
-            ) {
-
+            if (firstParticipant) {
                 firstParticipant.value =
-                    els.nome.value.trim();
-
+                    els.nome.value;
             }
 
         }
