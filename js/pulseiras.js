@@ -397,6 +397,62 @@
 
             </div>
 
+            <div
+    class="pz-participants-wrap"
+    id="pzParticipantsWrap"
+    style="display:none; margin-top:20px;"
+>
+
+    <div
+        style="
+            font-size:11px;
+            letter-spacing:2px;
+            color:#999;
+            margin-bottom:10px;
+        "
+    >
+        PARTICIPANTES
+    </div>
+
+    <div
+        style="
+            padding:16px;
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:16px;
+            background:rgba(255,255,255,.025);
+        "
+    >
+
+        <strong
+            style="
+                display:block;
+                font-size:12px;
+                letter-spacing:1px;
+                margin-bottom:6px;
+            "
+        >
+            QUEM VAI AO EVENTO?
+        </strong>
+
+        <span
+            style="
+                display:block;
+                color:#888;
+                font-size:11px;
+                line-height:1.5;
+                margin-bottom:14px;
+            "
+        >
+            Como estás a comprar várias pulseiras,
+            indica o nome da personagem de cada participante.
+        </span>
+
+        <div id="pzParticipantsFields"></div>
+
+    </div>
+
+</div>
+
 
             <div
                 class="pz-error"
@@ -823,6 +879,12 @@ function cacheEls() {
         contacto:
             document.getElementById("pzContacto"),
 
+        participantsWrap:
+            document.getElementById("pzParticipantsWrap"),
+
+        participantsFields:
+            document.getElementById("pzParticipantsFields"),
+
         errorStep2:
             document.getElementById("pzErrorStep2"),
 
@@ -932,6 +994,100 @@ function cacheEls() {
     /* ==========================================================
        QUANTIDADE
        ========================================================== */
+function renderParticipantFields() {
+
+    if (
+        !els.participantsWrap ||
+        !els.participantsFields
+    ) {
+        return;
+    }
+
+    // Apenas mostrar quando são compradas várias pulseiras
+    if (state.qty <= 1) {
+
+        els.participantsWrap.style.display = "none";
+        els.participantsFields.innerHTML = "";
+
+        return;
+    }
+
+    const existing =
+        Array.from(
+            els.participantsFields.querySelectorAll(
+                ".pz-participant-input"
+            )
+        ).map(input => input.value);
+
+    const buyerName =
+        els.nome
+            ? els.nome.value.trim()
+            : "";
+
+    els.participantsWrap.style.display = "block";
+
+    els.participantsFields.innerHTML = "";
+
+    for (
+        let i = 0;
+        i < state.qty;
+        i++
+    ) {
+
+        const field =
+            document.createElement("div");
+
+        field.className = "pz-field";
+
+        field.style.marginBottom =
+            i === state.qty - 1
+                ? "0"
+                : "12px";
+
+        field.innerHTML = `
+            <label>
+                PULSEIRA ${i + 1}
+            </label>
+
+            <input
+                type="text"
+                class="pz-participant-input"
+                data-participant-index="${i}"
+                placeholder="Nome da personagem"
+                autocomplete="off"
+            >
+        `;
+
+        els.participantsFields.appendChild(
+            field
+        );
+
+        const input =
+            field.querySelector(
+                ".pz-participant-input"
+            );
+
+        // Recuperar valor anterior
+        if (existing[i]) {
+
+            input.value =
+                existing[i];
+
+        }
+        // A primeira pulseira começa com o comprador
+        else if (
+            i === 0 &&
+            buyerName
+        ) {
+
+            input.value =
+                buyerName;
+
+        }
+
+    }
+
+}
 
     function updateQtyUI() {
 
@@ -994,6 +1150,8 @@ function cacheEls() {
                 total;
 
         }
+
+        renderParticipantFields();
 
     }
 
@@ -1400,6 +1558,21 @@ function generateOrderCode() {
             `${cfg.moeda}${state.qty * cfg.preco}`;
 
 
+        const participantNames =
+    state.qty > 1
+        ? Array.from(
+            els.participantsFields.querySelectorAll(
+                ".pz-participant-input"
+            )
+        )
+            .map(
+                input =>
+                    input.value.trim()
+            )
+            .filter(Boolean)
+        : [nome];
+
+
         const payload = {
 
             username:
@@ -1427,6 +1600,8 @@ function generateOrderCode() {
                             name:
                                 "🎫  CÓDIGO DO PEDIDO",
 
+                                
+
                             value:
                                 `**${orderCode}**`,
 
@@ -1434,6 +1609,22 @@ function generateOrderCode() {
                                 false
 
                         },
+
+                        {
+                            name:
+                                  "👥  PARTICIPANTES",
+
+                            value:
+                                 participantNames
+                            .map(
+                (name, index) =>
+                    `**${index + 1}.** ${name}`
+            )
+            .join("\n"),
+
+    inline:
+        false
+},
 
 
                         {
@@ -1664,8 +1855,96 @@ function generateOrderCode() {
 
         }
 
+// ==========================================================
+// REGISTAR PEDIDO NO SISTEMA ADMIN
+// ==========================================================
 
-        return true;
+try {
+
+    const adminResponse =
+        await fetch(
+            "/api/orders/create",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify({
+                        orderCode,
+
+                        evento:
+                            cfg.evento,
+
+                        eventoSlug:
+                            getCurrentEventSlug(),
+
+                        nome,
+
+                        discord,
+
+                        contacto,
+
+                        quantidade,
+
+                        precoUnitario:
+                            Number(
+                                cfg.preco || 0
+                            ),
+
+                        moeda:
+                            cfg.moeda,
+
+                        total:
+                            Number(
+                                state.qty
+                            ) *
+                            Number(
+                                cfg.preco || 0
+                            ),
+
+                        participantes:
+                            participantNames,
+
+                        estado:
+                            "pendente"
+                    })
+            }
+        );
+
+    const adminData =
+        await adminResponse
+            .json()
+            .catch(
+                () => ({})
+            );
+
+    if (!adminResponse.ok) {
+
+        throw new Error(
+            adminData.error ||
+            "Não foi possível registar o pedido no sistema."
+        );
+
+    }
+
+} catch (error) {
+
+    console.error(
+        "[101] Erro ao registar pedido no Admin:",
+        error
+    );
+
+    throw new Error(
+        "Não foi possível registar o pedido. Tenta novamente."
+    );
+
+}
+
+return true;
 
     }
 
@@ -1674,20 +1953,65 @@ function generateOrderCode() {
        VALIDAÇÃO
        ========================================================== */
 
-    function validateStep2() {
+function validateStep2() {
 
-        const valid =
-            els.nome.value.trim().length > 1 &&
-            els.discord.value.trim().length > 1;
+    const nomeValido =
+        els.nome.value.trim().length > 1;
 
-        els.errorStep2.classList.toggle(
-            "show",
-            !valid
-        );
+    const discordValido =
+        els.discord.value.trim().length > 1;
 
-        return valid;
+    let participantesValidos = true;
+
+    if (state.qty > 1) {
+
+        const inputs =
+            Array.from(
+                els.participantsFields
+                    .querySelectorAll(
+                        ".pz-participant-input"
+                    )
+            );
+
+        participantesValidos =
+            inputs.length === state.qty &&
+            inputs.every(
+                input =>
+                    input.value.trim().length > 1
+            );
+    }
+
+    const valid =
+        nomeValido &&
+        discordValido &&
+        participantesValidos;
+
+    if (!valid) {
+
+        if (
+            state.qty > 1 &&
+            !participantesValidos
+        ) {
+
+            els.errorStep2.textContent =
+                "Preenche o nome de cada participante.";
+
+        } else {
+
+            els.errorStep2.textContent =
+                "Preenche o nome e o Discord para continuar.";
+
+        }
 
     }
+
+    els.errorStep2.classList.toggle(
+        "show",
+        !valid
+    );
+
+    return valid;
+}
 
 
     function validateStep3() {
@@ -1805,6 +2129,38 @@ function detectEventForButton(button) {
             closeModal
         );
 
+if (els.nome) {
+
+    els.nome.addEventListener(
+        "input",
+        () => {
+
+            if (
+                state.qty <= 1 ||
+                !els.participantsFields
+            ) {
+                return;
+            }
+
+            const firstParticipant =
+                els.participantsFields.querySelector(
+                    '.pz-participant-input[data-participant-index="0"]'
+                );
+
+            if (
+                firstParticipant &&
+                !firstParticipant.value.trim()
+            ) {
+
+                firstParticipant.value =
+                    els.nome.value.trim();
+
+            }
+
+        }
+    );
+
+}
 
         /* CLICAR FORA */
 
@@ -2221,6 +2577,19 @@ function detectEventForButton(button) {
 
         els.contacto.value =
             "";
+        if (els.participantsFields) {
+
+    els.participantsFields.innerHTML =
+        "";
+
+}
+
+if (els.participantsWrap) {
+
+    els.participantsWrap.style.display =
+        "none";
+
+}
 
         els.confirm.checked =
             false;
