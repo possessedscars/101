@@ -10,7 +10,7 @@
         content="width=device-width,initial-scale=1.0"
     >
 
-    <title>101 • Pedidos</title>
+    <title>1Ø1 • Pedidos</title>
 
     <meta
         name="robots"
@@ -27,540 +27,13 @@
         href="/admin/admin.css"
     >
 
-    <style>
-
-        /* =====================================================
-           PAGE
-        ===================================================== */
-
-        .orders-page .dashboard-main {
-            min-width: 0;
-        }
-
-
-        /* =====================================================
-           FILTERS
-        ===================================================== */
-
-        .orders-toolbar {
-
-            display: grid;
-
-            grid-template-columns:
-                minmax(260px, 1fr)
-                180px
-                180px;
-
-            gap: 10px;
-
-            margin-bottom: 20px;
-
-        }
-
-
-        .orders-toolbar input,
-        .orders-toolbar select {
-
-            width: 100%;
-
-            height: 42px;
-
-            box-sizing: border-box;
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            border-radius: 8px;
-
-            background: #0b0b0b;
-
-            color: #fff;
-
-            padding:
-                0 13px;
-
-            outline: none;
-
-            font-family: inherit;
-
-            font-size: 12px;
-
-        }
-
-
-        .orders-toolbar input::placeholder {
-
-            color: #666;
-
-        }
-
-
-        .orders-toolbar input:focus,
-        .orders-toolbar select:focus {
-
-            border-color:
-                rgba(255,255,255,.28);
-
-        }
-
-
-        .orders-toolbar select {
-
-            cursor: pointer;
-
-        }
-
-/* =========================================================
-   DELETE CONFIRMATION
-========================================================= */
-
-.confirm-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(0,0,0,.82);
-    backdrop-filter: blur(10px);
-}
-
-.confirm-overlay.open {
-    display: flex;
-}
-
-.confirm-modal {
-    width: min(430px, 100%);
-    padding: 30px;
-    border: 1px solid rgba(255,255,255,.10);
-    border-radius: 12px;
-    background: #090909;
-    box-shadow:
-        0 30px 100px rgba(0,0,0,.75),
-        0 0 0 1px rgba(255,255,255,.02);
-    text-align: center;
-    animation: confirmModalIn .18s ease-out;
-}
-
-@keyframes confirmModalIn {
-    from {
-        opacity: 0;
-        transform: translateY(8px) scale(.98);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.confirm-icon {
-    width: 42px;
-    height: 42px;
-    margin: 0 auto 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(255,90,90,.25);
-    border-radius: 50%;
-    color: #ff7373;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.confirm-modal h3 {
-    margin: 8px 0 12px;
-    color: #fff;
-    font-size: 20px;
-    letter-spacing: -.02em;
-}
-
-.confirm-modal p {
-    margin: 0;
-    color: #888;
-    font-size: 12px;
-    line-height: 1.7;
-}
-
-.confirm-modal p strong {
-    color: #fff;
-}
-
-.confirm-warning {
-    display: block;
-    margin-top: 8px;
-    color: #555;
-    font-size: 10px;
-}
-
-.confirm-actions {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 26px;
-}
-
-.confirm-actions .order-action {
-    min-width: 125px;
-}
-
-@media (max-width: 500px) {
-    .confirm-actions {
-        flex-direction: column-reverse;
-    }
-
-    .confirm-actions .order-action {
-        width: 100%;
-    }
-}
-
-        /* =====================================================
-           ACTION BUTTON
-        ===================================================== */
-
-        .order-action {
-
-            height: 38px;
-
-            padding:
-                0 14px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            border-radius: 7px;
-
-            background: #0c0c0c;
-
-            color: #fff;
-
-            cursor: pointer;
-
-            font-family: inherit;
-
-            font-size: 10px;
-
-            letter-spacing: .08em;
-
-            transition:
-                .2s ease;
-
-        }
-
-
-        .order-action:hover {
-
-            background: #151515;
-
-            border-color:
-                rgba(255,255,255,.20);
-
-        }
-
-
-        .order-action.primary {
-
-            background: #fff;
-
-            color: #000;
-
-            border-color: #fff;
-
-        }
-
-
-        .order-action.primary:hover {
-
-            background: #e8e8e8;
-
-        }
-
-
-        .order-action.danger {
-
-            color: #ff7373;
-
-            border-color:
-                rgba(255,80,80,.20);
-
-        }
-
-
-        .order-action.danger:hover {
-
-            background:
-                rgba(255,60,60,.08);
-
-            border-color:
-                rgba(255,80,80,.40);
-
-        }
-
-
-        .order-actions {
-
-            display: flex;
-
-            flex-wrap: wrap;
-
-            gap: 8px;
-
-            margin-top: 24px;
-
-        }
-
-
-        /* =====================================================
-           MODAL
-        ===================================================== */
-
-        .modal-overlay {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 1000;
-
-            display: none;
-
-            align-items: center;
-
-            justify-content: center;
-
-            padding: 20px;
-
-            background:
-                rgba(0,0,0,.78);
-
-            backdrop-filter:
-                blur(8px);
-
-        }
-
-
-        .modal-overlay.open {
-
-            display: flex;
-
-        }
-
-
-        .order-modal {
-
-            width:
-                min(700px,100%);
-
-            max-height: 90vh;
-
-            overflow-y: auto;
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            border-radius: 12px;
-
-            background: #090909;
-
-            box-shadow:
-                0 30px 100px
-                rgba(0,0,0,.65);
-
-            padding: 24px;
-
-        }
-
-
-        .modal-close {
-
-            width: 36px;
-
-            height: 36px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            border-radius: 7px;
-
-            background: #0c0c0c;
-
-            color: #fff;
-
-            cursor: pointer;
-
-            font-size: 18px;
-
-        }
-
-
-        .modal-close:hover {
-
-            background: #161616;
-
-        }
-
-
-        /* =====================================================
-           ORDER DETAILS
-        ===================================================== */
-
-        .order-detail-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    2,
-                    minmax(0,1fr)
-                );
-
-            gap: 12px;
-
-        }
-
-
-        .order-detail {
-
-            padding: 15px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.07);
-
-            border-radius: 8px;
-
-            background:
-                rgba(255,255,255,.025);
-
-        }
-
-
-        .order-detail small {
-
-            display: block;
-
-            margin-bottom: 6px;
-
-            color: #666;
-
-            font-size: 9px;
-
-            letter-spacing: .14em;
-
-            text-transform: uppercase;
-
-        }
-
-
-        .order-detail strong {
-
-            color: #fff;
-
-            font-size: 14px;
-
-            word-break: break-word;
-
-        }
-
-
-        /* =====================================================
-           PARTICIPANTS
-        ===================================================== */
-
-        .participant-list {
-
-            margin-top: 14px;
-
-            display: grid;
-
-            gap: 8px;
-
-        }
-
-
-        .participant-row {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            gap: 15px;
-
-            padding:
-                11px 13px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.07);
-
-            border-radius: 7px;
-
-            background:
-                rgba(255,255,255,.02);
-
-        }
-
-
-        .participant-row strong {
-
-            color: #fff;
-
-            font-size: 12px;
-
-        }
-
-
-        .participant-row span {
-
-            color: #777;
-
-            font-size: 11px;
-
-        }
-
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
-
-        @media (max-width: 900px) {
-
-            .orders-toolbar {
-
-                grid-template-columns: 1fr;
-
-            }
-
-
-            .order-detail-grid {
-
-                grid-template-columns: 1fr;
-
-            }
-
-        }
-
-    </style>
-
 </head>
-
 
 <body class="dashboard-page orders-page">
 
-
 <div class="admin-layout">
 
-
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
+    <!-- SIDEBAR -->
 
     <aside class="sidebar">
 
@@ -574,15 +47,11 @@
 
         </div>
 
-
         <nav>
 
-            <a
-                href="/admin/dashboard.html"
-            >
+            <a href="/admin/dashboard.html">
                 Overview
             </a>
-
 
             <a
                 class="active"
@@ -591,50 +60,36 @@
                 Pedidos
             </a>
 
-
-            <a
-                href="/admin/eventos.html"
-            >
+            <a href="/admin/eventos.html">
                 Eventos
             </a>
 
-
-            <a
-                href="/admin/participantes.html"
-            >
+            <a href="/admin/participantes.html">
                 Participantes
             </a>
 
-
-            <a
-                href="/admin/pulseiras.html"
-            >
+            <a href="/admin/pulseiras.html">
                 Pulseiras
             </a>
 
         </nav>
-
 
         <button
             id="logoutBtn"
             class="logout"
         >
             SAIR
+
             <span>↗</span>
+
         </button>
 
     </aside>
 
 
-
-    <!-- =====================================================
-         MAIN
-    ====================================================== -->
+    <!-- MAIN -->
 
     <main class="dashboard-main">
-
-
-        <!-- HEADER -->
 
         <header class="topbar">
 
@@ -664,13 +119,9 @@
         </header>
 
 
-
-        <!-- =================================================
-             ORDERS
-        ================================================== -->
+        <!-- ORDERS -->
 
         <section class="panel">
-
 
             <div class="panel-head">
 
@@ -686,7 +137,6 @@
 
                 </div>
 
-
                 <button
                     class="ghost"
                     id="refreshBtn"
@@ -697,11 +147,9 @@
             </div>
 
 
-
             <!-- FILTERS -->
 
             <div class="orders-toolbar">
-
 
                 <input
                     id="searchInput"
@@ -710,9 +158,7 @@
                 >
 
 
-                <select
-                    id="statusFilter"
-                >
+                <select id="statusFilter">
 
                     <option value="">
                         Todos os estados
@@ -733,9 +179,7 @@
                 </select>
 
 
-                <select
-                    id="eventFilter"
-                >
+                <select id="eventFilter">
 
                     <option value="">
                         Todos os eventos
@@ -743,9 +187,7 @@
 
                 </select>
 
-
             </div>
-
 
 
             <!-- TABLE -->
@@ -786,17 +228,14 @@
                                 ESTADO
                             </th>
 
-                            <th>
-                            </th>
+                            <th></th>
 
                         </tr>
 
                     </thead>
 
 
-                    <tbody
-                        id="ordersBody"
-                    >
+                    <tbody id="ordersBody">
 
                         <tr>
 
@@ -822,10 +261,9 @@
 </div>
 
 
-
 <!-- =========================================================
      ORDER MODAL
-========================================================== -->
+========================================================= -->
 
 <div
     class="modal-overlay"
@@ -833,7 +271,6 @@
 >
 
     <div class="order-modal">
-
 
         <div
             class="panel-head"
@@ -846,9 +283,7 @@
                     ORDER DETAILS
                 </div>
 
-                <h2
-                    id="modalOrderCode"
-                >
+                <h2 id="modalOrderCode">
                     PEDIDO
                 </h2>
 
@@ -865,60 +300,72 @@
         </div>
 
 
-
-        <!-- DETAILS -->
-
         <div
             class="order-detail-grid"
             id="orderDetails"
-        >
-        </div>
+        ></div>
 
-
-
-        <!-- PARTICIPANTS -->
 
         <div
             id="participantsContainer"
             style="margin-top:24px;"
-        >
-        </div>
+        ></div>
 
-
-
-        <!-- ACTIONS -->
 
         <div
             class="order-actions"
             id="orderActions"
-        >
-        </div>
-
+        ></div>
 
     </div>
 
 </div>
 
-<!-- CONFIRM DELETE MODAL -->
-<div class="confirm-overlay" id="confirmDeleteModal">
+
+<!-- =========================================================
+     DELETE CONFIRMATION
+========================================================= -->
+
+<div
+    class="confirm-overlay"
+    id="confirmDeleteModal"
+>
+
     <div class="confirm-modal">
 
-        <div class="confirm-icon">!</div>
+        <div class="confirm-icon">
+            !
+        </div>
 
-        <div class="eyebrow">CONFIRMAR AÇÃO</div>
 
-        <h3>ELIMINAR PEDIDO?</h3>
+        <div class="eyebrow">
+            CONFIRMAR AÇÃO
+        </div>
+
+
+        <h3>
+            ELIMINAR PEDIDO?
+        </h3>
+
 
         <p>
+
             Tens a certeza que queres eliminar
-            <strong id="confirmDeleteOrder"></strong>?
+
+            <strong id="confirmDeleteOrder">
+                —
+            </strong>?
+
         </p>
+
 
         <span class="confirm-warning">
             Esta ação não pode ser anulada.
         </span>
 
+
         <div class="confirm-actions">
+
             <button
                 type="button"
                 class="order-action"
@@ -927,6 +374,7 @@
                 CANCELAR
             </button>
 
+
             <button
                 type="button"
                 class="order-action danger"
@@ -934,18 +382,18 @@
             >
                 ELIMINAR PEDIDO
             </button>
+
         </div>
 
     </div>
+
 </div>
 
-<script src="/admin/pedidos.js" defer></script>
 
 <script
     src="/admin/pedidos.js"
     defer
 ></script>
-
 
 </body>
 
