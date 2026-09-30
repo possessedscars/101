@@ -354,7 +354,7 @@
             <div class="pz-field">
 
                 <label>
-                    NOME DA PERSONAGEM (IC)
+                    NOME DA PESSOA (IC)
                 </label>
 
                 <input
@@ -442,7 +442,7 @@
                 line-height:1.5;
             "
         >
-            Indica o nome da personagem de cada pessoa
+            Indica o nome da pessoa de cada pessoa
             que vai utilizar uma das pulseiras.
         </div>
 
@@ -1110,7 +1110,7 @@ renderParticipantFields();
                 type="text"
                 class="pz-participant-input"
                 data-participant-index="${i}"
-                placeholder="Nome da personagem"
+                placeholder="Nome da pessoa"
                 autocomplete="off"
             >
         `;
