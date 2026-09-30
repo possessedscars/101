@@ -493,27 +493,32 @@
     // LOGOUT
     // =========================================================
 
-    document
-        .getElementById("logoutBtn")
-        ?.addEventListener(
-            "click",
-            async () => {
+logoutBtn?.addEventListener("click", async () => {
 
-                await fetch(
-                    "/api/auth/logout",
-                    {
-                        method: "POST",
-                        credentials: "same-origin"
-                    }
-                );
+    try {
 
-                location.replace(
-                    "/admin/"
-                );
+        await fetch(
+            "/api/auth/logout",
+            {
+                method: "POST",
+                credentials: "same-origin"
             }
         );
 
+    } catch (error) {
 
+        console.error(
+            "[101] LOGOUT:",
+            error
+        );
+
+    } finally {
+
+        location.replace("/admin/");
+
+    }
+
+});
     // =========================================================
     // INICIALIZAÇÃO
     // =========================================================
