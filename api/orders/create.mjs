@@ -1,95 +1,159 @@
-import { put } from '@vercel/blob';
-import { json } from './_session.mjs';
-
-const MAX_QTY = 8;
-
-function clean(value, max = 500) {
-  return typeof value === 'string' ? value.trim().slice(0, max) : '';
-}
+import { put } from "@vercel/blob";
 
 export default async function handler(request) {
-  if (request.method !== 'POST') {
-    return json({ error: 'Método não permitido.' }, 405);
-  }
 
-  try {
-    const body = await request.json();
-
-    const orderCode = clean(body?.orderCode, 40).toUpperCase();
-    const event = clean(body?.event, 120);
-    const eventSlug = clean(body?.eventSlug, 120).toLowerCase();
-    const customer = clean(body?.customer, 160);
-    const discord = clean(body?.discord, 160);
-    const contact = clean(body?.contact, 80);
-    const quantity = Number(body?.quantity);
-    const unitPrice = Number(body?.unitPrice);
-    const currency = clean(body?.currency, 8) || '$';
-    const participants = Array.isArray(body?.participants)
-      ? body.participants.map(name => clean(name, 120)).filter(Boolean).slice(0, MAX_QTY)
-      : [];
-
-    if (!/^101-[A-Z0-9]{3}-[A-Z0-9]{6}$/.test(orderCode)) {
-      return json({ error: 'Código de pedido inválido.' }, 400);
+    if (request.method !== "POST") {
+        return new Response(
+            JSON.stringify({
+                error: "Método não permitido."
+            }),
+            {
+                status: 405,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
     }
 
-    if (!event || !customer || !discord) {
-      return json({ error: 'Dados do pedido incompletos.' }, 400);
+    try {
+
+        const body = await request.json();
+
+        console.log("[101] Dados recebidos:", {
+            orderCode: body?.orderCode,
+            evento: body?.evento,
+            nome: body?.nome,
+            quantidade: body?.quantidade
+        });
+
+        const {
+            orderCode,
+            evento,
+            eventoSlug,
+            nome,
+            discord,
+            contacto,
+            quantidade,
+            precoUnitario,
+            moeda,
+            total,
+            participantes,
+            estado
+        } = body;
+
+        if (!orderCode || !evento || !nome) {
+
+            return new Response(
+                JSON.stringify({
+                    error: "Dados do pedido incompletos."
+                }),
+                {
+                    status: 400,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+        }
+
+        const order = {
+
+            orderCode,
+
+            evento,
+
+            eventoSlug: eventoSlug || "",
+
+            nome,
+
+            discord: discord || "",
+
+            contacto: contacto || "",
+
+            quantidade: Number(
+                quantidade || 1
+            ),
+
+            precoUnitario: Number(
+                precoUnitario || 0
+            ),
+
+            moeda: moeda || "€",
+
+            total: Number(
+                total || 0
+            ),
+
+            participantes:
+                Array.isArray(participantes)
+                    ? participantes
+                    : [nome],
+
+            estado:
+                estado || "pendente",
+
+            criadoEm:
+                new Date().toISOString()
+
+        };
+
+        console.log(
+            "[101] A tentar guardar no Vercel Blob..."
+        );
+
+        const blob = await put(
+            `orders/${orderCode}.json`,
+            JSON.stringify(order, null, 2),
+            {
+                access: "private"
+            }
+        );
+
+        console.log(
+            "[101] Pedido guardado:",
+            blob.url
+        );
+
+        return new Response(
+            JSON.stringify({
+                ok: true,
+                orderCode
+            }),
+            {
+                status: 201,
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                }
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "[101] ERRO REAL DO BLOB:",
+            error
+        );
+
+        return new Response(
+            JSON.stringify({
+                error: "Falha ao guardar o pedido.",
+                details:
+                    error instanceof Error
+                        ? error.message
+                        : String(error)
+            }),
+            {
+                status: 500,
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                }
+            }
+        );
+
     }
 
-    if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_QTY) {
-      return json({ error: 'Quantidade inválida.' }, 400);
-    }
-
-    if (!Number.isFinite(unitPrice) || unitPrice < 0) {
-      return json({ error: 'Preço inválido.' }, 400);
-    }
-
-    if (participants.length !== quantity) {
-      return json({ error: 'A lista de participantes não corresponde à quantidade.' }, 400);
-    }
-
-    const total = Number((quantity * unitPrice).toFixed(2));
-    const createdAt = new Date().toISOString();
-
-    const order = {
-      orderCode,
-      event,
-      eventSlug,
-      customer,
-      discord,
-      contact,
-      quantity,
-      unitPrice,
-      total,
-      currency,
-      participants,
-      status: 'AGUARDA VALIDAÇÃO',
-      createdAt,
-      updatedAt: createdAt
-    };
-
-    const blob = await put(
-      `orders/${orderCode}.json`,
-      JSON.stringify(order, null, 2),
-      {
-        access: 'private',
-        addRandomSuffix: false,
-        contentType: 'application/json'
-      }
-    );
-
-    return json({ ok: true, orderCode, pathname: blob.pathname }, 201);
-  } catch (error) {
-    console.error('[101] orders/create:', error);
-
-    if (error?.code === 'blob_store_not_found') {
-      return json({ error: 'Storage da Vercel não está configurado.' }, 500);
-    }
-
-    if (error?.name === 'BlobAlreadyExistsError') {
-      return json({ error: 'Este pedido já está registado.' }, 409);
-    }
-
-    return json({ error: 'Não foi possível guardar o pedido.' }, 500);
-  }
 }
