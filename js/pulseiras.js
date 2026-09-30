@@ -1379,21 +1379,8 @@ function openModal(presetQty) {
 
     function generateOrderCode() {
 
-        const prefix =
-            (
-                cfg.eventoSlug ||
-                "101"
-            )
-                .replace(
-                    /[^a-z0-9]/gi,
-                    ""
-                )
-                .slice(
-                    0,
-                    4
-                )
-                .toUpperCase() ||
-            "101";
+        // Prefixo fixo: o código não revela o nome do evento
+        const prefix = "PULS";
 
 
         const random =
