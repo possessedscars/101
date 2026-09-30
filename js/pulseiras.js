@@ -16,7 +16,7 @@
 
     let activeEventSlug = "";
     const MAX_IMG_MB = 8;
-    const PAYMENT_IBAN = "ALT4263227";
+    const PAYMENT_IBAN = "ALTF4263227";
     const state = {
         qty: 1,
         file: null,
