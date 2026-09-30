@@ -10,7 +10,7 @@ function clean(value, max = 500) {
 export default async function handler(request) {
   if (request.method !== 'POST') {
     return json({ error: 'Método não permitido.' }, 405);
-  
+  }
 
   try {
     const body = await request.json();
