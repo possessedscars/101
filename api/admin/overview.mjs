@@ -1,42 +1,14 @@
-const blob = require("@vercel/blob");
+import { list, get } from "@vercel/blob";
+import { readSession } from "../auth/_session.mjs";
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
 
     console.log("[101] ADMIN OVERVIEW - INICIO");
-
-    if (req.method !== "GET") {
-        return res.status(405).json({
-            ok: false,
-            error: "Método não permitido."
-        });
-    }
 
     try {
 
         // =====================================================
-        // CARREGAR SESSION ESM
-        // =====================================================
-
-        const sessionModule =
-            await import("../auth/_session.mjs");
-
-        const readSession =
-            sessionModule.readSession;
-
-        if (typeof readSession !== "function") {
-
-            console.error(
-                "[101] readSession não é uma função."
-            );
-
-            return res.status(500).json({
-                ok: false,
-                error: "Sistema de sessão inválido."
-            });
-        }
-
-        // =====================================================
-        // VALIDAR SESSÃO
+        // SESSÃO
         // =====================================================
 
         const session = readSession(req);
@@ -44,7 +16,7 @@ module.exports = async function handler(req, res) {
         if (!session) {
 
             console.log(
-                "[101] ADMIN OVERVIEW - SEM SESSÃO"
+                "[101] ADMIN OVERVIEW - SEM SESSAO"
             );
 
             return res.status(401).json({
@@ -54,62 +26,142 @@ module.exports = async function handler(req, res) {
         }
 
         console.log(
-            "[101] ADMIN OVERVIEW - SESSÃO OK"
+            "[101] ADMIN OVERVIEW - SESSAO OK"
         );
 
+
         // =====================================================
-        // LISTAR PEDIDOS NO VERCEL BLOB
+        // LISTAR PEDIDOS
         // =====================================================
 
-        const result = await blob.list({
+        const result = await list({
             prefix: "orders/",
             access: "private"
         });
 
         console.log(
-            "[101] ADMIN OVERVIEW - BLOBs:",
+            "[101] ADMIN OVERVIEW - BLOBS:",
             result.blobs?.length || 0
         );
+
 
         const orders = [];
         const participants = [];
         const eventsMap = {};
 
+
+        // =====================================================
+        // FUNÇÃO PARA LER STREAM DO BLOB
+        // =====================================================
+
+        async function streamToText(stream) {
+
+            if (!stream) {
+                return "";
+            }
+
+            const reader =
+                stream.getReader();
+
+            const decoder =
+                new TextDecoder();
+
+            let text = "";
+
+            while (true) {
+
+                const {
+                    done,
+                    value
+                } = await reader.read();
+
+                if (done) {
+                    break;
+                }
+
+                text += decoder.decode(
+                    value,
+                    {
+                        stream: true
+                    }
+                );
+            }
+
+            text += decoder.decode();
+
+            return text;
+        }
+
+
         // =====================================================
         // LER CADA PEDIDO
         // =====================================================
 
-        for (const item of result.blobs || []) {
+        for (const blob of result.blobs || []) {
 
             try {
 
-                const response =
-                    await blob.get(
-                        item.pathname,
+                console.log(
+                    "[101] A LER:",
+                    blob.pathname
+                );
+
+
+                const blobResult =
+                    await get(
+                        blob.pathname,
                         {
                             access: "private"
                         }
                     );
 
-                if (!response) {
+
+                if (
+                    !blobResult ||
+                    blobResult.statusCode !== 200
+                ) {
+
+                    console.warn(
+                        "[101] BLOB NÃO DISPONÍVEL:",
+                        blob.pathname,
+                        blobResult?.statusCode
+                    );
+
                     continue;
                 }
 
+
                 const text =
-                    await response.text();
+                    await streamToText(
+                        blobResult.stream
+                    );
+
 
                 const order =
                     JSON.parse(text);
+
+
+                console.log(
+                    "[101] PEDIDO LIDO:",
+                    order.orderCode
+                );
+
+
+                // =================================================
+                // DADOS NORMALIZADOS
+                // =================================================
 
                 const eventName =
                     order.evento ||
                     order.eventoSlug ||
                     "Evento 1Ø1";
 
+
                 const quantity =
                     Number(
                         order.quantidade || 0
                     );
+
 
                 // =================================================
                 // PEDIDO
@@ -129,18 +181,19 @@ module.exports = async function handler(req, res) {
                     bracelets:
                         quantity,
 
+                    total:
+                        Number(
+                            order.total || 0
+                        ),
+
                     status:
                         String(
                             order.estado ||
                             "pendente"
-                        ).toUpperCase(),
-
-                    total:
-                        Number(
-                            order.total || 0
-                        )
+                        ).toUpperCase()
 
                 });
+
 
                 // =================================================
                 // EVENTO
@@ -162,10 +215,12 @@ module.exports = async function handler(req, res) {
                     };
                 }
 
+
                 eventsMap[eventName].orders += 1;
 
                 eventsMap[eventName].bracelets +=
                     quantity;
+
 
                 // =================================================
                 // PARTICIPANTES
@@ -178,11 +233,13 @@ module.exports = async function handler(req, res) {
                         ? order.participantes
                         : [order.nome];
 
+
                 for (const name of names) {
 
                     if (!name) {
                         continue;
                     }
+
 
                     participants.push({
 
@@ -204,15 +261,18 @@ module.exports = async function handler(req, res) {
                     });
                 }
 
+
             } catch (error) {
 
                 console.error(
-                    "[101] ERRO A LER PEDIDO:",
-                    item.pathname,
+                    "[101] ERRO A LER BLOB:",
+                    blob.pathname,
                     error
                 );
+
             }
         }
+
 
         // =====================================================
         // ESTATÍSTICAS
@@ -225,7 +285,10 @@ module.exports = async function handler(req, res) {
 
             bracelets:
                 orders.reduce(
-                    (total, order) =>
+                    (
+                        total,
+                        order
+                    ) =>
                         total +
                         Number(
                             order.bracelets || 0
@@ -246,10 +309,12 @@ module.exports = async function handler(req, res) {
 
         };
 
+
         console.log(
             "[101] ADMIN OVERVIEW - STATS:",
             stats
         );
+
 
         // =====================================================
         // RESPOSTA
@@ -275,12 +340,14 @@ module.exports = async function handler(req, res) {
 
         });
 
+
     } catch (error) {
 
         console.error(
             "[101] ADMIN OVERVIEW - ERRO:",
             error
         );
+
 
         return res.status(500).json({
 
@@ -291,5 +358,6 @@ module.exports = async function handler(req, res) {
                 "Erro interno no dashboard."
 
         });
+
     }
-};
+}
