@@ -920,8 +920,6 @@ async function deleteOrder(orderCode) {
     // LOGOUT
     // =========================================================
 
-const logoutBtn = document.getElementById("logoutBtn");
-
 logoutBtn?.addEventListener("click", async () => {
 
     logoutBtn.disabled = true;
