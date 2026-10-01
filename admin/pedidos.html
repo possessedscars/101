@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1.0"
+    >
+
+    <title>1Ø1 • Pedidos</title>
+
+    <meta
+        name="robots"
+        content="noindex,nofollow,noarchive"
+    >
+
+    <link
+        rel="icon"
+        href="/assets/logo/favicon.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/admin.css"
+    >
+
+</head>
+
+<body class="dashboard-page orders-page">
+
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <span>1Ø1</span>
+
+            <small>
+                ADMIN
+            </small>
+
+        </div>
+
+        <nav>
+
+            <a href="/admin/dashboard.html">
+                Overview
+            </a>
+
+            <a
+                class="active"
+                href="/admin/pedidos.html"
+            >
+                Pedidos
+            </a>
+
+            <a href="/admin/eventos.html">
+                Eventos
+            </a>
+
+            <a href="/admin/participantes.html">
+                Participantes
+            </a>
+
+            <a href="/admin/pulseiras.html">
+                Pulseiras
+            </a>
+
+        </nav>
+
+        <button
+            id="logoutBtn"
+            class="logout"
+        >
+            SAIR
+
+            <span>↗</span>
+
+        </button>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="dashboard-main">
+
+        <header class="topbar">
+
+            <div>
+
+                <div class="eyebrow">
+                    MANAGEMENT
+                </div>
+
+                <h1>
+                    PEDIDOS
+                </h1>
+
+            </div>
+
+
+            <div class="user-pill">
+
+                <span class="dot"></span>
+
+                <span id="userEmail">
+                    —
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- ORDERS -->
+
+        <section class="panel">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <div class="eyebrow">
+                        TICKETING
+                    </div>
+
+                    <h2>
+                        TODOS OS PEDIDOS
+                    </h2>
+
+                </div>
+
+                <button
+                    class="ghost"
+                    id="refreshBtn"
+                >
+                    ATUALIZAR ↻
+                </button>
+
+            </div>
+
+
+            <!-- FILTERS -->
+
+            <div class="orders-toolbar">
+
+                <input
+                    id="searchInput"
+                    type="search"
+                    placeholder="Pesquisar pedido, cliente ou Discord..."
+                >
+
+
+                <select id="statusFilter">
+
+                    <option value="">
+                        Todos os estados
+                    </option>
+
+                    <option value="PENDENTE">
+                        Pendente
+                    </option>
+
+                    <option value="PAGO">
+                        Pago
+                    </option>
+
+                    <option value="CONFIRMADO">
+                        Confirmado
+                    </option>
+
+                </select>
+
+
+                <select id="eventFilter">
+
+                    <option value="">
+                        Todos os eventos
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                PEDIDO
+                            </th>
+
+                            <th>
+                                EVENTO
+                            </th>
+
+                            <th>
+                                CLIENTE
+                            </th>
+
+                            <th>
+                                DISCORD
+                            </th>
+
+                            <th>
+                                PULSEIRAS
+                            </th>
+
+                            <th>
+                                VALOR
+                            </th>
+
+                            <th>
+                                ESTADO
+                            </th>
+
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="ordersBody">
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="empty"
+                            >
+                                A carregar…
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     ORDER MODAL
+========================================================= -->
+
+<div
+    class="modal-overlay"
+    id="orderModal"
+>
+
+    <div class="order-modal">
+
+        <div
+            class="panel-head"
+            style="margin-bottom:22px;"
+        >
+
+            <div>
+
+                <div class="eyebrow">
+                    ORDER DETAILS
+                </div>
+
+                <h2 id="modalOrderCode">
+                    PEDIDO
+                </h2>
+
+            </div>
+
+
+            <button
+                class="modal-close"
+                id="closeModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            class="order-detail-grid"
+            id="orderDetails"
+        ></div>
+
+
+        <div
+            id="participantsContainer"
+            style="margin-top:24px;"
+        ></div>
+
+
+        <div
+            class="order-actions"
+            id="orderActions"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DELETE CONFIRMATION
+========================================================= -->
+
+<div
+    class="confirm-overlay"
+    id="confirmDeleteModal"
+>
+
+    <div class="confirm-modal">
+
+        <div class="confirm-icon">
+            !
+        </div>
+
+
+        <div class="eyebrow">
+            CONFIRMAR AÇÃO
+        </div>
+
+
+        <h3>
+            ELIMINAR PEDIDO?
+        </h3>
+
+
+        <p>
+
+            Tens a certeza que queres eliminar
+
+            <strong id="confirmDeleteOrder">
+                —
+            </strong>?
+
+        </p>
+
+
+        <span class="confirm-warning">
+            Esta ação não pode ser anulada.
+        </span>
+
+
+        <div class="confirm-actions">
+
+            <button
+                type="button"
+                class="order-action"
+                id="cancelDeleteBtn"
+            >
+                CANCELAR
+            </button>
+
+
+            <button
+                type="button"
+                class="order-action danger"
+                id="confirmDeleteBtn"
+            >
+                ELIMINAR PEDIDO
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script
+    src="/admin/pedidos.js"
+    defer
+></script>
+
+</body>
+
+</html>

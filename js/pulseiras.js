@@ -1,23 +1,12 @@
 /* ==========================================================
    1Ø1 • SISTEMA DE PULSEIRAS
-   Versão otimizada
    ========================================================== */
-
 (function () {
-
     "use strict";
 
-
-    /* =====================================================
-       CONFIGURAÇÃO
-    ===================================================== */
-/* =====================================================
-   CONFIGURAÇÃO GLOBAL
-===================================================== */
-
     const cfg = Object.assign({
-        evento: "Evento 1Ø1",
-        eventoSlug: "evento",
+        evento: "",
+        eventoSlug: "",
         data: "",
         preco: 100,
         moeda: "$",
@@ -25,805 +14,135 @@
         webhookUrl: ""
     }, window.PULSEIRAS_CONFIG || {});
 
-
-let activeEventSlug = null;
-
-function getEventSlugFromUrl(url) {
-
-    if (!url) {
-        return "";
-    }
-
-    try {
-
-        const parsed = new URL(
-            url,
-            window.location.origin
-        );
-
-        const match =
-            parsed.pathname.match(
-                /\/eventos\/([^/]+?)(?:\.html)?$/i
-            );
-
-        if (match && match[1]) {
-
-            return match[1]
-                .replace(/[-_]+/g, "-")
-                .toLowerCase();
-
-        }
-
-    } catch (error) {
-
-        console.warn(
-            "[101] Não foi possível detetar o evento:",
-            error
-        );
-
-    }
-
-    return "";
-}
-
-
-function getCurrentEventSlug() {
-
-    // 1. Evento definido pelo botão clicado
-    if (activeEventSlug) {
-        return activeEventSlug;
-    }
-
-    // 2. Evento diretamente pelo URL
-    const fromUrl =
-        getEventSlugFromUrl(
-            window.location.href
-        );
-
-    if (fromUrl) {
-        return fromUrl;
-    }
-
-    // 3. Fallback para configuração existente
-    if (cfg.eventoSlug) {
-        return cfg.eventoSlug;
-    }
-
-    return "";
-}
-
-
-function getAutomaticEventName() {
-
-    // 1. Se estamos numa página de evento,
-    // deteta automaticamente pelo URL.
-    const slug = getCurrentEventSlug();
-
-    if (slug) {
-        return slug
-            .replace(/[-_]+/g, " ")
-            .replace(/\b\w/g, char => char.toUpperCase());
-    }
-
-    // 2. Tenta usar o título da página
-    const title = document.title || "";
-
-    if (title.includes("•")) {
-
-        const titleEvent = title
-            .split("•")
-            .slice(1)
-            .join("•")
-            .trim();
-
-        if (titleEvent) {
-            return titleEvent;
-        }
-    }
-
-    // 3. Tenta encontrar o título principal
-    const heading = document.querySelector(
-        "h1[data-event-name], .event-title, .hero-title, h1"
-    );
-
-    if (heading) {
-
-        const headingText = heading.textContent
-            .replace(/\s+/g, " ")
-            .trim();
-
-        if (headingText) {
-            return headingText;
-        }
-    }
-
-    return "EVENTO 1Ø1";
-}
-
-
-if (
-    !window.PULSEIRAS_CONFIG?.evento ||
-    window.PULSEIRAS_CONFIG.evento.trim() === ""
-) {
-
-    cfg.evento = getAutomaticEventName();
-
-}
+    let activeEventSlug = "";
     const MAX_IMG_MB = 8;
-    const PAYMENT_IBAN = "ALT4263227";
-
-
+    const PAYMENT_IBAN = "ALTF4263227";
     const state = {
-
         qty: 1,
-
         file: null,
-
         previewUrl: null,
-
         step: 1,
-
         sending: false
-
     };
 
+    let els = {};
+    let pausedBackgroundVideos = [];
 
-    /* =====================================================
-       MODAL
-    ===================================================== */
+    /* ==========================================================
+       DETEÇÃO AUTOMÁTICA DO EVENTO
+       ========================================================== */
 
-    function buildModal() {
+    function getEventSlugFromUrl(url) {
 
-        const wrap =
-            document.createElement("div");
+        if (!url) return "";
 
+        try {
 
-        wrap.innerHTML = `
+            const parsed = new URL(
+                url,
+                window.location.origin
+            );
 
-        <div
-            class="pz-overlay"
-            id="pzOverlay"
-        >
+            const match = parsed.pathname.match(
+                /\/eventos\/([^/]+?)(?:\.html)?\/?$/i
+            );
 
-            <div
-                class="pz-modal"
-                role="dialog"
-                aria-modal="true"
-            >
+            return match && match[1]
+                ? match[1]
+                    .replace(/[-_]+/g, "-")
+                    .toLowerCase()
+                : "";
 
-                <button
-                    class="pz-close"
-                    id="pzClose"
-                    aria-label="Fechar"
-                    type="button"
-                >
-                    ✕
-                </button>
+        } catch (error) {
 
+            console.warn(
+                "[101] Não foi possível detetar o evento:",
+                error
+            );
 
-                <!-- PROGRESSO -->
+            return "";
+        }
+    }
 
-                <div class="pz-steps-track">
 
-                    <span
-                        data-step="1"
-                        class="active"
-                    ></span>
+    function getCurrentEventSlug() {
 
-                    <span data-step="2"></span>
-
-                    <span data-step="3"></span>
-
-                    <span data-step="4"></span>
-
-                </div>
-
-
-                <!-- =================================================
-                     STEP 1
-                ================================================== -->
-
-                <div
-                    class="pz-step active"
-                    data-step="1"
-                >
-
-                    <span class="pz-eyebrow">
-                        ${escapeHtml(
-                            cfg.evento.toUpperCase()
-                        )}
-                    </span>
-
-
-                    <h3>
-                        ESCOLHE A QUANTIDADE
-                    </h3>
-
-
-                    <p class="pz-sub">
-                        Cada pulseira dá acesso ao evento.
-                        Escolhe a quantidade que pretendes.
-                    </p>
-
-
-                    <div class="pz-summary-row">
-
-                        <div class="qty-control">
-
-                            <button
-                                type="button"
-                                class="qty-btn"
-                                id="pzModalMinus"
-                            >
-                                −
-                            </button>
-
-
-                            <span
-                                class="qty-value"
-                                id="pzModalQty"
-                            >
-                                1
-                            </span>
-
-
-                            <button
-                                type="button"
-                                class="qty-btn"
-                                id="pzModalPlus"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-
-                        <div style="text-align:right">
-
-                            <div
-                                style="
-                                    color:#999;
-                                    font-size:12px;
-                                    letter-spacing:1px;
-                                "
-                            >
-                                PREÇO UNITÁRIO
-                            </div>
-
-
-                            <strong
-                                style="font-size:20px"
-                            >
-                                ${cfg.moeda}${cfg.preco}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="pz-total-line">
-
-                        <span
-                            style="
-                                color:#999;
-                                font-size:13px;
-                                letter-spacing:2px;
-                            "
-                        >
-                            TOTAL A PAGAR
-                        </span>
-
-
-                        <strong id="pzModalTotal">
-                            ${cfg.moeda}${cfg.preco}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="pz-actions">
-
-                        <button
-                            type="button"
-                            class="pz-btn pz-btn-primary"
-                            id="pzToStep2"
-                            style="flex:1"
-                        >
-                            CONTINUAR →
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- =================================================
-                     STEP 2
-                ================================================== -->
-
-                <div
-                    class="pz-step"
-                    data-step="2"
-                >
-
-                    <span class="pz-eyebrow">
-                        OS TEUS DADOS
-                    </span>
-
-
-                    <h3>
-                        QUEM VAI LEVANTAR
-                    </h3>
-
-
-                    <p class="pz-sub">
-                        Introduz os teus dados para associarmos
-                        o pagamento ao pedido.
-                    </p>
-
-
-                    <div class="pz-field">
-
-                        <label>
-                            NOME DA PERSONAGEM (IC)
-                        </label>
-
-                        <input
-                            type="text"
-                            id="pzNome"
-                            placeholder="Ex: John Doe"
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-
-                    <div class="pz-field">
-
-                        <label>
-                            DISCORD (UTILIZADOR)
-                        </label>
-
-                        <input
-                            type="text"
-                            id="pzDiscord"
-                            placeholder="Ex: nome_utilizador"
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-
-                    <div class="pz-field">
-
-                        <label>
-                            CONTACTO / TELEMÓVEL
-                        </label>
-
-                        <input
-                            type="text"
-                            id="pzContacto"
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-
-                    <div
-                        class="pz-error"
-                        id="pzErrorStep2"
-                    >
-                        Preenche o nome e o Discord para continuar.
-                    </div>
-
-
-                    <div class="pz-actions">
-
-                        <button
-                            type="button"
-                            class="pz-btn pz-btn-ghost"
-                            data-back="1"
-                        >
-                            ← VOLTAR
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="pz-btn pz-btn-primary"
-                            id="pzToStep3"
-                        >
-                            CONTINUAR →
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- =================================================
-                     STEP 3 • PAGAMENTO
-                ================================================== -->
-
-                <div
-                    class="pz-step"
-                    data-step="3"
-                >
-
-                    <span class="pz-eyebrow">
-                        PAGAMENTO
-                    </span>
-
-
-                    <h3>
-                        FAZ A TRANSFERÊNCIA
-                    </h3>
-
-
-                    <p class="pz-sub">
-                        Faz a transferência para o
-                        <strong>IBAN ${PAYMENT_IBAN}</strong>
-                        no valor indicado abaixo.
-                        Depois, tira um print da transação
-                        e envia-o como comprovativo.
-                    </p>
-
-
-                    <!-- PAGAMENTO -->
-
-                    <div
-                        style="
-                            margin:24px 0;
-                            padding:22px;
-                            border:1px solid rgba(255,32,32,.35);
-                            border-radius:18px;
-                            background:
-                                linear-gradient(
-                                    135deg,
-                                    rgba(255,32,32,.10),
-                                    rgba(255,255,255,.025)
-                                );
-                        "
-                    >
-
-                        <div
-                            style="
-                                display:flex;
-                                justify-content:space-between;
-                                align-items:center;
-                                gap:20px;
-                            "
-                        >
-
-                            <div>
-
-                                <div
-                                    style="
-                                        font-size:10px;
-                                        letter-spacing:2px;
-                                        color:#999;
-                                        margin-bottom:7px;
-                                    "
-                                >
-                                    IBAN
-                                </div>
-
-
-                                <strong
-                                    style="
-                                        font-size:30px;
-                                        letter-spacing:3px;
-                                    "
-                                >
-                                    ${PAYMENT_IBAN}
-                                </strong>
-
-                            </div>
-
-
-                            <div
-                                style="text-align:right"
-                            >
-
-                                <div
-                                    style="
-                                        font-size:10px;
-                                        letter-spacing:2px;
-                                        color:#999;
-                                        margin-bottom:7px;
-                                    "
-                                >
-                                    VALOR A TRANSFERIR
-                                </div>
-
-
-                                <strong
-                                    id="pzPaymentTotal"
-                                    style="
-                                        font-size:28px;
-                                    "
-                                >
-                                    ${cfg.moeda}${cfg.preco}
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-
-                        <div
-                            style="
-                                height:1px;
-                                background:rgba(255,255,255,.08);
-                                margin:18px 0;
-                            "
-                        ></div>
-
-
-                        <div
-                            style="
-                                font-size:12px;
-                                line-height:1.6;
-                                color:#aaa;
-                            "
-                        >
-
-                            <strong style="color:#fff">
-                                IMPORTANTE:
-                            </strong>
-
-                            A transferência tem de ser feita
-                            para o
-
-                            <strong style="color:#fff">
-                                IBAN ${PAYMENT_IBAN}
-                            </strong>.
-
-                            Depois de concluíres o pagamento,
-
-                            <strong style="color:#fff">
-                                tira um print da transação
-                            </strong>
-
-                            e envia-o abaixo.
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- COMPROVATIVO -->
-
-                    <div
-                        style="
-                            font-size:11px;
-                            letter-spacing:2px;
-                            color:#999;
-                            margin-bottom:10px;
-                        "
-                    >
-                        COMPROVATIVO DE PAGAMENTO
-                    </div>
-
-
-                    <label
-                        class="pz-dropzone"
-                        id="pzDropzone"
-                    >
-
-                        <input
-                            type="file"
-                            id="pzFile"
-                            accept="image/png,image/jpeg,image/jpg"
-                        >
-
-
-                        <div class="pz-drop-icon">
-                            📎
-                        </div>
-
-
-                        <strong>
-                            CLICA OU ARRASTA O PRINT PARA AQUI
-                        </strong>
-
-
-                        <small>
-                            PNG ou JPG • até ${MAX_IMG_MB}MB
-                        </small>
-
-                    </label>
-
-
-                    <!-- PREVIEW -->
-
-                    <div
-                        class="pz-preview"
-                        id="pzPreview"
-                    >
-
-                        <img
-                            id="pzPreviewImg"
-                            alt="Pré-visualização"
-                        >
-
-
-                        <span
-                            class="pz-preview-name"
-                            id="pzPreviewName"
-                        ></span>
-
-
-                        <button
-                            type="button"
-                            class="pz-preview-remove"
-                            id="pzPreviewRemove"
-                        >
-                            REMOVER
-                        </button>
-
-                    </div>
-
-
-                    <!-- CONFIRMAÇÃO -->
-
-                    <label class="pz-checkbox">
-
-                        <input
-                            type="checkbox"
-                            id="pzConfirm"
-                        >
-
-
-                        <span>
-
-                            Confirmo que fiz a transferência
-                            para o
-
-                            <strong>
-                                IBAN ${PAYMENT_IBAN}
-                            </strong>
-
-                            e que o comprovativo enviado
-                            corresponde a uma transferência real.
-
-                        </span>
-
-                    </label>
-
-
-                    <div
-                        class="pz-error"
-                        id="pzErrorStep3"
-                    >
-                        Faz a transferência para o
-                        IBAN ${PAYMENT_IBAN},
-                        envia o print e confirma a caixa
-                        acima para continuar.
-                    </div>
-
-
-                    <div class="pz-actions">
-
-                        <button
-                            type="button"
-                            class="pz-btn pz-btn-ghost"
-                            data-back="2"
-                        >
-                            ← VOLTAR
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="pz-btn pz-btn-primary"
-                            id="pzSubmit"
-                        >
-
-                            <span id="pzSubmitLabel">
-                                CONFIRMAR PEDIDO →
-                            </span>
-
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        class="pz-error"
-                        id="pzErrorSubmit"
-                    >
-                        Não foi possível enviar o pedido.
-                    </div>
-
-                </div>
-
-
-                <!-- =================================================
-                     STEP 4
-                ================================================== -->
-
-                <div
-                    class="pz-step"
-                    data-step="4"
-                >
-
-                    <div class="pz-success">
-
-                        <div class="pz-success-icon">
-                            ✓
-                        </div>
-
-
-                        <h3>
-                            PEDIDO ENVIADO!
-                        </h3>
-
-
-                        <p class="pz-sub">
-
-                            O teu pedido foi enviado para
-                            a equipa da 1Ø1.
-
-                            Assim que o comprovativo for
-                            validado, a tua pulseira fica
-                            confirmada.
-
-                        </p>
-
-
-                        <div class="pz-order-code">
-
-                            <span id="pzOrderCode">
-                                101-0000
-                            </span>
-
-
-                            <button
-                                type="button"
-                                id="pzCopyCode"
-                            >
-                                COPIAR
-                            </button>
-
-                        </div>
-
-
-                        <div class="pz-actions">
-
-                            <button
-                                type="button"
-                                class="pz-btn pz-btn-primary"
-                                id="pzFinish"
-                                style="flex:1"
-                            >
-                                CONCLUIR
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        `;
-
-
-        document.body.appendChild(
-            wrap.firstElementChild
+        return (
+            activeEventSlug ||
+            getEventSlugFromUrl(
+                window.location.href
+            ) ||
+            cfg.eventoSlug ||
+            ""
         );
 
     }
 
 
-    /* =====================================================
+    function getAutomaticEventName() {
+
+        const slug =
+            getCurrentEventSlug();
+
+        if (slug) {
+
+            return slug
+                .replace(/[-_]+/g, " ")
+                .replace(
+                    /\b\w/g,
+                    char => char.toUpperCase()
+                );
+
+        }
+
+        const title =
+            document.title || "";
+
+        if (title.includes("•")) {
+
+            const name =
+                title
+                    .split("•")
+                    .slice(1)
+                    .join("•")
+                    .trim();
+
+            if (name) return name;
+        }
+
+        const heading =
+            document.querySelector(
+                "h1[data-event-name], .event-title, .hero-title, h1"
+            );
+
+        if (heading) {
+
+            const name =
+                heading.textContent
+                    .replace(/\s+/g, " ")
+                    .trim();
+
+            if (name) return name;
+        }
+
+        return "EVENTO 1Ø1";
+    }
+
+
+    if (
+        !cfg.evento ||
+        !String(cfg.evento).trim()
+    ) {
+
+        cfg.evento =
+            getAutomaticEventName();
+
+    }
+
+
+    /* ==========================================================
        ESCAPE HTML
-    ===================================================== */
+       ========================================================== */
 
     function escapeHtml(str) {
 
@@ -841,182 +160,807 @@ if (
     }
 
 
-    /* =====================================================
-       ELEMENTOS
-    ===================================================== */
+    /* ==========================================================
+       MODAL
+       ========================================================== */
 
-    let els = {};
+    function buildModal() {
+
+        if (
+            document.getElementById(
+                "pzOverlay"
+            )
+        ) {
+            return;
+        }
+
+        const wrap =
+            document.createElement("div");
+
+        wrap.innerHTML = `
+
+<div
+    class="pz-overlay"
+    id="pzOverlay"
+>
+
+    <div
+        class="pz-modal"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <button
+            class="pz-close"
+            id="pzClose"
+            aria-label="Fechar"
+            type="button"
+        >
+            ✕
+        </button>
 
 
-    function cacheEls() {
+        <div class="pz-steps-track">
 
-        els = {
+            <span
+                data-step="1"
+                class="active"
+            ></span>
 
-            overlay:
-                document.getElementById(
-                    "pzOverlay"
-                ),
+            <span data-step="2"></span>
 
-            close:
-                document.getElementById(
-                    "pzClose"
-                ),
+            <span data-step="3"></span>
 
-            modalQty:
-                document.getElementById(
-                    "pzModalQty"
-                ),
+            <span data-step="4"></span>
 
-            modalTotal:
-                document.getElementById(
-                    "pzModalTotal"
-                ),
+        </div>
 
-            paymentTotal:
-                document.getElementById(
-                    "pzPaymentTotal"
-                ),
 
-            minus:
-                document.getElementById(
-                    "pzModalMinus"
-                ),
+        <!-- ==================================================
+             STEP 1
+        ================================================== -->
 
-            plus:
-                document.getElementById(
-                    "pzModalPlus"
-                ),
+        <div
+            class="pz-step active"
+            data-step="1"
+        >
 
-            toStep2:
-                document.getElementById(
-                    "pzToStep2"
-                ),
+            <span class="pz-eyebrow">
+                ${escapeHtml(
+                    String(cfg.evento).toUpperCase()
+                )}
+            </span>
 
-            toStep3:
-                document.getElementById(
-                    "pzToStep3"
-                ),
+            <h3>
+                ESCOLHE A QUANTIDADE
+            </h3>
 
-            nome:
-                document.getElementById(
-                    "pzNome"
-                ),
+            <p class="pz-sub">
+                Cada pulseira dá acesso ao evento.
+                <br>
+                Escolhe a quantidade que pretendes.
+            </p>
 
-            discord:
-                document.getElementById(
-                    "pzDiscord"
-                ),
 
-            contacto:
-                document.getElementById(
-                    "pzContacto"
-                ),
+            <div class="pz-summary-row">
 
-            errorStep2:
-                document.getElementById(
-                    "pzErrorStep2"
-                ),
+                <div class="qty-control">
 
-            errorStep3:
-                document.getElementById(
-                    "pzErrorStep3"
-                ),
+                    <button
+                        type="button"
+                        class="qty-btn"
+                        id="pzModalMinus"
+                    >
+                        −
+                    </button>
 
-            errorSubmit:
-                document.getElementById(
-                    "pzErrorSubmit"
-                ),
+                    <span
+                        class="qty-value"
+                        id="pzModalQty"
+                    >
+                        1
+                    </span>
 
-            dropzone:
-                document.getElementById(
-                    "pzDropzone"
-                ),
+                    <button
+                        type="button"
+                        class="qty-btn"
+                        id="pzModalPlus"
+                    >
+                        +
+                    </button>
 
-            fileInput:
-                document.getElementById(
-                    "pzFile"
-                ),
+                </div>
 
-            preview:
-                document.getElementById(
-                    "pzPreview"
-                ),
 
-            previewImg:
-                document.getElementById(
-                    "pzPreviewImg"
-                ),
+                <div style="text-align:right">
 
-            previewName:
-                document.getElementById(
-                    "pzPreviewName"
-                ),
+                    <div
+                        style="
+                            color:#999;
+                            font-size:12px;
+                            letter-spacing:1px;
+                        "
+                    >
+                        PREÇO UNITÁRIO
+                    </div>
 
-            previewRemove:
-                document.getElementById(
-                    "pzPreviewRemove"
-                ),
+                    <strong style="font-size:20px">
+                        ${cfg.moeda}${cfg.preco}
+                    </strong>
 
-            confirm:
-                document.getElementById(
-                    "pzConfirm"
-                ),
+                </div>
 
-            submit:
-                document.getElementById(
-                    "pzSubmit"
-                ),
+            </div>
 
-            submitLabel:
-                document.getElementById(
-                    "pzSubmitLabel"
-                ),
 
-            orderCode:
-                document.getElementById(
-                    "pzOrderCode"
-                ),
+            <div class="pz-total-line">
 
-            copyCode:
-                document.getElementById(
-                    "pzCopyCode"
-                ),
+                <span
+                    style="
+                        color:#999;
+                        font-size:13px;
+                        letter-spacing:2px;
+                    "
+                >
+                    TOTAL A PAGAR
+                </span>
 
-            finish:
-                document.getElementById(
-                    "pzFinish"
-                ),
+                <strong id="pzModalTotal">
+                    ${cfg.moeda}${cfg.preco}
+                </strong>
 
-            stepsTrack:
-                document.querySelectorAll(
-                    ".pz-steps-track span"
-                ),
+            </div>
 
-            steps:
-                document.querySelectorAll(
-                    ".pz-step"
-                )
 
-        };
+            <div class="pz-actions">
 
+                <button
+                    type="button"
+                    class="pz-btn pz-btn-primary"
+                    id="pzToStep2"
+                    style="flex:1"
+                >
+                    CONTINUAR →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             STEP 2
+        ================================================== -->
+
+        <div
+            class="pz-step"
+            data-step="2"
+        >
+
+            <span class="pz-eyebrow">
+                OS TEUS DADOS
+            </span>
+
+            <h3>
+                QUEM VAI LEVANTAR
+            </h3>
+
+            <p class="pz-sub">
+                Introduz os teus dados para associarmos
+                o pagamento ao pedido.
+            </p>
+
+
+            <div class="pz-field">
+
+                <label>
+                    NOME DA PERSONAGEM (IC)
+                </label>
+
+                <input
+                    type="text"
+                    id="pzNome"
+                    placeholder="Ex: John Doe"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="pz-field">
+
+                <label>
+                    DISCORD (UTILIZADOR)
+                </label>
+
+                <input
+                    type="text"
+                    id="pzDiscord"
+                    placeholder="Ex: nome_utilizador"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="pz-field">
+
+                <label>
+                    CONTACTO / TELEMÓVEL
+                </label>
+
+                <input
+                    type="text"
+                    id="pzContacto"
+                    autocomplete="off"
+                >
+
+            </div>
+
+            <div
+    class="pz-participants-wrap"
+    id="pzParticipantsWrap"
+    style="display:none; margin-top:20px;"
+>
+
+    <div
+        style="
+            font-size:11px;
+            letter-spacing:2px;
+            color:#999;
+            margin-bottom:10px;
+        "
+    >
+        PARTICIPANTES
+    </div>
+
+    <div
+        style="
+            padding:16px;
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:16px;
+            background:rgba(255,255,255,.025);
+        "
+    >
+
+        <strong
+            style="
+                display:block;
+                font-size:12px;
+                letter-spacing:1px;
+                margin-bottom:6px;
+            "
+        >
+            QUEM VAI AO EVENTO?
+        </strong>
+
+        <span
+            style="
+                display:block;
+                color:#888;
+                font-size:11px;
+                line-height:1.5;
+                margin-bottom:14px;
+            "
+        >
+            Como estás a comprar várias pulseiras,
+            indica o nome da personagem de cada participante.
+        </span>
+
+        <div id="pzParticipantsFields"></div>
+
+    </div>
+
+</div>
+
+
+            <div
+                class="pz-error"
+                id="pzErrorStep2"
+            >
+                Preenche o nome e o Discord para continuar.
+            </div>
+
+
+            <div class="pz-actions">
+
+                <button
+                    type="button"
+                    class="pz-btn pz-btn-ghost"
+                    data-back="1"
+                >
+                    ← VOLTAR
+                </button>
+
+                <button
+                    type="button"
+                    class="pz-btn pz-btn-primary"
+                    id="pzToStep3"
+                >
+                    CONTINUAR →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             STEP 3
+        ================================================== -->
+
+        <div
+            class="pz-step"
+            data-step="3"
+        >
+
+            <span class="pz-eyebrow">
+                PAGAMENTO
+            </span>
+
+            <h3>
+                FAZ A TRANSFERÊNCIA
+            </h3>
+
+            <p class="pz-sub">
+                Faz a transferência para o
+                <strong>
+                    IBAN ${PAYMENT_IBAN}
+                </strong>
+                no valor indicado abaixo.
+                Depois, tira um print da transação
+                e envia-o como comprovativo.
+            </p>
+
+
+            <div
+                style="
+                    margin:24px 0;
+                    padding:22px;
+                    border:1px solid rgba(255,32,32,.35);
+                    border-radius:18px;
+                    background:
+                        linear-gradient(
+                            135deg,
+                            rgba(255,32,32,.10),
+                            rgba(255,255,255,.025)
+                        );
+                "
+            >
+
+                <div
+                    style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                        gap:20px;
+                    "
+                >
+
+                    <div>
+
+                        <div
+                            style="
+                                font-size:10px;
+                                letter-spacing:2px;
+                                color:#999;
+                                margin-bottom:7px;
+                            "
+                        >
+                            IBAN
+                        </div>
+
+                        <strong
+                            style="
+                                font-size:30px;
+                                letter-spacing:3px;
+                            "
+                        >
+                            ${PAYMENT_IBAN}
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        style="text-align:right"
+                    >
+
+                        <div
+                            style="
+                                font-size:10px;
+                                letter-spacing:2px;
+                                color:#999;
+                                margin-bottom:7px;
+                            "
+                        >
+                            VALOR A TRANSFERIR
+                        </div>
+
+                        <strong
+                            id="pzPaymentTotal"
+                            style="font-size:28px"
+                        >
+                            ${cfg.moeda}${cfg.preco}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    style="
+                        height:1px;
+                        background:rgba(255,255,255,.08);
+                        margin:18px 0;
+                    "
+                ></div>
+
+
+                <div
+                    style="
+                        font-size:12px;
+                        line-height:1.6;
+                        color:#aaa;
+                    "
+                >
+
+                    <strong style="color:#fff">
+                        IMPORTANTE:
+                    </strong>
+
+                    A transferência tem de ser feita
+                    para o
+
+                    <strong style="color:#fff">
+                        IBAN ${PAYMENT_IBAN}
+                    </strong>.
+
+                    Depois de concluíres o pagamento,
+
+                    <strong style="color:#fff">
+                        tira um print da transação
+                    </strong>
+
+                    e envia-o abaixo.
+
+                </div>
+
+            </div>
+
+
+            <div
+                style="
+                    font-size:11px;
+                    letter-spacing:2px;
+                    color:#999;
+                    margin-bottom:10px;
+                "
+            >
+                COMPROVATIVO DE PAGAMENTO
+            </div>
+
+
+            <label
+                class="pz-dropzone"
+                id="pzDropzone"
+            >
+
+                <input
+                    type="file"
+                    id="pzFile"
+                    accept="image/png,image/jpeg,image/jpg"
+                >
+
+                <div class="pz-drop-icon">
+                    📎
+                </div>
+
+                <strong>
+                    CLICA OU ARRASTA O PRINT PARA AQUI
+                </strong>
+
+                <small>
+                    PNG ou JPG • até ${MAX_IMG_MB}MB
+                </small>
+
+            </label>
+
+
+            <div
+                class="pz-preview"
+                id="pzPreview"
+            >
+
+                <img
+                    id="pzPreviewImg"
+                    alt="Pré-visualização"
+                >
+
+                <span
+                    class="pz-preview-name"
+                    id="pzPreviewName"
+                ></span>
+
+                <button
+                    type="button"
+                    class="pz-preview-remove"
+                    id="pzPreviewRemove"
+                >
+                    REMOVER
+                </button>
+
+            </div>
+
+
+            <label class="pz-checkbox">
+
+                <input
+                    type="checkbox"
+                    id="pzConfirm"
+                >
+
+                <span>
+
+                    Confirmo que fiz a transferência
+                    para o
+
+                    <strong>
+                        IBAN ${PAYMENT_IBAN}
+                    </strong>
+
+                    e que o comprovativo enviado
+                    corresponde a uma transferência real.
+
+                </span>
+
+            </label>
+
+
+            <div
+                class="pz-error"
+                id="pzErrorStep3"
+            >
+                Faz a transferência, envia o print
+                e confirma a caixa acima para continuar.
+            </div>
+
+
+            <div class="pz-actions">
+
+                <button
+                    type="button"
+                    class="pz-btn pz-btn-ghost"
+                    data-back="2"
+                >
+                    ← VOLTAR
+                </button>
+
+                <button
+                    type="button"
+                    class="pz-btn pz-btn-primary"
+                    id="pzSubmit"
+                >
+
+                    <span id="pzSubmitLabel">
+                        CONFIRMAR PEDIDO →
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="pz-error"
+                id="pzErrorSubmit"
+            >
+                Não foi possível enviar o pedido.
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             STEP 4
+        ================================================== -->
+
+        <div
+            class="pz-step"
+            data-step="4"
+        >
+
+            <div class="pz-success">
+
+                <div class="pz-success-icon">
+                    ✓
+                </div>
+
+                <h3>
+                    PEDIDO ENVIADO!
+                </h3>
+
+                <p class="pz-sub">
+                    O teu pedido foi enviado para
+                    a equipa da 1Ø1.
+                    <br>
+                    Assim que o comprovativo for
+                    validado, a tua pulseira fica
+                    confirmada.
+                </p>
+
+
+                <div class="pz-order-code">
+
+                    <span id="pzOrderCode">
+                        101-0000
+                    </span>
+
+                    <button
+                        type="button"
+                        id="pzCopyCode"
+                    >
+                        COPIAR
+                    </button>
+
+                </div>
+
+
+                <div class="pz-actions">
+
+                    <button
+                        type="button"
+                        class="pz-btn pz-btn-primary"
+                        id="pzFinish"
+                        style="flex:1"
+                    >
+                        CONCLUIR
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+`;
+
+        document.body.appendChild(
+            wrap.firstElementChild
+        );
     }
 
 
-    /* =====================================================
+    /* ==========================================================
+       ELEMENTOS
+       ========================================================== */
+
+function cacheEls() {
+
+    els = {
+
+        overlay:
+            document.getElementById("pzOverlay"),
+
+        close:
+            document.getElementById("pzClose"),
+
+        modalQty:
+            document.getElementById("pzModalQty"),
+
+        modalTotal:
+            document.getElementById("pzModalTotal"),
+
+        paymentTotal:
+            document.getElementById("pzPaymentTotal"),
+
+        minus:
+            document.getElementById("pzModalMinus"),
+
+        plus:
+            document.getElementById("pzModalPlus"),
+
+        toStep2:
+            document.getElementById("pzToStep2"),
+
+        toStep3:
+            document.getElementById("pzToStep3"),
+
+        nome:
+            document.getElementById("pzNome"),
+
+        discord:
+            document.getElementById("pzDiscord"),
+
+        contacto:
+            document.getElementById("pzContacto"),
+
+        participantsWrap:
+            document.getElementById("pzParticipantsWrap"),
+
+        participantsFields:
+            document.getElementById("pzParticipantsFields"),
+
+        errorStep2:
+            document.getElementById("pzErrorStep2"),
+
+        errorStep3:
+            document.getElementById("pzErrorStep3"),
+
+        errorSubmit:
+            document.getElementById("pzErrorSubmit"),
+
+        dropzone:
+            document.getElementById("pzDropzone"),
+
+        fileInput:
+            document.getElementById("pzFile"),
+
+        preview:
+            document.getElementById("pzPreview"),
+
+        previewImg:
+            document.getElementById("pzPreviewImg"),
+
+        previewName:
+            document.getElementById("pzPreviewName"),
+
+        previewRemove:
+            document.getElementById("pzPreviewRemove"),
+
+        confirm:
+            document.getElementById("pzConfirm"),
+
+        submit:
+            document.getElementById("pzSubmit"),
+
+        submitLabel:
+            document.getElementById("pzSubmitLabel"),
+
+        orderCode:
+            document.getElementById("pzOrderCode"),
+
+        copyCode:
+            document.getElementById("pzCopyCode"),
+
+        finish:
+            document.getElementById("pzFinish"),
+
+        stepsTrack:
+            document.querySelectorAll(
+                ".pz-steps-track span"
+            ),
+
+        steps:
+            document.querySelectorAll(
+                ".pz-step"
+            )
+
+    };
+
+}
+
+
+    /* ==========================================================
        STEPS
-    ===================================================== */
+       ========================================================== */
 
     function goToStep(n) {
 
         state.step = n;
-
 
         els.steps.forEach(
             step => {
 
                 step.classList.toggle(
                     "active",
-                    Number(step.dataset.step) === n
+                    Number(
+                        step.dataset.step
+                    ) === n
                 );
 
             }
@@ -1026,21 +970,19 @@ if (
         els.stepsTrack.forEach(
             step => {
 
-                const number =
+                const num =
                     Number(
                         step.dataset.step
                     );
 
-
                 step.classList.toggle(
                     "done",
-                    number < n
+                    num < n
                 );
-
 
                 step.classList.toggle(
                     "active",
-                    number <= n
+                    num <= n
                 );
 
             }
@@ -1049,15 +991,111 @@ if (
     }
 
 
-    /* =====================================================
+    /* ==========================================================
        QUANTIDADE
-    ===================================================== */
+       ========================================================== */
+function renderParticipantFields() {
+
+    if (
+        !els.participantsWrap ||
+        !els.participantsFields
+    ) {
+        return;
+    }
+
+    // Apenas mostrar quando são compradas várias pulseiras
+    if (state.qty <= 1) {
+
+        els.participantsWrap.style.display = "none";
+        els.participantsFields.innerHTML = "";
+
+        return;
+    }
+
+    const existing =
+        Array.from(
+            els.participantsFields.querySelectorAll(
+                ".pz-participant-input"
+            )
+        ).map(input => input.value);
+
+    const buyerName =
+        els.nome
+            ? els.nome.value.trim()
+            : "";
+
+    els.participantsWrap.style.display = "block";
+
+    els.participantsFields.innerHTML = "";
+
+    for (
+        let i = 0;
+        i < state.qty;
+        i++
+    ) {
+
+        const field =
+            document.createElement("div");
+
+        field.className = "pz-field";
+
+        field.style.marginBottom =
+            i === state.qty - 1
+                ? "0"
+                : "12px";
+
+        field.innerHTML = `
+            <label>
+                PULSEIRA ${i + 1}
+            </label>
+
+            <input
+                type="text"
+                class="pz-participant-input"
+                data-participant-index="${i}"
+                placeholder="Nome da personagem"
+                autocomplete="off"
+            >
+        `;
+
+        els.participantsFields.appendChild(
+            field
+        );
+
+        const input =
+            field.querySelector(
+                ".pz-participant-input"
+            );
+
+        // Recuperar valor anterior
+        if (existing[i]) {
+
+            input.value =
+                existing[i];
+
+        }
+        // A primeira pulseira começa com o comprador
+        else if (
+            i === 0 &&
+            buyerName
+        ) {
+
+            input.value =
+                buyerName;
+
+        }
+
+    }
+
+}
 
     function updateQtyUI() {
 
         const total =
             state.qty *
-            cfg.preco;
+            Number(
+                cfg.preco || 0
+            );
 
 
         if (els.modalQty) {
@@ -1086,33 +1124,34 @@ if (
         }
 
 
-        const pageQty =
+        const q =
             document.getElementById(
                 "pzQty"
             );
 
-
-        const pageTotal =
+        const t =
             document.getElementById(
                 "pzTotal"
             );
 
 
-        if (pageQty) {
+        if (q) {
 
-            pageQty.textContent =
+            q.textContent =
                 state.qty;
 
         }
 
 
-        if (pageTotal) {
+        if (t) {
 
-            pageTotal.textContent =
+            t.textContent =
                 cfg.moeda +
                 total;
 
         }
+
+        renderParticipantFields();
 
     }
 
@@ -1120,86 +1159,101 @@ if (
     function changeQty(delta) {
 
         const next =
-            state.qty +
-            delta;
-
+            state.qty + delta;
 
         if (
             next < 1 ||
-            next > cfg.maxPorPessoa
+            next >
+                Number(
+                    cfg.maxPorPessoa || 8
+                )
         ) {
-
             return;
-
         }
-
 
         state.qty =
             next;
-
 
         updateQtyUI();
 
     }
 
 
-    /* =====================================================
-       ABRIR / FECHAR
-    ===================================================== */
-
-    
-    /* ---------------------------------------------------
-       PERFORMANCE — PAUSAR VÍDEOS ENQUANTO O MODAL ESTÁ ABERTO
-       Evita que o vídeo do hero continue a consumir GPU/CPU
-       por trás do modal.
-    --------------------------------------------------- */
-
-    let pausedBackgroundVideos = [];
+    /* ==========================================================
+       VÍDEO DE FUNDO
+       ========================================================== */
 
     function pauseBackgroundMedia() {
+
         pausedBackgroundVideos = [];
 
-        document.querySelectorAll("video").forEach(video => {
-            if (!video.paused) {
-                pausedBackgroundVideos.push(video);
-                video.pause();
-            }
-        });
+        document
+            .querySelectorAll("video")
+            .forEach(
+                video => {
+
+                    if (!video.paused) {
+
+                        pausedBackgroundVideos.push(
+                            video
+                        );
+
+                        video.pause();
+
+                    }
+
+                }
+            );
+
     }
+
 
     function resumeBackgroundMedia() {
-        pausedBackgroundVideos.forEach(video => {
-            video.play().catch(() => {});
-        });
+
+        pausedBackgroundVideos.forEach(
+            video => {
+
+                video
+                    .play()
+                    .catch(
+                        () => {}
+                    );
+
+            }
+        );
 
         pausedBackgroundVideos = [];
+
     }
 
-function openModal(presetQty) {
 
-        if (
-            presetQty &&
-            presetQty > 0
-        ) {
+    /* ==========================================================
+       ABRIR / FECHAR
+       ========================================================== */
+
+    function openModal(presetQty) {
+
+        if (presetQty > 0) {
 
             state.qty =
                 Math.min(
-                    presetQty,
-                    cfg.maxPorPessoa
+                    Number(presetQty),
+                    Number(
+                        cfg.maxPorPessoa || 8
+                    )
                 );
 
         }
-
 
         updateQtyUI();
 
         goToStep(1);
 
+        pauseBackgroundMedia();
 
         els.overlay.classList.add(
             "open"
         );
-
 
         document.body.style.overflow =
             "hidden";
@@ -1215,17 +1269,15 @@ function openModal(presetQty) {
             "open"
         );
 
-
         document.body.style.overflow =
             "";
 
     }
 
 
-    /* =====================================================
-       PREVIEW DA IMAGEM
-       USAMOS OBJECT URL — MUITO MAIS LEVE
-    ===================================================== */
+    /* ==========================================================
+       IMAGEM
+       ========================================================== */
 
     function clearPreview() {
 
@@ -1235,29 +1287,27 @@ function openModal(presetQty) {
                 state.previewUrl
             );
 
-            state.previewUrl =
-                null;
-
         }
 
+        state.previewUrl = null;
 
         els.previewImg.removeAttribute(
             "src"
         );
 
-
         els.previewName.textContent =
             "";
-
 
         els.preview.classList.remove(
             "show"
         );
 
         if (els.dropzone) {
+
             els.dropzone.classList.remove(
                 "pz-file-selected"
             );
+
         }
 
     }
@@ -1265,12 +1315,7 @@ function openModal(presetQty) {
 
     function handleFile(file) {
 
-        if (!file) {
-
-            return;
-
-        }
-
+        if (!file) return;
 
         if (
             !file.type.startsWith(
@@ -1289,7 +1334,9 @@ function openModal(presetQty) {
 
         if (
             file.size >
-            MAX_IMG_MB * 1024 * 1024
+            MAX_IMG_MB *
+            1024 *
+            1024
         ) {
 
             alert(
@@ -1303,54 +1350,51 @@ function openModal(presetQty) {
 
         clearPreview();
 
-
         state.file =
             file;
-
 
         state.previewUrl =
             URL.createObjectURL(
                 file
             );
 
-
         els.previewImg.src =
             state.previewUrl;
 
-
         els.previewName.textContent =
             file.name;
-
 
         els.preview.classList.add(
             "show"
         );
 
         if (els.dropzone) {
+
             els.dropzone.classList.add(
                 "pz-file-selected"
             );
+
         }
 
     }
 
 
-    /* =====================================================
+    /* ==========================================================
        COMPRESSÃO
-       APENAS NO MOMENTO DO ENVIO
-    ===================================================== */
+       ========================================================== */
 
     async function compressImage(file) {
 
         if (
             file.size <
-            1.5 * 1024 * 1024
+            1.5 *
+            1024 *
+            1024
         ) {
 
             return file;
 
         }
-
 
         try {
 
@@ -1359,23 +1403,20 @@ function openModal(presetQty) {
                     file
                 );
 
-
             const maxW =
                 1400;
-
 
             const scale =
                 Math.min(
                     1,
-                    maxW / bitmap.width
+                    maxW /
+                    bitmap.width
                 );
-
 
             const canvas =
                 document.createElement(
                     "canvas"
                 );
-
 
             canvas.width =
                 Math.round(
@@ -1383,19 +1424,16 @@ function openModal(presetQty) {
                     scale
                 );
 
-
             canvas.height =
                 Math.round(
                     bitmap.height *
                     scale
                 );
 
-
             const ctx =
                 canvas.getContext(
                     "2d"
                 );
-
 
             ctx.drawImage(
                 bitmap,
@@ -1405,23 +1443,17 @@ function openModal(presetQty) {
                 canvas.height
             );
 
-
             bitmap.close();
-
 
             const blob =
                 await new Promise(
-                    resolve => {
-
+                    resolve =>
                         canvas.toBlob(
                             resolve,
                             "image/jpeg",
-                            0.80
-                        );
-
-                    }
+                            0.8
+                        )
                 );
-
 
             return blob || file;
 
@@ -1434,20 +1466,30 @@ function openModal(presetQty) {
     }
 
 
-    /* =====================================================
-       CÓDIGO
-    ===================================================== */
+    /* ==========================================================
+       CÓDIGO DO PEDIDO
+       ========================================================== */
 
 function generateOrderCode() {
 
-    const eventName =
+    const eventSlug =
+        getCurrentEventSlug();
+
+    const source =
+        eventSlug ||
         getAutomaticEventName();
 
     const prefix =
-        eventName
+        String(source)
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^a-zA-Z0-9]/g, "")
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .replace(
+                /[^a-zA-Z0-9]/g,
+                ""
+            )
             .slice(0, 3)
             .toUpperCase() || "101";
 
@@ -1465,23 +1507,21 @@ function generateOrderCode() {
 
     return `101-${prefix}-${random}${time}`;
 }
-    /* =====================================================
-       ENVIO PARA DISCORD
-    ===================================================== */
 
-    
+
+    /* ==========================================================
+       ENVIO PARA DISCORD
+       ========================================================== */
+
     async function sendOrder(orderCode) {
 
         Object.assign(
-    cfg,
-    window.PULSEIRAS_CONFIG || {}
-);
-        if (
-            !cfg.webhookUrl ||
-            cfg.webhookUrl.includes(
-                "https://discord.com/api/webhooks/1554615194477531176/KdU3NR3KvYE-UEzc1-oH2l2tUDW4tWb18iKlTgADdM1d07_yG9MqFfoVlM_nYqhDF7bo"
-            )
-        ) {
+            cfg,
+            window.PULSEIRAS_CONFIG || {}
+        );
+
+
+        if (!cfg.webhookUrl) {
 
             throw new Error(
                 "O webhook do Discord não está configurado."
@@ -1503,34 +1543,40 @@ function generateOrderCode() {
             els.nome.value.trim() ||
             "—";
 
-
         const discord =
             els.discord.value.trim() ||
             "—";
-
 
         const contacto =
             els.contacto.value.trim() ||
             "—";
 
-
         const quantidade =
             state.qty;
-
 
         const total =
             `${cfg.moeda}${state.qty * cfg.preco}`;
 
 
-        /* =================================================
-           EMBED
-        ================================================= */
+        const participantNames =
+    state.qty > 1
+        ? Array.from(
+            els.participantsFields.querySelectorAll(
+                ".pz-participant-input"
+            )
+        )
+            .map(
+                input =>
+                    input.value.trim()
+            )
+            .filter(Boolean)
+        : [nome];
+
 
         const payload = {
 
             username:
                 "1Ø1 • TICKETING",
-
 
             embeds: [
 
@@ -1539,18 +1585,13 @@ function generateOrderCode() {
                     title:
                         "🎟️  NOVO PEDIDO DE PULSEIRA",
 
-
                     description:
-
                         `**${cfg.evento}**\n\n` +
-
                         `Novo pedido submetido através ` +
                         `do sistema oficial de pulseiras da **1Ø1**.`,
 
-
                     color:
                         0x9146FF,
-
 
                     fields: [
 
@@ -1559,13 +1600,31 @@ function generateOrderCode() {
                             name:
                                 "🎫  CÓDIGO DO PEDIDO",
 
+                                
+
                             value:
-                                `\`${orderCode}\``,
+                                `**${orderCode}**`,
 
                             inline:
                                 false
 
                         },
+
+                        {
+                            name:
+                                  "👥  PARTICIPANTES",
+
+                            value:
+                                 participantNames
+                            .map(
+                (name, index) =>
+                    `**${index + 1}.** ${name}`
+            )
+            .join("\n"),
+
+    inline:
+        false
+},
 
 
                         {
@@ -1626,7 +1685,7 @@ function generateOrderCode() {
                             value:
                                 [
                                     "**IBAN**",
-                                    `\`${PAYMENT_IBAN}\``,
+                                    `**${PAYMENT_IBAN}**`,
                                     "",
                                     "**Valor a transferir**",
                                     `**${total}**`,
@@ -1658,7 +1717,6 @@ function generateOrderCode() {
 
                     ],
 
-
                     image: {
 
                         url:
@@ -1666,14 +1724,12 @@ function generateOrderCode() {
 
                     },
 
-
                     footer: {
 
                         text:
                             "1Ø1 • Sistema Oficial de Pulseiras"
 
                     },
-
 
                     timestamp:
                         new Date().toISOString()
@@ -1685,19 +1741,11 @@ function generateOrderCode() {
         };
 
 
-        /* =================================================
-           COMPRIMIR
-        ================================================= */
-
         const compressed =
             await compressImage(
                 state.file
             );
 
-
-        /* =================================================
-           FORM DATA
-        ================================================= */
 
         const form =
             new FormData();
@@ -1718,12 +1766,7 @@ function generateOrderCode() {
         );
 
 
-        /* =================================================
-           WEBHOOK
-        ================================================= */
-
         let webhookUrl;
-
 
         try {
 
@@ -1747,12 +1790,7 @@ function generateOrderCode() {
         );
 
 
-        /* =================================================
-           ENVIO
-        ================================================= */
-
         let response;
-
 
         try {
 
@@ -1760,13 +1798,11 @@ function generateOrderCode() {
                 await fetch(
                     webhookUrl.toString(),
                     {
-
                         method:
                             "POST",
 
                         body:
                             form
-
                     }
                 );
 
@@ -1783,15 +1819,10 @@ function generateOrderCode() {
             await response.text();
 
 
-        /* =================================================
-           ERRO
-        ================================================= */
-
         if (!response.ok) {
 
             let details =
                 "";
-
 
             try {
 
@@ -1799,7 +1830,6 @@ function generateOrderCode() {
                     JSON.parse(
                         responseText
                     );
-
 
                 details =
                     json.message ||
@@ -1815,45 +1845,173 @@ function generateOrderCode() {
 
 
             throw new Error(
-
                 `Discord recusou o pedido (${response.status})` +
-
                 (
                     details
                         ? `: ${details}`
                         : ""
                 )
-
             );
 
         }
 
+// ==========================================================
+// REGISTAR PEDIDO NO SISTEMA ADMIN
+// ==========================================================
 
-        return true;
+try {
 
-    }
+    const adminResponse =
+        await fetch(
+            "/api/orders/create",
+            {
+                method: "POST",
 
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
 
-    /* =====================================================
-       VALIDAÇÃO
-    ===================================================== */
+                body:
+                    JSON.stringify({
+                        orderCode,
 
-    function validateStep2() {
+                        evento:
+                            cfg.evento,
 
-        const valid =
-            els.nome.value.trim().length > 1 &&
-            els.discord.value.trim().length > 1;
+                        eventoSlug:
+                            getCurrentEventSlug(),
 
+                        nome,
 
-        els.errorStep2.classList.toggle(
-            "show",
-            !valid
+                        discord,
+
+                        contacto,
+
+                        quantidade,
+
+                        precoUnitario:
+                            Number(
+                                cfg.preco || 0
+                            ),
+
+                        moeda:
+                            cfg.moeda,
+
+                        total:
+                            Number(
+                                state.qty
+                            ) *
+                            Number(
+                                cfg.preco || 0
+                            ),
+
+                        participantes:
+                            participantNames,
+
+                        estado:
+                            "pendente"
+                    })
+            }
         );
 
+    const adminData =
+        await adminResponse
+            .json()
+            .catch(
+                () => ({})
+            );
 
-        return valid;
+    if (!adminResponse.ok) {
+
+        throw new Error(
+            adminData.error ||
+            "Não foi possível registar o pedido no sistema."
+        );
 
     }
+
+} catch (error) {
+
+    console.error(
+        "[101] Erro ao registar pedido no Admin:",
+        error
+    );
+
+    throw new Error(
+        "Não foi possível registar o pedido. Tenta novamente."
+    );
+
+}
+
+return true;
+
+    }
+
+
+    /* ==========================================================
+       VALIDAÇÃO
+       ========================================================== */
+
+function validateStep2() {
+
+    const nomeValido =
+        els.nome.value.trim().length > 1;
+
+    const discordValido =
+        els.discord.value.trim().length > 1;
+
+    let participantesValidos = true;
+
+    if (state.qty > 1) {
+
+        const inputs =
+            Array.from(
+                els.participantsFields
+                    .querySelectorAll(
+                        ".pz-participant-input"
+                    )
+            );
+
+        participantesValidos =
+            inputs.length === state.qty &&
+            inputs.every(
+                input =>
+                    input.value.trim().length > 1
+            );
+    }
+
+    const valid =
+        nomeValido &&
+        discordValido &&
+        participantesValidos;
+
+    if (!valid) {
+
+        if (
+            state.qty > 1 &&
+            !participantesValidos
+        ) {
+
+            els.errorStep2.textContent =
+                "Preenche o nome de cada participante.";
+
+        } else {
+
+            els.errorStep2.textContent =
+                "Preenche o nome e o Discord para continuar.";
+
+        }
+
+    }
+
+    els.errorStep2.classList.toggle(
+        "show",
+        !valid
+    );
+
+    return valid;
+}
 
 
     function validateStep3() {
@@ -1862,24 +2020,107 @@ function generateOrderCode() {
             !!state.file &&
             els.confirm.checked;
 
-
         els.errorStep3.classList.toggle(
             "show",
             !valid
         );
-
 
         return valid;
 
     }
 
 
-    /* =====================================================
+    /* ==========================================================
+       DETETAR EVENTO DO BOTÃO
+       ========================================================== */
+
+function detectEventForButton(button) {
+
+    activeEventSlug = "";
+
+    /* ======================================================
+       1. PROCURA O EVENTO NO MESMO BLOCO DO BOTÃO
+       ====================================================== */
+
+    const container =
+        button.closest(
+            ".featured-event, .event-card, article, section"
+        );
+
+    if (container) {
+
+        const eventLink =
+            container.querySelector(
+                'a[href*="/eventos/"], a[href*="eventos/"]'
+            );
+
+        if (eventLink) {
+
+            activeEventSlug =
+                getEventSlugFromUrl(
+                    eventLink.href
+                );
+
+        }
+
+    }
+
+
+    /* ======================================================
+       2. DATA-EVENT-URL NO BOTÃO
+       ====================================================== */
+
+    if (!activeEventSlug) {
+
+        activeEventSlug =
+            getEventSlugFromUrl(
+                button.dataset.eventUrl || ""
+            );
+
+    }
+
+
+    /* ======================================================
+       3. HREF DO PRÓPRIO BOTÃO
+       ====================================================== */
+
+    if (!activeEventSlug) {
+
+        activeEventSlug =
+            getEventSlugFromUrl(
+                button.getAttribute("href") || ""
+            );
+
+    }
+
+
+    /* ======================================================
+       4. URL ATUAL — SÓ PARA PÁGINAS DE EVENTO
+       ====================================================== */
+
+    if (!activeEventSlug) {
+
+        activeEventSlug =
+            getEventSlugFromUrl(
+                window.location.href
+            );
+
+    }
+
+
+    console.log(
+        "[101] Evento detetado:",
+        activeEventSlug
+    );
+
+}
+
+
+    /* ==========================================================
        EVENTOS
-    ===================================================== */
+       ========================================================== */
 
     function wireEvents() {
-
 
         /* FECHAR */
 
@@ -1888,6 +2129,33 @@ function generateOrderCode() {
             closeModal
         );
 
+if (els.nome) {
+
+    els.nome.addEventListener(
+        "input",
+        () => {
+
+            if (
+                state.qty <= 1 ||
+                !els.participantsFields
+            ) {
+                return;
+            }
+
+            const firstParticipant =
+                els.participantsFields.querySelector(
+                    '.pz-participant-input[data-participant-index="0"]'
+                );
+
+            if (firstParticipant) {
+                firstParticipant.value =
+                    els.nome.value;
+            }
+
+        }
+    );
+
+}
 
         /* CLICAR FORA */
 
@@ -1933,13 +2201,15 @@ function generateOrderCode() {
 
         els.minus.addEventListener(
             "click",
-            () => changeQty(-1)
+            () =>
+                changeQty(-1)
         );
 
 
         els.plus.addEventListener(
             "click",
-            () => changeQty(1)
+            () =>
+                changeQty(1)
         );
 
 
@@ -1947,11 +2217,8 @@ function generateOrderCode() {
 
         els.toStep2.addEventListener(
             "click",
-            () => {
-
-                goToStep(2);
-
-            }
+            () =>
+                goToStep(2)
         );
 
 
@@ -2037,20 +2304,11 @@ function generateOrderCode() {
                     "drag"
                 );
 
-
-                const file =
+                handleFile(
                     event
                         .dataTransfer
-                        .files[0];
-
-
-                if (file) {
-
-                    handleFile(
-                        file
-                    );
-
-                }
+                        .files[0]
+                );
 
             }
         );
@@ -2076,12 +2334,9 @@ function generateOrderCode() {
             "click",
             () => {
 
-                state.file =
-                    null;
-
+                state.file = null;
 
                 clearPreview();
-
 
                 els.fileInput.value =
                     "";
@@ -2090,9 +2345,7 @@ function generateOrderCode() {
         );
 
 
-        /* =================================================
-           ENVIAR
-        ================================================= */
+        /* ENVIAR */
 
         els.submit.addEventListener(
             "click",
@@ -2111,15 +2364,12 @@ function generateOrderCode() {
                 state.sending =
                     true;
 
-
                 els.submit.disabled =
                     true;
-
 
                 els.errorSubmit.classList.remove(
                     "show"
                 );
-
 
                 els.submitLabel.textContent =
                     "A ENVIAR...";
@@ -2135,13 +2385,10 @@ function generateOrderCode() {
                         orderCode
                     );
 
-
                     els.orderCode.textContent =
                         orderCode;
 
-
                     goToStep(4);
-
 
                 } catch (error) {
 
@@ -2150,26 +2397,21 @@ function generateOrderCode() {
                         error
                     );
 
-
                     els.errorSubmit.textContent =
                         error.message ||
                         "Não foi possível enviar o pedido.";
 
-
                     els.errorSubmit.classList.add(
                         "show"
                     );
-
 
                 } finally {
 
                     state.sending =
                         false;
 
-
                     els.submit.disabled =
                         false;
-
 
                     els.submitLabel.textContent =
                         "CONFIRMAR PEDIDO →";
@@ -2192,26 +2434,17 @@ function generateOrderCode() {
                         els.orderCode.textContent
                     );
 
-
                     els.copyCode.textContent =
                         "COPIADO ✓";
 
-
                     setTimeout(
-                        () => {
-
+                        () =>
                             els.copyCode.textContent =
-                                "COPIAR";
-
-                        },
+                                "COPIAR",
                         1500
                     );
 
-                } catch {
-
-                    /* fallback silencioso */
-
-                }
+                } catch {}
 
             }
         );
@@ -2225,7 +2458,6 @@ function generateOrderCode() {
 
                 closeModal();
 
-
                 setTimeout(
                     resetSystem,
                     250
@@ -2235,95 +2467,47 @@ function generateOrderCode() {
         );
 
 
-/* BOTÕES DE ABRIR */
+        /* ======================================================
+           BOTÕES DE COMPRAR
+           ====================================================== */
 
-document
-    .querySelectorAll(
-        "[data-open-pulseiras]"
-    )
-    .forEach(
-        button => {
+        document
+            .querySelectorAll(
+                "[data-open-pulseiras]"
+            )
+            .forEach(
+                button => {
 
-            button.addEventListener(
-                "click",
-                event => {
+                    button.addEventListener(
+                        "click",
+                        event => {
 
-                    event.preventDefault();
+                            event.preventDefault();
 
-                    /*
-                     * Tenta descobrir automaticamente
-                     * qual é o evento associado ao botão.
-                     */
-
-                    activeEventSlug = null;
-
-                    // 1. Procura um link de evento dentro
-                    // do mesmo cartão/bloco
-                    const eventLink =
-                        button
-                            .closest(
-                                ".featured-event, .event-card, article, section"
-                            )
-                            ?.querySelector(
-                                'a[href*="/eventos/"]'
+                            detectEventForButton(
+                                button
                             );
 
-                    if (eventLink) {
 
-                        activeEventSlug =
-                            getEventSlugFromUrl(
-                                eventLink.href
+                            const preset =
+                                document.getElementById(
+                                    "pzQty"
+                                );
+
+
+                            openModal(
+                                preset
+                                    ? Number(
+                                        preset.textContent
+                                    )
+                                    : null
                             );
 
-                    }
-
-                    // 2. Se não encontrou no cartão,
-                    // tenta o próprio href/data do botão
-                    if (!activeEventSlug) {
-
-                        activeEventSlug =
-                            getEventSlugFromUrl(
-                                button.dataset.eventUrl ||
-                                button.getAttribute("href") ||
-                                ""
-                            );
-
-                    }
-
-                    // 3. Se estivermos numa página de evento,
-                    // usa automaticamente o URL atual
-                    if (!activeEventSlug) {
-
-                        activeEventSlug =
-                            getEventSlugFromUrl(
-                                window.location.href
-                            );
-
-                    }
-
-                    console.log(
-                        "[101] Evento detetado:",
-                        activeEventSlug
-                    );
-
-                    const preset =
-                        document.getElementById(
-                            "pzQty"
-                        );
-
-                    openModal(
-                        preset
-                            ? Number(
-                                preset.textContent
-                            )
-                            : null
+                        }
                     );
 
                 }
             );
-
-        }
-    );
 
 
         /* STEPPER EXTERNO */
@@ -2332,7 +2516,6 @@ document
             document.getElementById(
                 "pzQtyMinus"
             );
-
 
         const pagePlus =
             document.getElementById(
@@ -2344,7 +2527,8 @@ document
 
             pageMinus.addEventListener(
                 "click",
-                () => changeQty(-1)
+                () =>
+                    changeQty(-1)
             );
 
         }
@@ -2354,7 +2538,8 @@ document
 
             pagePlus.addEventListener(
                 "click",
-                () => changeQty(1)
+                () =>
+                    changeQty(1)
             );
 
         }
@@ -2362,28 +2547,22 @@ document
     }
 
 
-    /* =====================================================
+    /* ==========================================================
        RESET
-    ===================================================== */
+       ========================================================== */
 
     function resetSystem() {
 
-        state.qty =
-            1;
+        state.qty = 1;
 
-        state.file =
-            null;
+        state.file = null;
 
-        state.sending =
-            false;
-
+        state.sending = false;
 
         clearPreview();
 
-
         els.fileInput.value =
             "";
-
 
         els.nome.value =
             "";
@@ -2393,26 +2572,34 @@ document
 
         els.contacto.value =
             "";
+        if (els.participantsFields) {
 
+    els.participantsFields.innerHTML =
+        "";
+
+}
+
+if (els.participantsWrap) {
+
+    els.participantsWrap.style.display =
+        "none";
+
+}
 
         els.confirm.checked =
             false;
-
 
         els.errorStep2.classList.remove(
             "show"
         );
 
-
         els.errorStep3.classList.remove(
             "show"
         );
 
-
         els.errorSubmit.classList.remove(
             "show"
         );
-
 
         goToStep(1);
 
@@ -2421,9 +2608,9 @@ document
     }
 
 
-    /* =====================================================
+    /* ==========================================================
        INIT
-    ===================================================== */
+       ========================================================== */
 
     function init() {
 
@@ -2458,9 +2645,9 @@ document
     }
 
 
-    /* =====================================================
+    /* ==========================================================
        API
-    ===================================================== */
+       ========================================================== */
 
     window.Pulseiras = {
 
@@ -2471,6 +2658,5 @@ document
             closeModal
 
     };
-
 
 })();

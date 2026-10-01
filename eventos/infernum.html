@@ -1182,7 +1182,10 @@
         0 0 0 1px rgba(255,0,0,.04),
         0 0 50px rgba(180,0,0,.08) !important;
 
-    overflow: hidden;
+    /* Permitir scroll vertical dentro do modal quando o formulário ultrapassar a altura do ecrã */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
 }
 
 

@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1.0"
+    >
+
+    <title>1Ø1 • Admin</title>
+
+    <meta
+        name="robots"
+        content="noindex,nofollow,noarchive"
+    >
+
+    <link
+        rel="icon"
+        href="/assets/logo/favicon.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/admin.css"
+    >
+
+</head>
+
+<body class="dashboard-page">
+
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <span>1Ø1</span>
+
+            <small>
+                ADMIN
+            </small>
+
+        </div>
+
+        <nav>
+
+            <a
+                class="active"
+                href="/admin/dashboard.html"
+            >
+                Overview
+            </a>
+
+            <a
+                href="/admin/pedidos.html"
+            >
+                Pedidos
+            </a>
+
+            <a href="/admin/eventos.html">
+                Eventos
+            </a>
+
+            <a href="/admin/participantes.html">
+                Participantes
+            </a>
+
+            <a href="/admin/pulseiras.html">
+                Pulseiras
+            </a>
+
+        </nav>
+
+        <button
+            id="logoutBtn"
+            class="logout"
+        >
+            SAIR
+
+            <span>↗</span>
+
+        </button>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="dashboard-main">
+
+        <!-- TOP -->
+
+        <header class="topbar">
+
+            <div>
+
+                <div class="eyebrow">
+                    PRIVATE AREA
+                </div>
+
+                <h1>
+                    OVERVIEW
+                </h1>
+
+            </div>
+
+            <div class="user-pill">
+
+                <span class="dot"></span>
+
+                <span id="userEmail">
+                    —
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- STATS -->
+
+        <section class="stats-grid">
+
+            <article>
+
+                <span>
+                    PEDIDOS
+                </span>
+
+                <strong id="statOrders">
+                    —
+                </strong>
+
+                <small>
+                    Total registado
+                </small>
+
+            </article>
+
+
+            <article>
+
+                <span>
+                    PULSEIRAS
+                </span>
+
+                <strong id="statBracelets">
+                    —
+                </strong>
+
+                <small>
+                    Total vendido
+                </small>
+
+            </article>
+
+
+            <article>
+
+                <span>
+                    CONFIRMADOS
+                </span>
+
+                <strong id="statPaid">
+                    —
+                </strong>
+
+                <small>
+                    Pagamentos confirmados
+                </small>
+
+            </article>
+
+
+            <article>
+
+                <span>
+                    EVENTOS
+                </span>
+
+                <strong id="statEvents">
+                    —
+                </strong>
+
+                <small>
+                    Eventos ativos
+                </small>
+
+            </article>
+
+        </section>
+
+
+        <!-- ORDERS -->
+
+        <section
+            class="panel"
+            id="orders"
+        >
+
+            <div class="panel-head">
+
+                <div>
+
+                    <div class="eyebrow">
+                        MANAGEMENT
+                    </div>
+
+                    <h2>
+                        PEDIDOS RECENTES
+                    </h2>
+
+                </div>
+
+                <button
+                    class="ghost"
+                    id="refreshBtn"
+                >
+                    ATUALIZAR ↻
+                </button>
+
+            </div>
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                PEDIDO
+                            </th>
+
+                            <th>
+                                EVENTO
+                            </th>
+
+                            <th>
+                                CLIENTE
+                            </th>
+
+                            <th>
+                                PULSEIRAS
+                            </th>
+
+                            <th>
+                                VALOR
+                            </th>
+
+                            <th>
+                                ESTADO
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="ordersBody">
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="empty"
+                            >
+                                A carregar…
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- LOWER GRID -->
+
+        <section class="panel-grid">
+
+            <article
+                class="panel"
+                id="events"
+            >
+
+                <div class="eyebrow">
+                    EVENTS
+                </div>
+
+                <h2>
+                    EVENTOS
+                </h2>
+
+                <div
+                    id="eventsList"
+                    class="mini-list"
+                >
+
+                    <div class="empty">
+                        A carregar…
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <article
+                class="panel"
+                id="participants"
+            >
+
+                <div class="eyebrow">
+                    PEOPLE
+                </div>
+
+                <h2>
+                    PARTICIPANTES
+                </h2>
+
+                <div
+                    id="participantsList"
+                    class="mini-list"
+                >
+
+                    <div class="empty">
+                        A carregar…
+                    </div>
+
+                </div>
+
+            </article>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script
+    src="/admin/dashboard.js"
+    defer
+></script>
+
+</body>
+
+</html>

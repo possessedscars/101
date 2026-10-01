@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1.0"
+    >
+
+    <title>1Ø1 • Pulseiras</title>
+
+    <meta
+        name="robots"
+        content="noindex,nofollow,noarchive"
+    >
+
+    <link
+        rel="icon"
+        href="/assets/logo/favicon.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/admin/admin.css"
+    >
+
+</head>
+
+<body class="dashboard-page">
+
+<div class="admin-layout">
+
+    <!-- ================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <span>1Ø1</span>
+            <small>ADMIN</small>
+        </div>
+
+        <nav>
+
+            <a href="/admin/dashboard.html">
+                Overview
+            </a>
+
+            <a href="/admin/pedidos.html">
+                Pedidos
+            </a>
+
+            <a href="/admin/eventos.html">
+                Eventos
+            </a>
+
+            <a href="/admin/participantes.html">
+                Participantes
+            </a>
+
+            <a
+                class="active"
+                href="/admin/pulseiras.html"
+            >
+                Pulseiras
+            </a>
+
+        </nav>
+
+        <button
+            id="logoutBtn"
+            class="logout"
+            type="button"
+        >
+            SAIR <span>↗</span>
+        </button>
+
+    </aside>
+
+
+    <!-- ================================================= -->
+    <!-- MAIN -->
+    <!-- ================================================= -->
+
+    <main class="dashboard-main">
+
+        <header class="topbar">
+
+            <div>
+
+                <div class="eyebrow">
+                    TICKETING
+                </div>
+
+                <h1>
+                    PULSEIRAS
+                </h1>
+
+            </div>
+
+            <div class="user-pill">
+
+                <span class="dot"></span>
+
+                <span id="userEmail">
+                    —
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================================================= -->
+        <!-- STATS -->
+        <!-- ================================================= -->
+
+        <section class="stats-grid">
+
+            <article>
+
+                <span>
+                    TOTAL
+                </span>
+
+                <strong id="statTotal">
+                    —
+                </strong>
+
+                <small>
+                    Pulseiras registadas
+                </small>
+
+            </article>
+
+
+            <article>
+
+                <span>
+                    PAGAS
+                </span>
+
+                <strong id="statPaid">
+                    —
+                </strong>
+
+                <small>
+                    Pagamentos efetuados
+                </small>
+
+            </article>
+
+
+            <article>
+
+                <span>
+                    CONFIRMADAS
+                </span>
+
+                <strong id="statConfirmed">
+                    —
+                </strong>
+
+                <small>
+                    Pedidos confirmados
+                </small>
+
+            </article>
+
+
+            <article>
+
+                <span>
+                    PENDENTES
+                </span>
+
+                <strong id="statPending">
+                    —
+                </strong>
+
+                <small>
+                    A aguardar pagamento
+                </small>
+
+            </article>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PULSEIRAS -->
+        <!-- ================================================= -->
+
+        <section class="panel">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <div class="eyebrow">
+                        MANAGEMENT
+                    </div>
+
+                    <h2>
+                        TODAS AS PULSEIRAS
+                    </h2>
+
+                </div>
+
+                <button
+                    id="refreshBtn"
+                    class="ghost"
+                    type="button"
+                >
+                    ATUALIZAR ↻
+                </button>
+
+            </div>
+
+
+            <!-- FILTROS -->
+
+            <div class="pulseira-filters">
+
+                <input
+                    id="searchInput"
+                    type="search"
+                    placeholder="Pesquisar pulseira, participante, pedido ou Discord..."
+                >
+
+                <select id="statusFilter">
+
+                    <option value="">
+                        Todos os estados
+                    </option>
+
+                    <option value="PENDENTE">
+                        Pendente
+                    </option>
+
+                    <option value="PAGO">
+                        Pago
+                    </option>
+
+                    <option value="CONFIRMADO">
+                        Confirmado
+                    </option>
+
+                </select>
+
+                <select id="eventFilter">
+
+                    <option value="">
+                        Todos os eventos
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- TABELA -->
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                PULSEIRA
+                            </th>
+
+                            <th>
+                                PARTICIPANTE
+                            </th>
+
+                            <th>
+                                EVENTO
+                            </th>
+
+                            <th>
+                                PEDIDO
+                            </th>
+
+                            <th>
+                                DISCORD
+                            </th>
+
+                            <th>
+                                ESTADO
+                            </th>
+
+                            <th>
+                                —
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="pulseirasBody">
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="empty"
+                            >
+                                A carregar…
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- MODAL -->
+<!-- ================================================= -->
+
+<div
+    class="order-modal-overlay"
+    id="braceletModal"
+>
+
+    <div class="order-modal">
+
+        <button
+            type="button"
+            class="modal-close"
+            id="closeBraceletModal"
+        >
+            ×
+        </button>
+
+
+        <div class="eyebrow">
+            BRACELET
+        </div>
+
+
+        <h2 id="modalBraceletCode">
+            —
+        </h2>
+
+
+        <div
+            class="order-details"
+            id="braceletDetails"
+        ></div>
+
+
+        <div
+            id="braceletParticipant"
+            class="participants-container"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<script
+    src="/admin/pulseiras.js"
+    defer
+></script>
+
+</body>
+
+</html>
