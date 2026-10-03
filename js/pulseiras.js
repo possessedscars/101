@@ -392,6 +392,7 @@
                 <input
                     type="text"
                     id="pzContacto"
+                    placeholder="Ex: 911 444 746"
                     autocomplete="off"
                 >
 
