@@ -1053,7 +1053,7 @@ function renderParticipantFields() {
                 type="text"
                 class="pz-participant-input"
                 data-participant-index="${i}"
-                placeholder="Nome da personagem"
+                placeholder="Nome da pessoa"
                 autocomplete="off"
             >
         `;
