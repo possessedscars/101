@@ -354,7 +354,7 @@
             <div class="pz-field">
 
                 <label>
-                    NOME DA PERSONAGEM (IC)
+                    NOME DA PESSOA (IC)
                 </label>
 
                 <input
@@ -444,7 +444,7 @@
             "
         >
             Como estás a comprar várias pulseiras,
-            indica o nome da personagem de cada participante.
+            indica o nome da pessoa de cada participante.
         </span>
 
         <div id="pzParticipantsFields"></div>
